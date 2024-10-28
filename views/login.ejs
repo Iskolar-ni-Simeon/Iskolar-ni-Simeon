@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your App Title</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+</head>
+<p>ur not logged in pa broskie</p>
+<body>
+    <button onclick="authenticateUser()">Sign in with Google</button>
+</body>
+<script>
+    let client;
+    function initializeGSI() {
+        client = google.accounts.oauth2.initTokenClient({
+            client_id: '<%= oauthid %>',
+            scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+            callback: (response) => {
+                const token = response.access_token;
+            
+                fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    fetch('/login/setup-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type' : 'application/json'
+                        },
+                        body: JSON.stringify({userId: data.sub, name: data.name})
+                    })
+                    .then(res => {
+                        if (res.ok) location.replace('/');
+                        else console.error('failed to setup session')
+                    })
+                })
+                .catch(err => console.error(`error: ${err}`)) 
+            },
+        });
+    }
+    
+    function authenticateUser() {client.requestAccessToken();}
+
+    window.onload = initializeGSI;
+</script>
+</html>

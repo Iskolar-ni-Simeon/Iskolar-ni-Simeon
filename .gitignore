@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+
+# Environment Variables
+.env
+
+# Log files
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS/System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+
+# Build files
+dist/
+
+# Coverage files
+coverage/
+
+# Database files
+*.sqlite3

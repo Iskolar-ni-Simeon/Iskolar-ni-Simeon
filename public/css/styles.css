@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap'); /* Righteous */
+/* Fonts */
+.righteous-regular {
+    font-family: "Righteous", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+:root {
+    --dark-mode-background: #000000;
+    --dark-mode-header: #001a00;
+}
+
+header {
+    background-color: var(--dark-mode-header);
+    text-align: center;
+    padding: 10px 0;
+    margin: -8px -8px -8px;
+    display: flex;
+}
+
+.nav #name {
+    padding: 0 10px;
+    color: #fff;
+}
+
+body {
+    background-color: var(--dark-mode-background);
+}
