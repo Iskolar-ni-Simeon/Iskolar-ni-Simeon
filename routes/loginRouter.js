@@ -4,16 +4,16 @@ require('dotenv').config();
 
 router.get('/', (req, res) => {
     res.render('login', {
-        oauthid: process.env.OAUTHCLIENTID // Your OAuth client ID from environment
+        oauthid: process.env.OAUTHCLIENTID 
     });
 });
 
-// Assume /setup-session is defined here to handle session creation after Google login
+
 router.post('/setup-session', (req, res) => {
-    const { userId, name } = req.body; // Get user ID and name from the request body
+    const { userId, name } = req.body;
     if (userId) {
-        req.session.userId = userId; // Store userId in session
-        req.session.name = name; // Optionally store name in session
+        req.session.userId = userId; 
+        req.session.name = name; 
         console.log(`Session created for user: ${req.session.userId}`);
 
         req.session.save(err => {
