@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 require('dotenv').config();
 
@@ -10,12 +11,21 @@ router.get('/', (req, res) => {
 
 
 router.post('/setup-session', (req, res) => {
-    const { userId, name } = req.body;
+    const { userId, name, picture, email} = req.body;
     if (userId) {
+        const jwtToken = jwt.sign(
+            {
+                userId: userId,
+                email: email,
+                exp: Math.floor(Date.now() / 1000) + (60 * 60)
+            },
+            process.env.JWT_SECRET
+        )
+        res.cookie('authcookie', jwtToken, {maxAge: 3600, httpOnly: true});
         req.session.userId = userId; 
         req.session.name = name; 
+        
         console.log(`Session created for user: ${req.session.userId}`);
-
         req.session.save(err => {
             if (err) {
                 console.error("Error saving session:", err);
