@@ -1,9 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const authMiddleware = (req, res, next) => {
-    const authHeader = req.cookies['authcookie'];
-    
+const authMiddleware = (req, res, next) => { 
     if (req.path === '/login' || req.path === '/setup-session') {
         return next();
     }
@@ -14,20 +12,14 @@ const authMiddleware = (req, res, next) => {
         console.log('Redirecting to /login');
         res.redirect('/login');
     }
-    
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-        const token = authHeader.split(" ")[1]
-
-        jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-            if (err) {
-                res.sendStatus(403);
-            }
-            req.user = user;
-            next();
-        });
-    } else {
-        res.sendStatus(401)
-    }
 };
 
-module.exports = authMiddleware;
+const jwtMiddleware = (req, res, next) => {
+    if (!req.cookies.authorization) {
+        return res.sendStatus(401);
+    }
+    next();
+}
+
+
+module.exports = {authMiddleware, jwtMiddleware}

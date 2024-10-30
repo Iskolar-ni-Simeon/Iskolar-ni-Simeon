@@ -19,9 +19,9 @@ router.post('/setup-session', (req, res) => {
                 email: email,
                 exp: Math.floor(Date.now() / 1000) + (60 * 60)
             },
-            process.env.JWT_SECRET
+            `${process.env.JWT_SECRET}`
         )
-        res.cookie('authcookie', jwtToken, {maxAge: 3600, httpOnly: true});
+        res.cookie('authorization', jwtToken, {maxAge: 3600, httpOnly: true});
         req.session.userId = userId; 
         req.session.name = name; 
         
