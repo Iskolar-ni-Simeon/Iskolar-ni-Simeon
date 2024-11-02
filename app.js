@@ -5,18 +5,18 @@ const cookieParser = require('cookie-parser');
 
 const indexRouter = require('./routes/indexRouter');
 const loginRouter = require('./routes/loginRouter'); 
-const {authMiddleware, jwtMiddleware} = require('./public/scripts/auth'); 
+const searchRouter = require('./routes/searchRouter');
 
+const {authMiddleware, jwtMiddleware} = require('./public/scripts/auth'); 
 
 const app = express();
 const PORT = 8080;
-
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json()); 
-app.use(cookieParser())
+app.use(cookieParser());
 
 
 app.use(session({
@@ -32,6 +32,7 @@ app.use(session({
 
 app.use("/login", loginRouter); 
 app.use("/", authMiddleware, jwtMiddleware, indexRouter); 
+app.use("/search", authMiddleware, searchRouter);
 
 // Start the server
 app.listen(PORT, function() {

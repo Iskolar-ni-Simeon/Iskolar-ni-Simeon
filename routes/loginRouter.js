@@ -5,26 +5,20 @@ require('dotenv').config();
 
 router.get('/', (req, res) => {
     res.render('login', {
-        oauthid: process.env.OAUTHCLIENTID 
+        oauthid: process.env.OAUTHCLIENTID,
+        server_api: process.env.SERVER_API + "/login"
     });
 });
 
 
 router.post('/setup-session', (req, res) => {
-    const { userId, name, picture, email} = req.body;
+    const { userId, name, picture, email, jwtToken } = req.body;
     if (userId) {
-        const jwtToken = jwt.sign(
-            {
-                userId: userId,
-                email: email,
-                exp: Math.floor(Date.now() / 1000) + (60 * 60)
-            },
-            `${process.env.JWT_SECRET}`
-        )
         res.cookie('authorization', jwtToken, {maxAge: 3600, httpOnly: true});
         req.session.userId = userId; 
         req.session.name = name; 
-        
+        req.session.picture = picture;
+        req.session.email = email
         console.log(`Session created for user: ${req.session.userId}`);
         req.session.save(err => {
             if (err) {

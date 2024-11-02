@@ -7,45 +7,57 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
 </head>
-<p>ur not logged in pa broskie</p>
+<p>not logged in</p>
 <body>
-    <button onclick="authenticateUser()">Sign in with Google</button>
-</body>
-<script>
-    let client;
-    function initializeGSI() {
-        client = google.accounts.oauth2.initTokenClient({
-            client_id: '<%= oauthid %>',
-            scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
-            callback: (response) => {
-                const token = response.access_token;
-            
-                fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    fetch('/login/setup-session', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type' : 'application/json'
-                        },
-                        body: JSON.stringify({userId: data.sub, name: data.given_name, picture: data.picture, email: data.email})
-                    })
-                    .then(res => {
-                        if (res.ok) location.replace('/');
-                        else console.error('failed to setup session')
-                    })
-                })
-                .catch(err => console.error(`error: ${err}`)) 
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script>
+      function handleCredentialResponse(response) {
+        fetch("<%= server_api %>", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept' : 'application/json',
+                'Origin' : 'http://localhost:8080'
             },
+            body: JSON.stringify({'credential' : response.credential}),
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error("Error fetching API.")
+            }
+            return response.json();
+        })
+        .then(data => {
+            fetch('/login/setup-session', {
+              method: 'POST',
+              headers: {
+                'Content-Type' : 'application/json'
+              },
+              body: JSON.stringify({
+                jwtToken:  data.jwtToken,
+                userId: data.token.sub,
+                name: data.token.given_name,
+                email: data.token.email,
+                picture: data.token.picture
+              })
+            }).then(res => {
+              if (res.ok) location.replace('/');
+              else console.error("Failed to setup session.")
+            })
+        })
+      }
+      window.onload = function () {
+        google.accounts.id.initialize({
+          client_id: '<%= oauthid %>',
+          callback: handleCredentialResponse
         });
-    }
-    
-    function authenticateUser() {client.requestAccessToken();}
-
-    window.onload = initializeGSI;
-</script>
+        google.accounts.id.renderButton(
+          document.getElementById("buttonDiv"),
+          { theme: "outline", size: "large" }  // customization attributes
+        );
+        google.accounts.id.prompt(); // also display the One Tap dialog
+      }
+    </script>
+    <div id="buttonDiv"></div>
+  </body>
 </html>
