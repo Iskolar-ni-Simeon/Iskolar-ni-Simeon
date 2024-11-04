@@ -6,7 +6,8 @@ require('dotenv').config();
 router.get('/', (req, res) => {
     res.render('login', {
         oauthid: process.env.OAUTHCLIENTID,
-        server_api: process.env.SERVER_API + "/login"
+        server_api: process.env.SERVER_API + "/login",
+        origin: process.env.ORIGIN
     });
 });
 
