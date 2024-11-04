@@ -16,7 +16,7 @@ const authMiddleware = (req, res, next) => {
 
 const jwtMiddleware = (req, res, next) => {
     if (!req.cookies.authorization) {
-        return res.sendStatus(401);
+        res.redirect('/login');
     }
     next();
 }

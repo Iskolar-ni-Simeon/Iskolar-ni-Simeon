@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
 router.post('/setup-session', (req, res) => {
     const { userId, name, picture, email, jwtToken } = req.body;
     if (userId) {
-        res.cookie('authorization', jwtToken, {maxAge: 3600, httpOnly: true});
+        res.cookie('authorization', jwtToken, {maxAge: 1000 * 60 * 60, httpOnly: true});
         req.session.userId = userId; 
         req.session.name = name; 
         req.session.picture = picture;
