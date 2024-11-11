@@ -30,9 +30,8 @@ router.get('/thesis/:id', async (req, res, next) => {
             return res.status(response.status).send('Error fetching thesis');
         }
 
-
         const thesis = await response.json();
-        
+
         if (!thesis.data) {
             return res.status(404).render("./404.ejs", {
                 picture: req.session.picture,

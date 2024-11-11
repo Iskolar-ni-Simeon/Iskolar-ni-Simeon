@@ -26,7 +26,8 @@ app.use(cookieParser());
 app.use(cookieSession({
     name: 'session',
     keys: [key1, key2], // use your own secure keys
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 60 * 60 * 1000, // 1 hour
+    expires: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
   }));
 
 
