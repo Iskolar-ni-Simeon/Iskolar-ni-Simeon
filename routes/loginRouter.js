@@ -11,16 +11,23 @@ router.get('/', (req, res) => {
     });
 });
 
-
 router.post('/setup-session', (req, res) => {
     const { userId, name, picture, email, jwtToken, savedTheses } = req.body;
     if (userId) {
-        res.cookie('authorization', jwtToken, {maxAge: 1000 * 60 * 60, httpOnly: true});
+        res.cookie('authorization', jwtToken, { 
+            maxAge: 1000 * 60 * 60, 
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict'  // Can also be 'Lax' depending on your needs
+        });
+        
+        // Store user details in session (server-side)
         req.session.userId = userId; 
         req.session.name = name; 
         req.session.picture = picture;
         req.session.email = email;
-        req.session.savedTheses = savedTheses
+        req.session.savedTheses = savedTheses;
+        
         console.log(`Session created for user: ${req.session.userId}`);
         req.session.save(err => {
             if (err) {
@@ -34,6 +41,7 @@ router.post('/setup-session', (req, res) => {
         res.status(400).send("Invalid user data");
     }
 });
+
 
 router.get('/logout', (req, res) => {
     req.session.destroy(err => {
