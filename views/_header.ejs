@@ -1,9 +1,54 @@
+<link rel="stylesheet" href="/css/header.css">
+
 <header>
-    <div class="nav">
-        <p id="name" class="righteous-regular">Iskolar ni Simeon</p>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/about">About</a>
-        </nav>
+    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+        
+        <div class="collapse navbar-collapse d-none d-lg-flex">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link <%= (currentRoute === '/' ? 'active fw-bold' : '')%>" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <%= (currentRoute === '/me/library' ? 'active fw-bold' : '')%>" href="/me/library">My Library</a>
+                </li>
+            </ul>
+        </div>
+
+        <button class="navbar-toggler toggler" type="button" onclick="toggleMenu()">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-brand">
+            <img src="<%= picture %>" width="35" height="35" class="d-inline-block align-top rounded-circle" alt="Profile Picture">
+        </div>
+    </nav>
+
+    <div id="fullscreenMenu" class="fullscreen-menu collapse">
+        <button class="btn btn-close" onclick="toggleMenu()"></button>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link <%= (currentRoute === '/' ? 'active fw-bold' : '')%>" href="/home">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <%= (currentRoute === '/me/library' ? 'active fw-bold' : '')%>" href="/me/library">My Library</a>
+            </li>
+            <hr>
+            <li class="nav-item d-lg-none">
+                <a class="nav-link <%= (currentRoute === '/me' ? 'active fw-bold' : '')%>" href="/me">My Profile</a>
+            </li>
+            <li class="nav-item d-lg-none">
+                <a class="nav-link" href="/login/logout">Sign out</a>
+            </li>
+        </ul>
+        <!-- footer to the fullscreen menu -->
+         <p class="footer">&copy; Group INS</p>
     </div>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('fullscreenMenu');
+            menu.classList.toggle('show');
+        }
+    </script>
+    
 </header>
+

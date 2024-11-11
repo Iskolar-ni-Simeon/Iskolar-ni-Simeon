@@ -9,7 +9,6 @@ const authMiddleware = (req, res, next) => {
     if (req.session && req.session.userId) {
         next(); 
     } else {
-        console.log('Redirecting to /login');
         res.redirect('/login');
     }
 };
@@ -20,5 +19,6 @@ const jwtMiddleware = (req, res, next) => {
     }
     next();
 }
+
 
 module.exports = {authMiddleware, jwtMiddleware}

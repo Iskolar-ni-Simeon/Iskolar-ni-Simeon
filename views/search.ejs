@@ -3,12 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>"<%= searchQuery %>" | Iskolar ni Simeon</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/animations.css">
+    <link rel="stylesheet" href="/css/search.css">
 </head>
 <body>
-    <script>
-        var result = "<%= response %>"
-        
-    </script>
+    
+    <%- include('_header.ejs') %>
+    <div class="outer-container">
+        <h1 class="text-center mt-5 ml-5 mr-10">Search results for "<b><i><%= searchQuery %></i></b>"</h1>
+        <div class="row mt-5">
+            <div class="results-container d-flex justify-content-center flex-wrap">
+                <div class="results-inner-container">
+                    <div id="loader" class="d-flex justify-content-center">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const loader = document.getElementById('loader');
+
+            function formatName(name) {
+                const parts = name.split(' ');
+                const lastName = parts.pop();
+                const initials = parts.map(part => part.charAt(0) + '.').join(' ');
+                return `${lastName}, ${initials}`;
+            }
+
+            let searchResults = fetch("https://ins-api-steel.vercel.app/search?q=<%= searchQuery %>", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization" : `Bearer <%= token %>`
+                }
+            })
+            .then(res => {
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        res.json().then(data => {
+                            let alert = document.createElement('div');
+                            alert.className = 'alert alert-danger alert-dismissible fade show';
+                            alert.innerHTML = `
+                                <strong>Error:</strong> ${data.message}. Please log in again.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            `;
+                            document.querySelector('.results-inner-container').appendChild(alert);
+                        });
+                    }
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.data.length === 0) {
+                    let alert = document.createElement('div');
+                    alert.className = 'alert alert-warning alert-dismissible fade show';
+                    alert.innerHTML = `
+                        No results found for "<b><i><%= searchQuery %></i></b>". Please try again.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    document.querySelector('.results-inner-container').appendChild(alert);
+                } else {
+                    data.data.forEach(result => {
+                    authors = result.authors.map(author => formatName(author)).join(', ');
+                    let card = document.createElement('div');
+                    card.className = 'card text-left';
+                    card.innerHTML = `
+                        <div class="card-body">
+                            <h5 class="card-title">${result.title}</h5>
+                            <p class="card-text text-truncate">${result.abstract}</p>
+                            <a href="/thesis/${result.id}" class="btn btn-success">Read thesis</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <b>Authors:</b> ${authors}<br>
+                            <b>Published:</b> ${result.year}
+                        </div>
+                    `;
+                    document.querySelector('.results-inner-container').appendChild(card);
+                    setTimeout(() => {
+                        card.classList.add('animate');
+                    }, 100);
+                });
+
+                }
+                
+            })
+            .finally(() => {
+                loader.remove();
+            })
+            .catch(err => {
+                // create an animation with bootstrap's alert component
+                let alert = document.createElement('div');
+                alert.className = 'alert alert-danger alert-dismissible fade show';
+                alert.innerHTML = `
+                    <strong>Error:</strong> ${err.message}. Try logging in again.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.results-inner-container').appendChild(alert);
+
+            })
+        </script>
+    </div>
+
+    <%- include('_footer.ejs') %>
 </body>
 </html>

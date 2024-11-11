@@ -17,6 +17,7 @@ Thumbs.db
 
 # Temporary files
 tmp/
+package-lock.json
 
 # Build files
 dist/

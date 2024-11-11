@@ -3,61 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iskolar ni Simeon</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
-</head>
-<p>not logged in</p>
-<body>
+    <link rel="stylesheet" href="/css/login.css">
     <script src="https://accounts.google.com/gsi/client" async></script>
-    <script>
+    <title>Login | Iskolar ni Simeon</title>
+    <style>
+      #background {
+        position: relative;
+      }
+      #background img {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+</head>
+<body>
+  <script defer>
+    document.addEventListener("DOMContentLoaded", function() {
+      var signin = document.getElementsByClassName("signin")[0];
+      var loader = document.getElementById("loader");
+      var loaderTimeout;
+    
       function handleCredentialResponse(response) {
-        fetch("<%= server_api %>", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept' : 'application/json',
-                'Origin' : "<%= origin %>"
-            },
-            body: JSON.stringify({'credential' : response.credential}),
-        })
-        .then(response => {
-            if (!response.ok) {
-                console.error("Error fetching API.")
-            }
-            return response.json();
-        })
-        .then(data => {
-            fetch('/login/setup-session', {
+          clearTimeout(loaderTimeout);
+      
+          fetch("<%= server_api %>", {
               method: 'POST',
               headers: {
-                'Content-Type' : 'application/json'
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                  'Origin': "<%= origin %>"
               },
-              body: JSON.stringify({
-                jwtToken:  data.jwtToken,
-                userId: data.token.sub,
-                name: data.token.given_name,
-                email: data.token.email,
-                picture: data.token.picture
-              })
-            }).then(res => {
-              if (res.ok) location.replace('/');
-              else console.error("Failed to setup session.")
-            })
-        })
+              body: JSON.stringify({ 'credential': response.credential }),
+          })
+          .then(response => {
+              if (!response.ok) {
+                  console.error("Error fetching API.");
+              }
+              resetLoader();
+              return response.json();
+          })
+          .then(data => {
+              fetch('/login/setup-session', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      jwtToken: data.jwtToken,
+                      userId: data.token.sub,
+                      name: data.token.given_name,
+                      email: data.token.email,
+                      picture: data.token.picture,
+                      savedTheses: data.saved.data
+                  })
+              }).then(res => {
+                  if (res.ok) {
+                      document.getElementById("loader").style.display = "none";
+                      document.getElementById("loader").textContent = "Successfully logged in.";
+                      location.replace('/');
+                  } else {
+                      console.error("Failed to setup session.");
+                  }
+              });
+          })
+          .catch(error => {
+              console.error("Error during login process:", error);
+              resetLoader();
+          });
       }
+    
+      function resetLoader() {
+          signin.style.opacity = "1";
+          signin.style.visibility = "visible";
+          loader.style.opacity = "0";
+          loader.style.visibility = "hidden";
+      }
+    
       window.onload = function () {
-        google.accounts.id.initialize({
-          client_id: '<%= oauthid %>',
-          callback: handleCredentialResponse
-        });
-        google.accounts.id.renderButton(
-          document.getElementById("buttonDiv"),
-          { theme: "outline", size: "large" } 
-        );
-        google.accounts.id.prompt();
+          google.accounts.id.initialize({
+              client_id: '<%= oauthid %>',
+              callback: handleCredentialResponse
+          });
+          google.accounts.id.renderButton(
+              document.getElementById("buttonDiv"),
+              { theme: "outline", size: "large", text: "signin", shape: "pill", locale: "ph_tl"}
+          );
+          google.accounts.id.prompt();
+        
+          document.getElementById("buttonDiv").onclick = function() {
+              signin.style.opacity = "0";
+              signin.style.visibility = "hidden";
+              loader.style.opacity = "1";
+              loader.style.visibility = "visible";
+          
+              loaderTimeout = setTimeout(resetLoader, 10000);
+          };
       }
+    });
+  </script>
+  
+    <div class="container">
+      <div id="background">
+        <img src="images/inswhite.svg" alt="Logo" draggable="false">
+        <p class="backgroundtitle montserrat-800">Iskolar ni Simeon</p>
+        <p class="backgroundsubtitle montserrat-400">
+          <span>From </span> <span>GJCians,</span> <span>to </span> <span>GJCians.</span>
+        </p>
+      </div>
+      <div id="login">
+        <img src="images/inswhite.svg" alt="Logo" draggable="false">
+        <h1 class="montserrat-800 logintitle"></h1>
+        <div id="buttonDiv" class="signin"></div>
+        <div id="loader" class="loader"></div>
+        <div class="footer">
+          <p class="montserrat-400 verse"><i>"Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up"</i> <br> <i><b>- Galatians 6:9</b></i></p>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          const words = document.querySelectorAll('.backgroundsubtitle span');
+          words.forEach((word, index) => {
+              word.style.animationDelay = `${index * 0.1}s`;
+          });
+      });
     </script>
-    <div id="buttonDiv"></div>
-  </body>
+</body>
 </html>

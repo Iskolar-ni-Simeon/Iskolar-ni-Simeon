@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+    overflow: hidden; /* Prevent whole page scroll */
+    padding-bottom: 2rem; /* Add padding to prevent content cut-off */
+    font-family: 'Montserrat', sans-serif;
+    padding-top: 50px;
+    padding-bottom: 80px;
+}
+
+.results {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Using min-height instead of height */
+}
+
+.card {
+    opacity: 0;
+    transform: translateY(-20px); 
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    margin-bottom: 1rem; /* Add margin to create gap between cards */
+}
+
+.card.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.results-inner-container {
+    padding: 1rem;
+    border: 2px solid #ddd; 
+    border-radius: 10px;
+    box-shadow: 0 0 10px #008a101a;
+    flex-direction: column;
+    gap: 2rem;
+    overflow-y: auto;
+    height: 50dvh;
+    width: 80%;
+}
+
+@keyframes fadeDrop {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 100%; /* Adjusted width */
+        font-size: small;
+    }
+    .results-inner-container {
+        width: 90%;
+    }
+}

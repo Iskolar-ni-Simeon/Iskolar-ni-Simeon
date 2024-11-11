@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.montserrat-800 {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+}
+.montserrat-400 {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100dvh;
+}
+
+#background {
+    flex: 2;
+    background-color: #002708;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+}
+
+#background img {
+    width: 75px;
+    height: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 1%;
+}
+
+.backgroundtitle {
+    color: #fff;
+    font-size: 5vmax;
+    margin-left: 3.5vmax;
+    margin-bottom: 1vmax;
+}
+
+.backgroundsubtitle {
+    color: #fff;
+    font-size: 2.4vmax;
+    margin-left: 3.5vmax;
+    margin-top: 0;
+}
+.backgroundsubtitle span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(-25px);
+    animation: dropFadeIn 0.3s ease forwards;
+}
+
+#login {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4;
+    position: relative;
+}
+
+#login img {
+    width: 200px;
+    height: auto;
+    top: 0;
+    display: none;
+}
+
+#login .footer {
+    position: absolute;
+    bottom: 0;
+    width: 80%;
+    text-align: center;
+    color: #000;
+    font-size: 0.7vmax;
+    margin-bottom: 1vmax;
+}
+
+.logintitle {
+    font-size: 5vw;
+    margin-top: 0;
+    margin-bottom: 1vmax; 
+    text-align: center;
+    color: #000;
+}
+.logintitle::before {
+    content: 'Sign in ';
+    color: #000; 
+}
+
+.verse {
+    font-size: 0.9vmax;
+    margin-top: 0;
+    margin-bottom: 1vmax; 
+    text-align: center;
+    color: #000;
+}
+
+.signin {
+    margin-top: 15dvh;
+    width: fit-content;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    margin: 0;
+}
+
+.loader {
+    border: 30px solid #002203; /* Light grey */
+    border-top: 30px solid #006500; /* Blue */
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    animation: spin 2s linear infinite;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    margin: 0;
+}
+
+@keyframes dropFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    #background {
+        display: none;
+    }
+
+    #login {
+        flex: 1;
+        width: 100%;
+        background: linear-gradient(180deg, rgba(0,41,8,1) 20%, rgba(0,0,0,1) 100%);
+    }
+    #login img {
+        display: block
+    }
+    .logintitle {
+        color: #fff; 
+    }
+
+    .logintitle::before {
+        color: #fff; 
+    }
+
+    .logintitle::after {
+        color: #fff; 
+        content: 'to Iskolar ni Simeon';
+    }
+    .verse {
+        color: #fff;
+    }
+}
+
+@media (max-width: 768px) {
+    .logintitle {
+        font-size: 8vw; /* Adjust font size for smaller screens */
+    }
+}
+
+@media (min-width: 1200px) {
+    .logintitle {
+        font-size: 3vw; /* Adjust font size for larger screens */
+    }
+}
