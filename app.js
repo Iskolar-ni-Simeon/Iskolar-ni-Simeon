@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require('path');
-const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
+const crypto = require('crypto');
 
 const indexRouter = require('./routes/indexRouter');
 const loginRouter = require('./routes/loginRouter'); 
@@ -11,6 +12,8 @@ const {authMiddleware, jwtMiddleware} = require('./public/scripts/auth');
 
 const app = express();
 const PORT = 8080;
+const key1 = crypto.randomBytes(32).toString('hex');
+const key2 = crypto.randomBytes(32).toString('hex');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -20,17 +23,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'defaultSecret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        secure: false, 
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60
-    }
-}));
-
+app.use(cookieSession({
+    name: 'session',
+    keys: [key1, key2], // use your own secure keys
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }));
 
 
 app.use("/login", loginRouter); 
