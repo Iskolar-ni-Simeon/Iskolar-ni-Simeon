@@ -11,5 +11,6 @@
             "src": "/(.*)",
             "dest": "app.js"
         }
-    ]
+    ],
+    "buildCommand": "npm install express"
 }

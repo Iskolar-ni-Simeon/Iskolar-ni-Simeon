@@ -129,8 +129,7 @@
     "whatwg-url": "^5.0.0"
   },
   "scripts": {
-    "start": "node app.js",
-    "build": "npm install express"
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
