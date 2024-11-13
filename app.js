@@ -23,31 +23,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cookieParser());
 
-// Set secure to false for local development
 app.use(cookieSession({
     name: 'session',
-    keys: [key1, key2], // Use your own secure keys in production
-    maxAge: 60 * 60 * 1000, // 1 hour
+    keys: [key1, key2], 
+    maxAge: 60 * 60 * 1000,
     secure: process.env.NODE_ENV === 'production', // HTTPS in production
     httpOnly: true,
 }));
 
-// Public route, no auth required
 app.use("/login", loginRouter);
 
-// Protected routes, auth required
 app.use("/", authMiddleware, jwtMiddleware, indexRouter);
-app.use("/", authMiddleware, jwtMiddleware, thesisRouter);
+app.use("/",  authMiddleware, jwtMiddleware, thesisRouter);
 
-// Catch-all for 404 errors
-app.all('*', (req, res) => {
+app.all('*', authMiddleware, jwtMiddleware, (req, res) => {
     res.status(404).render("./404.ejs", {
         picture: req.session?.picture,
         currentRoute: req.originalUrl,
     });
 });
 
-// Start the server
 app.listen(PORT, function () {
     console.log(`Listening on port: ${PORT}`);
 });

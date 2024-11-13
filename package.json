@@ -129,9 +129,8 @@
     "whatwg-url": "^5.0.0"
   },
   "scripts": {
-    "copy-assets": "cp -R ./node_modules/pspdfkit/dist/ ./assets/",
     "start": "node app.js",
-    "build": "npm run copy-assets && npm run start"
+    "build": "npm install express"
   },
   "keywords": [],
   "author": "",
