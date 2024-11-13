@@ -17,7 +17,6 @@ Thumbs.db
 
 # Temporary files
 tmp/
-package-lock.json
 
 # Build files
 dist/
@@ -27,3 +26,6 @@ coverage/
 
 # Database files
 *.sqlite3
+
+# Package lock file
+package-lock.json
