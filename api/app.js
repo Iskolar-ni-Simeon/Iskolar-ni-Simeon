@@ -16,10 +16,9 @@ const key1 = crypto.randomBytes(32).toString('hex');
 const key2 = crypto.randomBytes(32).toString('hex');
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.set('views', path.join(__dirname, '../views'));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 app.use(cookieParser());
 
