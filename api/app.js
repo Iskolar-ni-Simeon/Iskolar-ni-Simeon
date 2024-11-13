@@ -4,11 +4,11 @@ const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const crypto = require('crypto');
 
-const indexRouter = require('./routes/indexRouter.js');
-const loginRouter = require('./routes/loginRouter.js');
-const thesisRouter = require('./routes/thesisRouter.js');
+const indexRouter = require('../routes/indexRouter.js');
+const loginRouter = require('../routes/loginRouter.js');
+const thesisRouter = require('../routes/thesisRouter.js');
 
-const { authMiddleware, jwtMiddleware } = require('./public/scripts/auth');
+const { authMiddleware, jwtMiddleware } = require('../public/scripts/auth.js');
 
 const app = express();
 const PORT = 8080;
