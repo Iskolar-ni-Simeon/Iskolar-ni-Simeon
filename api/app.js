@@ -24,20 +24,15 @@ app.use(session({
   cookieName: 'session',
   secret: key1, 
   resave: false,
+  secure: true,
   saveUninitialized: false,
   cookie: {
     maxAge: 60 * 60 * 1000,
-    secure: process.env.NODE_ENV === 'production'
+    secure: process.env.NODE_ENV === 'production',
+    secureProxy: process.env.NODE_ENV === 'production',
   }
 }));
 
-app.use((req, res, next) => {
-  console.log(req.headers['x-forwarded-proto'])
-  if (req.headers['x-forwarded-proto'] === 'https') {
-    req.connection.proxySecure = true;
-  }
-  next();
-})
 
 app.use("/login", loginRouter);
 
