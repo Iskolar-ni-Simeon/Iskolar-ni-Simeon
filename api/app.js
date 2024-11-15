@@ -31,6 +31,14 @@ app.use(session({
   }
 }));
 
+app.use((req, res, next) => {
+  console.log(req.headers['x-forwarded-proto'])
+  if (req.headers['x-forwarded-proto'] === 'https') {
+    req.connection.proxySecure = true;
+  }
+  next();
+})
+
 app.use("/login", loginRouter);
 
 app.use("/", authMiddleware, jwtMiddleware, indexRouter);

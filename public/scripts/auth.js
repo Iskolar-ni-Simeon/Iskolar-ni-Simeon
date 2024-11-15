@@ -20,5 +20,4 @@ const jwtMiddleware = (req, res, next) => {
     next();
 }
 
-
 module.exports = {authMiddleware, jwtMiddleware}
