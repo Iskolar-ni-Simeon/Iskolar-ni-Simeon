@@ -35,78 +35,86 @@
                 const initials = parts.map(part => part.charAt(0) + '.').join(' ');
                 return `${lastName}, ${initials}`;
             }
-
-            let searchResults = fetch("https://ins-api-steel.vercel.app/search?q=<%= searchQuery %>", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization" : `Bearer <%= token %>`
-                }
-            })
-            .then(res => {
-                if (!res.ok) {
-                    if (res.status === 401) {
-                        res.json().then(data => {
-                            let alert = document.createElement('div');
-                            alert.className = 'alert alert-danger alert-dismissible fade show';
-                            alert.innerHTML = `
-                                <strong>Error:</strong> ${data.message}. Please log in again.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            `;
-                            document.querySelector('.results-inner-container').appendChild(alert);
-                        });
-                    }
-                }
-                return res.json();
-            })
-            .then(data => {
-                if (data.data.length === 0) {
-                    let alert = document.createElement('div');
-                    alert.className = 'alert alert-warning alert-dismissible fade show';
-                    alert.innerHTML = `
-                        No results found for "<b><i><%= searchQuery %></i></b>". Please try again.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    `;
-                    document.querySelector('.results-inner-container').appendChild(alert);
-                } else {
-                    data.data.forEach(result => {
-                    authors = result.authors.map(author => formatName(author)).join(', ');
-                    let card = document.createElement('div');
-                    card.className = 'card text-left';
-                    card.innerHTML = `
-                        <div class="card-body">
-                            <h5 class="card-title">${result.title}</h5>
-                            <p class="card-text text-truncate">${result.abstract}</p>
-                            <a href="/thesis/${result.id}" class="btn btn-success">Read thesis</a>
-                        </div>
-                        <div class="card-footer text-muted">
-                            <b>Authors:</b> ${authors}<br>
-                            <b>Published:</b> ${result.year}
-                        </div>
-                    `;
-                    document.querySelector('.results-inner-container').appendChild(card);
-                    setTimeout(() => {
-                        card.classList.add('animate');
-                    }, 100);
-                });
-
-                }
-                
-            })
-            .finally(() => {
-                loader.remove();
-            })
-            .catch(err => {
-                // create an animation with bootstrap's alert component
+            if ("<%= searchQuery %>" === '') {
                 let alert = document.createElement('div');
-                alert.className = 'alert alert-danger alert-dismissible fade show';
-                alert.innerHTML = `
-                    <strong>Error:</strong> ${err.message}. Try logging in again.
+                alert.className = 'alert alert-warning alert-dismissible fade show';
+                alert.innerHTML = `<strong>Error</strong>: Please enter a search query to get results.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 `;
                 document.querySelector('.results-inner-container').appendChild(alert);
+                loader.remove();
+            } else {
+                let searchResults = fetch("https://ins-api-steel.vercel.app/search?q=<%= searchQuery %>", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization" : `Bearer <%= token %>`
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        if (res.status === 401) {
+                            res.json().then(data => {
+                                let alert = document.createElement('div');
+                                alert.className = 'alert alert-danger alert-dismissible fade show';
+                                alert.innerHTML = `
+                                    <strong>Error:</strong> ${data.message}. Please log in again.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                `;
+                                document.querySelector('.results-inner-container').appendChild(alert);
+                            });
+                        }
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.data.length === 0) {
+                        let alert = document.createElement('div');
+                        alert.className = 'alert alert-warning alert-dismissible fade show';
+                        alert.innerHTML = `
+                            No results found for "<b><i><%= searchQuery %></i></b>". Please try again.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        `;
+                        document.querySelector('.results-inner-container').appendChild(alert);
+                    } else {
+                        data.data.forEach(result => {
+                        authors = result.authors.map(author => formatName(author)).join(', ');
+                        let card = document.createElement('div');
+                        card.className = 'card text-left';
+                        card.innerHTML = `
+                            <div class="card-body">
+                                <h5 class="card-title">${result.title}</h5>
+                                <p class="card-text text-truncate">${result.abstract}</p>
+                                <a href="/thesis/${result.id}" class="btn btn-success">Read thesis</a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <b>Authors:</b> ${authors}<br>
+                                <b>Published:</b> ${result.year}
+                            </div>
+                        `;
+                        document.querySelector('.results-inner-container').appendChild(card);
+                        setTimeout(() => {
+                            card.classList.add('animate');
+                        }, 100);
+                    });
 
-            })
+                    }
+
+                })
+                .finally(() => {
+                    loader.remove();
+                })
+                .catch(err => {
+                    // create an animation with bootstrap's alert component
+                    let alert = document.createElement('div');
+                    alert.className = 'alert alert-danger alert-dismissible fade show';
+                    alert.innerHTML = `
+                        <strong>Error:</strong> ${err.message}. Try logging in again.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    document.querySelector('.results-inner-container').appendChild(alert);
+
+                })}
         </script>
     </div>
 

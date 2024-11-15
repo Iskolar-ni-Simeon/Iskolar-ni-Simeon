@@ -5,8 +5,7 @@ require('dotenv').config();
 const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
 router.get('/', (req, res) => {
-    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
-    console.log(decryptedSession.picture);
+    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
     res.render("./home.ejs", {
         picture: decryptedSession.picture,
         currentRoute: req.originalUrl,

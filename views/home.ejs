@@ -31,7 +31,11 @@
     <script>
         document.getElementById('searchButton').addEventListener('click', function() {
             const query = document.getElementById('searchInput').value;
-            window.location.href = `/search?q=${query}`;
+            if (query.trim() === '') {
+                alert('Please enter a search query.');
+            } else {
+                window.location.href = `/search?q=${query}`;
+            }
         });
     </script>
 </body>
