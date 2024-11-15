@@ -11,23 +11,34 @@ router.get('/', (req, res) => {
     });
 });
 
-
 router.post('/setup-session', (req, res) => {
-    const { userId, name, picture, email, jwtToken, savedTheses} = req.body;
+    console.time("Session Setup");
+
+    const { userId, name, picture, email, jwtToken, savedTheses } = req.body;
     if (userId) {
-        res.cookie('authorization', jwtToken, {maxAge: 1000 * 60 * 60, httpOnly: true});
-        req.session.userId = userId; 
-        req.session.name = name; 
-        req.session.picture = picture;
-        req.session.email = email;
-        req.session.savedTheses = savedTheses
-        console.log(`Session created for user: ${req.session.userId}`);
-        res.redirect('/');
+        res.cookie('authorization', jwtToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
+        const user = {
+            id: userId,
+            name: name,
+            picture: picture,
+            email: email,
+            savedTheses: savedTheses
+        };
+        console.log('Created authorization cookie');
+        console.log('Session Data:', user); 
+
+        req.session.user = user;
+
+        console.timeEnd("Session Setup");
+
+        res.status(200).send("Session setup successful");
     } else {
         console.log("Invalid user data");
         res.status(400).send("Invalid user data");
     }
 });
+
+
 
 router.get('/logout', (req, res) => {
     req.session.destroy(err => {

@@ -5,7 +5,7 @@ const authMiddleware = (req, res, next) => {
     if (req.path === '/login' || req.path === '/setup-session') {
         return next();
     }
-    if (req.session && req.session.userId) {
+    if (req.session.user && req.session.user.id) {
         next(); 
     } else {
         console.log('Redirecting to /login');

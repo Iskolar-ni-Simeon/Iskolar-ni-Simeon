@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="css/login.css">
     <script src="https://accounts.google.com/gsi/client" async></script>
     <title>Login | Iskolar ni Simeon</title>
     <style>
@@ -27,6 +27,7 @@
       function handleCredentialResponse(response) {
           clearTimeout(loaderTimeout);
       
+          console.time("Total Login Time");
           fetch("<%= server_api %>", {
               method: 'POST',
               headers: {
@@ -37,6 +38,7 @@
               body: JSON.stringify({ 'credential': response.credential }),
           })
           .then(response => {
+              console.timeEnd("Total Login Time");  // Log the total login time
               if (!response.ok) {
                   console.error("Error fetching API.");
               }
@@ -71,6 +73,7 @@
               console.error("Error during login process:", error);
               resetLoader();
           });
+
       }
     
       function resetLoader() {
