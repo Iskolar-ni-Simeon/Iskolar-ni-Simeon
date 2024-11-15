@@ -114,6 +114,7 @@
     "safer-buffer": "^2.1.2",
     "semver": "^7.6.3",
     "send": "^0.19.0",
+    "serve-favicon": "^2.5.0",
     "serve-static": "^1.16.2",
     "set-function-length": "^1.2.2",
     "setprototypeof": "^1.2.0",

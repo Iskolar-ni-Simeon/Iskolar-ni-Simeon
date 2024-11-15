@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
+const favicon = require('serve-favicon');
 
 const indexRouter = require('../routes/indexRouter.js');
 const loginRouter = require('../routes/loginRouter.js');
@@ -15,10 +16,10 @@ const PORT = 8080;
 const key1 = crypto.randomBytes(32).toString('hex');
 const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
-
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use(favicon(path.join(__dirname, '../public/images/favicon.ico')));
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 app.use(cookieParser());
