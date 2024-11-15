@@ -6,7 +6,7 @@ router.get('/search', (req, res, next) => {
     const query = req.query.q || "";
 
     res.render("./search.ejs", {
-        picture: req.session.picture,
+        picture: req.userSession.user.picture,
         currentRoute: req.originalUrl,
         token: req.cookies.authorization,
         searchQuery: query
@@ -34,13 +34,13 @@ router.get('/thesis/:id', async (req, res, next) => {
 
         if (!thesis.data) {
             return res.status(404).render("./404.ejs", {
-                picture: req.session.picture,
+                picture: req.userSession.user.picture,
                 currentRoute: req.originalUrl,
             });
         };
 
         res.render("./thesis.ejs", {
-            picture: req.session.picture,
+            picture: req.userSession.user.picture,
             currentRoute: req.originalUrl,
             thesis: thesis.data
         });

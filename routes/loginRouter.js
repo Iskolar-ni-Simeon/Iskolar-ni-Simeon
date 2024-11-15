@@ -27,7 +27,7 @@ router.post('/setup-session', (req, res) => {
         console.log('Created authorization cookie');
         console.log('Session Data:', user); 
 
-        req.session.user = user;
+        req.userSession.user = user;
 
         console.timeEnd("Session Setup");
 
