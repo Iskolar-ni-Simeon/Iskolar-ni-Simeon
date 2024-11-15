@@ -17,7 +17,6 @@ const key1 = crypto.randomBytes(32).toString('hex');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
-app.set('trust proxy', 1);
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 app.use(cookieParser());
@@ -29,9 +28,6 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     maxAge: 60 * 60 * 1000,
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    sameSite: 'strict'
   }
 }));
 
