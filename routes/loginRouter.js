@@ -1,7 +1,10 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const { SessionAuthentication } = require('../public/scripts/auth');
 const router = express.Router();
 require('dotenv').config();
+
+const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
 router.get('/', (req, res) => {
     res.render('login', {
@@ -12,25 +15,18 @@ router.get('/', (req, res) => {
 });
 
 router.post('/setup-session', (req, res) => {
-    console.time("Session Setup");
-
-    const { userId, name, picture, email, jwtToken, savedTheses } = req.body;
+    const { userId, name, picture, email, jwtToken, savedTheses} = req.body;
     if (userId) {
         res.cookie('authorization', jwtToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
-        const user = {
-            id: userId,
-            name: name,
-            picture: picture,
-            email: email,
-            savedTheses: savedTheses
+        const sessionData = {
+            userId,
+            name,
+            picture,
+            email,
+            savedTheses
         };
-        console.log('Created authorization cookie');
-        console.log('Session Data:', user); 
-
-        req.userSession.user = user;
-
-        console.timeEnd("Session Setup");
-
+        const encryptedData = Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64')
+        res.cookie('session', encryptedData, { maxAge: 60000, httpOnly: true });
         res.status(200).send("Session setup successful");
     } else {
         console.log("Invalid user data");

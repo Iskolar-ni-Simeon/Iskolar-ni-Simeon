@@ -8,7 +8,7 @@ const indexRouter = require('../routes/indexRouter.js');
 const loginRouter = require('../routes/loginRouter.js');
 const thesisRouter = require('../routes/thesisRouter.js');
 
-const { authMiddleware, jwtMiddleware } = require('../public/scripts/auth');
+const { authMiddleware } = require('../public/scripts/auth');
 
 const app = express();
 const PORT = 8080;
@@ -20,31 +20,19 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 app.use(cookieParser());
-app.use(session({
-  cookieName: 'userSession',
-  secret: key1, 
-  resave: false,
-  secure: true,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 60 * 60 * 1000,
-  }
-}));
-
 
 app.use("/login", loginRouter);
 
-app.use("/", authMiddleware, jwtMiddleware, indexRouter);
-app.use("/",  authMiddleware, jwtMiddleware, thesisRouter);
+app.use("/", authMiddleware, indexRouter);
+app.use("/",  authMiddleware, thesisRouter);
 
-app.all('*', authMiddleware, jwtMiddleware, (req, res) => {
+app.all('*', authMiddleware, (req, res) => {
     res.status(404).render("./404.ejs", {
-        picture: req.session?.picture,
+        picture: req.session.picture,
         currentRoute: req.originalUrl,
     });
 });
 
 app.listen(PORT, function () {
-    console.log(path.join(__dirname, '../public'))
     console.log(`Listening on port: ${PORT}`);
 });

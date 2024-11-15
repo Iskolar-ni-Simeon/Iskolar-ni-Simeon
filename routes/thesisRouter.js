@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const { SessionAuthentication } = require('../public/scripts/auth');
 require('dotenv').config();
+const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
 router.get('/search', (req, res, next) => {
     const query = req.query.q || "";
-
+    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
     res.render("./search.ejs", {
-        picture: req.userSession.user.picture,
+        picture: decryptedSession.picture,
         currentRoute: req.originalUrl,
         token: req.cookies.authorization,
         searchQuery: query
@@ -14,6 +16,7 @@ router.get('/search', (req, res, next) => {
 });
 
 router.get('/thesis/:id', async (req, res, next) => {
+    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
     try {
         const response = await fetch('https://ins-api-steel.vercel.app/thesis?uuid=' + req.params.id, {
             method: 'GET',
@@ -34,13 +37,13 @@ router.get('/thesis/:id', async (req, res, next) => {
 
         if (!thesis.data) {
             return res.status(404).render("./404.ejs", {
-                picture: req.userSession.user.picture,
+                picture: decryptedSession.picture,
                 currentRoute: req.originalUrl,
             });
         };
 
         res.render("./thesis.ejs", {
-            picture: req.userSession.user.picture,
+            picture: decryptedSession.picture,
             currentRoute: req.originalUrl,
             thesis: thesis.data
         });

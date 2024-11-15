@@ -46,6 +46,7 @@
               return response.json();
           })
           .then(data => {
+            console.log(data)
               fetch('/login/setup-session', {
                   method: 'POST',
                   headers: {
@@ -57,7 +58,7 @@
                       name: data.token.given_name,
                       email: data.token.email,
                       picture: data.token.picture,
-                      savedTheses: data.saved.data
+                      savedTheses: data.saved.data,
                   })
               }).then(res => {
                   if (res.ok) {

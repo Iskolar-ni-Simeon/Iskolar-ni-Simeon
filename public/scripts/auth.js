@@ -1,24 +1,57 @@
-const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 require('dotenv').config();
+
+class SessionAuthentication {
+    constructor (password) {
+        this.key = crypto.scryptSync(password, 'salt', 32);
+    };
+
+    encrypt(data) {
+        const iv = crypto.randomBytes(12);
+        const cipher = crypto.createCipheriv('aes-256-gcm', this.key, iv);
+
+        const json = JSON.stringify(data);
+        const encrypted = Buffer.concat([cipher.update(json, 'utf8'), cipher.final()]);
+        const authTag = cipher.getAuthTag();
+
+        return {
+            iv: iv.toString('hex'),
+            content: encrypted.toString('hex'),
+            tag: authTag.toString('hex')
+        };
+    };
+
+    decrypt(data) {
+        const iv = Buffer.from(data.iv, 'hex');
+        const authTag = Buffer.from(data.tag, 'hex');
+        const decipher = crypto.createDecipheriv('aes-256-gcm', this.key, iv);
+        decipher.setAuthTag(authTag);
+
+        const decrypted = Buffer.concat([
+            decipher.update(Buffer.from(data.content, 'hex')),
+            decipher.final()
+        ]);
+        
+        return JSON.parse(decrypted.toString('utf8'));
+    }
+}
 
 const authMiddleware = (req, res, next) => { 
     if (req.path === '/login' || req.path === '/setup-session') {
         return next();
     }
-    console.log(req.session)
-    if (req.userSession.user && req.userSession.user.id) {
-        next(); 
+    if (req.cookies.session) {
+        const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
+        const sessionData = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
+        if (sessionData) {
+            next();
+        }
     } else {
         console.log('Redirecting to /login');
         res.redirect('/login');
     }
 };
 
-const jwtMiddleware = (req, res, next) => {
-    if (!req.cookies.authorization) {
-        res.redirect('/login');
-    }
-    next();
-}
 
-module.exports = {authMiddleware, jwtMiddleware}
+
+module.exports = {authMiddleware, SessionAuthentication}
