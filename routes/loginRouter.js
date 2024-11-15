@@ -26,7 +26,7 @@ router.post('/setup-session', (req, res) => {
             savedTheses
         };
         const encryptedData = Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64')
-        res.cookie('session', encryptedData, { maxAge: 1000 * 60 * 60, httpOnly: true });
+        res.cookie('session', encryptedData, { maxAge: 1000 * 60 * 60, httpOnly: true, sameSite: 'strict' });
         res.status(200).send("Session setup successful");
     } else {
         console.log("Invalid user data");
