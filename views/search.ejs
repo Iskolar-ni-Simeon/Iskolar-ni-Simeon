@@ -13,22 +13,20 @@
     
     <%- include('_header.ejs') %>
     <div class="outer-container">
-        <h1 class="text-center mt-5 ml-5 mr-10">Search results for "<b><i><%= searchQuery %></i></b>"</h1>
+        <div class="text-center ml-5">
+            <p class="display-5 fw-bold text-left mt-5">Search results for: <i> <%= searchQuery %></i></p>
+            <p class="text-muted resultscount">Found <span id="loader" class="spinner-border spinner-border-sm text-success" role="status" aria-hidden="true"></span> thesis:</p>
+        </div>
         <div class="row mt-5">
             <div class="results-container d-flex justify-content-center flex-wrap">
                 <div class="results-inner-container">
-                    <div id="loader" class="d-flex justify-content-center">
-                        <div class="spinner-border text-success" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
 
         <script>
             const loader = document.getElementById('loader');
-
+            const resultsCount = document.querySelector('.resultscount');
             function formatName(name) {
                 const parts = name.split(' ');
                 const lastName = parts.pop();
@@ -96,6 +94,7 @@
                         setTimeout(() => {
                             card.classList.add('animate');
                         }, 100);
+                        resultsCount.innerHTML = `Found ${data.data.length} ${data.data.length > 1 ? 'theses' : 'thesis'}:`;
                     });
 
                     }
@@ -105,7 +104,6 @@
                     loader.remove();
                 })
                 .catch(err => {
-                    // create an animation with bootstrap's alert component
                     let alert = document.createElement('div');
                     alert.className = 'alert alert-danger alert-dismissible fade show';
                     alert.innerHTML = `
@@ -113,7 +111,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     `;
                     document.querySelector('.results-inner-container').appendChild(alert);
-
                 })}
         </script>
     </div>

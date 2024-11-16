@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { SessionAuthentication } = require('../public/scripts/auth');
+const { data } = require('autoprefixer');
 require('dotenv').config();
 const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
@@ -87,6 +88,50 @@ router.get('/read/:id', async (req, res, next) => {
 
     } catch (err) {
         console.error('Error: ', err)
+    }
+});
+
+router.get('/keyword/:keywordId', async (req, res, next) => {
+    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
+    try {
+        // const response = await fetch(`${process.env.SERVER_API}/keyword?uuid=${req.params.keywordId}`, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${req.cookies.authorization}`
+        //     }
+        // });
+
+        // if (!response.ok) {
+        //     if (response.status === 401) {
+        //         return res.redirect('/login');
+        //     }
+        //     return res.status(response.status).render("./404.ejs", {
+        //         picture: decryptedSession.picture,
+        //         currentRoute: req.originalUrl,
+        //     });
+        // }
+
+        // const data = await response.json();
+        // console.log(JSON.stringify(data))
+        const data = {"ok":true,"data":{"word":"autism","theses":[{"id":"c2ae3fc5-b07e-4b50-8aaf-f129886298b2","title":"Lived Experiences of Selected Parents in Selected Municipalities of Nueva Ecija with Children Diagnosed with Autism","authors":["Jhal Albert Berioso","Axel Kendric Palon","Sami Andre Alexandre","Thomas Franco","Allen Dela Pena","Teruaki Otsubo"],"year":"2024","abstract":"Background/Objective: Managing a child with autism poses significant challenges due to its complex neurodevelopmental nature, affecting social skills, communication, and behavior. Parents of children with autism spectrum condition (ASC) employ various strategies yet face obstacles such as a lack of social support, impacting parental stress and family dynamics. This study aims to be aware of the experiences of these parents whose child is diagnosed with ASC, and to unveil the efforts they do to cope. \nMethodology: This study utilized snowball and judgmental sampling to select the participants. Semi-structured interviews are conducted with ten participants in selected municipalities in District IV of Nueva Ecija, both in-person and online. The adaptation of thematic analysis is used to identify predominant themes, ensuring accuracy while maintaining the confidentiality and anonymity of the participants. \nResults: Thematic analysis revealed significant themes highlighting ASC's profound impact on families. Mothers primarily undertook caregiving roles, with fathers providing support. Common challenges encountered included stress, tantrums, exhaustion, societal judgment, and time management issues. However, themes of acceptance, familial bonds, and treating the child as typical arose amidst struggles. Coping mechanisms like \"me time\" and faith in God were identified, alongside additional efforts to meet the child's needs. \nConclusion: This study illuminates the complex challenges of parents managing ASC in District IV of Nueva Ecija. Despite hardships, resilience, acceptance, and familial unity prevail. Greater understanding and support are essential, including accessible interventions, respite care, and mental health support. Raising awareness and promoting acceptance can mitigate stigma and foster inclusive environments. Recognizing these challenges and strengths is vital for building a supportive society where everyone can thrive.","keywords":["autism"]}]}}
+
+        if (!data.ok) {
+            res.render("./404.ejs", {
+                picture: decryptedSession.picture,
+                currentRoute: req.originalUrl,
+            });
+        }
+
+        res.render('./keyword.ejs', {
+            picture: decryptedSession.picture,
+            currentRoute: req.originalUrl,
+            keyword: data.data,
+        });
+
+    } catch (err) {
+        console.error('Error: ', err);
+        res.status(500).send('Internal Server Error');
     }
 });
 

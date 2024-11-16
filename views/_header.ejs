@@ -37,7 +37,7 @@
             <li class="nav-item">
                 <a class="nav-link <%= (currentRoute === '/' ? 'active fw-bold' : '')%>" href="/">Home</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item d-lg-none">
                 <a class="nav-link <%= (currentRoute === '/me/library' ? 'active fw-bold' : '')%>" href="/me/library">My Library</a>
             </li>
             <hr>
@@ -48,10 +48,9 @@
                 <a class="nav-link" href="/login/logout">Sign out</a>
             </li>
         </ul>
-        <!-- footer to the fullscreen menu -->
          <p class="footer">&copy; Group INS</p>
     </div>
-    <!-- Include jQuery and Bootstrap JS -->
+    
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
