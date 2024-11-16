@@ -9,7 +9,7 @@ const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 router.get('/', (req, res) => {
     res.render('login', {
         oauthid: process.env.OAUTHCLIENTID,
-        server_api: "https://ins-api-steel.vercel.app/login",
+        server_api: `${process.env.SERVER_API}/login`,
         origin: process.env.ORIGIN
     });
 });
@@ -26,7 +26,7 @@ router.post('/setup-session', (req, res) => {
             savedTheses
         };
         const encryptedData = Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64')
-        res.cookie('session', encryptedData, { maxAge: 1000 * 60 * 60, httpOnly: true, sameSite: 'strict' });
+        res.cookie('session', encryptedData, { maxAge: 1000 * 60 * 60, httpOnly: true});
         res.status(200).send("Session setup successful");
     } else {
         console.log("Invalid user data");
@@ -34,17 +34,10 @@ router.post('/setup-session', (req, res) => {
     }
 });
 
-
-
 router.get('/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            console.error("Error destroying session:", err);
-            return res.status(500).send("Error destroying session");
-        }
-        res.clearCookie('authorization');
-        res.redirect('/login');
-    });
+    res.clearCookie('authorization');
+    res.clearCookie('session');
+    res.redirect('/');
 });
 
 module.exports = router;

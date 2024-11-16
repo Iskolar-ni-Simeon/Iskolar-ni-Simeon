@@ -44,7 +44,7 @@
                 document.querySelector('.results-inner-container').appendChild(alert);
                 loader.remove();
             } else {
-                let searchResults = fetch("https://ins-api-steel.vercel.app/search?q=<%= searchQuery %>", {
+                let searchResults = fetch("<%= server_api %>/search?q=<%= searchQuery %>", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

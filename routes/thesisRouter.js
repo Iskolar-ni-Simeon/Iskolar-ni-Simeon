@@ -11,6 +11,7 @@ router.get('/search', (req, res, next) => {
         picture: decryptedSession.picture,
         currentRoute: req.originalUrl,
         token: req.cookies.authorization,
+        server_api: process.env.SERVER_API,
         searchQuery: query
     });
 });
@@ -18,7 +19,7 @@ router.get('/search', (req, res, next) => {
 router.get('/thesis/:id', async (req, res, next) => {
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
     try {
-        const response = await fetch('https://ins-api-steel.vercel.app/thesis?uuid=' + req.params.id, {
+        const response = await fetch(`${process.env.SERVER_API}/thesis?uuid=` + req.params.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,7 +57,7 @@ router.get('/thesis/:id', async (req, res, next) => {
 router.get('/read/:id', async (req, res, next) => {
     console.log(req.params.id);
     try {
-        // const response = await fetch(`https://ins-api-steel.vercel.app/accessthesis?uuid=${req.params.id}`, {
+        // const response = await fetch(`${process.env.SERVER_API}/accessthesis?uuid=${req.params.id}`, {
         //     method: 'GET',
         //     headers: {
         //         'Content-Type': 'application/json',
