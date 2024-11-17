@@ -25,6 +25,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/login", loginRouter);
+app.use('/pdfjs', express.static(path.join(__dirname, '../web')));
 
 app.use("/", authMiddleware, indexRouter);
 app.use("/",  authMiddleware, thesisRouter);
