@@ -105,6 +105,8 @@ html, body {
 .pageCanvas {
     display: block;
     margin: 0 auto;
+    width: 100%; /* Ensure the canvas fits the viewport width */
+    height: auto; /* Maintain aspect ratio */
 }
 
 .textLayer {
