@@ -40,6 +40,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 `;
                 document.querySelector('.results-inner-container').appendChild(alert);
+
                 loader.remove();
             } else {
                 let searchResults = fetch("<%= server_api %>/search?q=<%= searchQuery %>", {
@@ -74,6 +75,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         `;
                         document.querySelector('.results-inner-container').appendChild(alert);
+                        resultsCount.innerHTML = `Found 0 theses:`;
                     } else {
                         data.data.forEach(result => {
                         authors = result.authors.map(author => formatName(author)).join(', ');
