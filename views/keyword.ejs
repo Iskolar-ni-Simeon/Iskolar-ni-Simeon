@@ -25,7 +25,6 @@
         </div>
     </div>
     <%- include('_footer.ejs') %>
-</body>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const theses = <%- JSON.stringify(keyword.theses || []) %>; // THIS IS NOT AN ERROR HUHUHU
@@ -74,5 +73,6 @@
         const initials = parts.map(part => part.charAt(0) + '.').join(' ');
         return `${lastName}, ${initials}`;
     }
-</script>
+    </script>
+</body>
 </html>
