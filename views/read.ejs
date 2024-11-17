@@ -3,9 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf_viewer.min.css">
+    <title>PDF Viewer</title>
+    <link rel="stylesheet" href="/css/reader.css">
 </head>
 <body>
-    
+    <header>
+        <div class="toolbar">
+            <img src="/images/inswhite.svg" alt="Iskolar ni Simeon" class="logo">
+            <div class="toolbar-buttons">
+                <button id="prevPage" class="pageButton" disabled>&larr;</button>
+                <span><span id="pageNumber">1</span> / <span id="totalPages">...</span></span>
+                <button id="nextPage" class="pageButton">&rarr;</button>
+            </div>
+        </div>
+    </header>
+    <div id="viewerContainer">
+        <div id="loading">
+            <p class="pageCount">
+                <span id="num">...</span> of <span id="den">...</span>
+            </p>
+            <button class="skipLoading">
+                Skip Loading &rarr;
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const pdfUrl = '<%= pdfLink %>'; // Replace with your PDF URL
+        const viewerContainer = document.getElementById('viewerContainer');
+        let pdfDoc = null;
+        let pageNum = 1;
+        let totalPages = 0;
+
+        function calculateScaleFactor() {
+            const baseWidth = 1024; // Base width for 100% scaling (e.g., for desktop)
+            const windowWidth = window.innerWidth;
+            const scaleFactor = windowWidth / baseWidth; // This scales content relative to window width
+            return Math.max(scaleFactor, 0.5); // Optional: Prevent the scale factor from going below 0.5 (minimum zoom)
+        }
+        async function renderPage(pageNumber) {
+            const page = await pdfDoc.getPage(pageNumber);
+            const viewport = page.getViewport({ scale: 1.0 });
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const pageContainer = document.createElement('div');
+            pageContainer.className = 'pageContainer';
+            pageContainer.dataset.pageNumber = pageNumber;
+            pageContainer.appendChild(canvas);
+
+            // Render the page
+            await page.render({
+                canvasContext: ctx,
+                viewport: viewport
+            }).promise;
+
+            // Add the text layer for selectable text
+            const textContent = await page.getTextContent();
+            const textLayerDiv = document.createElement('div');
+            textLayerDiv.className = 'textLayer';
+            textLayerDiv.style.width = `${viewport.width}px`;
+            textLayerDiv.style.height = `${viewport.height}px`;
+            textLayerDiv.style.position = 'absolute';
+            textLayerDiv.style.top = '0';
+            textLayerDiv.style.left = '0';
+            textLayerDiv.style.transform = `scale(${viewport.scale})`;
+            textLayerDiv.style.transformOrigin = 'top left';
+            pdfjsLib.renderTextLayer({
+                textContent: textContent,
+                container: textLayerDiv,
+                viewport: viewport,
+                textDivs: [],
+                enhanceTextSelection: true,
+            });
+            pageContainer.appendChild(textLayerDiv);
+
+            // Append page container to viewer
+            viewerContainer.appendChild(pageContainer);
+
+            // Update the page navigation buttons
+            updateNavButtons();
+        }
+
+        // Asynchronous function to render all pages
+        async function renderAllPages() {
+            document.querySelector('.pageCount').style.display = 'block';
+            for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+                await renderPage(pageNumber);
+                document.getElementById('num').textContent = pageNumber;
+            }
+            document.getElementById('loading').style.display = 'none';
+
+
+        }
+
+        // Update navigation buttons based on current page
+        function updateNavButtons() {
+            document.getElementById('pageNumber').textContent = pageNum;
+            document.getElementById('prevPage').disabled = pageNum === 1;
+            document.getElementById('nextPage').disabled = pageNum === totalPages;
+        }
+
+        // Handlers for previous and next page buttons
+        function onPrevPage() {
+            if (pageNum <= 1) return;
+            pageNum--;
+            updateNavButtons();
+            scrollToPage(pageNum);
+        }
+
+        function onNextPage() {
+            if (pageNum >= totalPages) return;
+            pageNum++;
+            updateNavButtons();
+            scrollToPage(pageNum);
+        }
+
+        // Scroll to specific page in the viewer
+        function scrollToPage(pageNumber) {
+            const pageContainer = document.querySelector(`.pageContainer[data-page-number="${pageNumber}"]`);
+            if (pageContainer) {
+                pageContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Event listeners for navigation buttons
+        document.getElementById('prevPage').addEventListener('click', onPrevPage);
+        document.getElementById('nextPage').addEventListener('click', onNextPage);
+        document.querySelector('.skipLoading').addEventListener('click', () => {
+            if (confirm('This may cause performance issues. Are you sure you want to skip loading?')) {
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+
+        // Load the PDF document and render all pages
+        pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+            pdfDoc = pdf;
+            totalPages = pdf.numPages;
+            document.getElementById('totalPages').textContent = totalPages;
+
+            document.getElementById('den').textContent = totalPages;
+            renderAllPages();
+        });
+    </script>
 </body>
 </html>
