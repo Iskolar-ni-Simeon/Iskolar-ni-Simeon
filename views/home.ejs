@@ -22,6 +22,7 @@
                     </div>
                     <div class="col col-auto mt-3 w-10">
                         <button type="button" id="searchButton" class="btn btn-success fw-bold">Search</button>
+                        <button type="button" id="advancedSearch" class="btn btn-success fw-bold">Advanced Search</button>
                     </div>
                 </div>
             </div>
@@ -36,6 +37,11 @@
             } else {
                 window.location.href = `/search?q=${query}`;
             }
+        });
+
+        document.getElementById('advancedSearch').addEventListener('click', function() {
+            const query = document.getElementById('searchInput').value;
+            window.location.href = `/advanced${query.trim() === '' ? '' : `?q=${query}`}`;
         });
     </script>
 </body>

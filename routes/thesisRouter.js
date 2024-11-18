@@ -17,6 +17,44 @@ router.get('/search', (req, res, next) => {
     });
 });
 
+router.get('/advanced', (req, res, next) => {
+    const q = req.query.q || "";
+    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
+    res.render("./advanced.ejs", {
+        picture: decryptedSession.picture,
+        currentRoute: req.originalUrl,
+        token: req.cookies.authorization,
+        server_api: process.env.SERVER_API,
+        query: q
+    });
+});
+
+router.get('/search/advanced', (req, res, nexxt) => {
+    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
+    var fromTitle = req.query.title
+    var fromAuthor = req.query.authors
+    var fromKeyword = req.query.keywords
+    var fromAbstract = req.query.abstract
+    var startYear = req.query.syear
+    var endYear = req.query.eyear
+
+    const data = {
+        title: fromTitle,
+        author: fromAuthor,
+        keyword: fromKeyword,
+        abstract: fromAbstract,
+        syear: startYear,
+        eyear: endYear
+    }
+    res.render("./advancedsearch.ejs", {
+        picture: decryptedSession.picture,
+        currentRoute: req.originalUrl,
+        token: req.cookies.authorization,
+        server_api: process.env.SERVER_API,
+        data: data
+    });
+})
+
 router.get('/thesis/:id', async (req, res, next) => {
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
     try {
@@ -91,7 +129,6 @@ router.get('/read/:id', async (req, res, next) => {
 
 router.get('/read/proxy/:id', async (req, res, next) => {
     try {
-        // Fetch the metadata, which includes the URL to the PDF
         const response = await fetch(`${process.env.SERVER_API}/accessthesis?uuid=${req.params.id}`, {
             method: 'GET',
             headers: {
@@ -104,17 +141,14 @@ router.get('/read/proxy/:id', async (req, res, next) => {
             return res.status(response.status).send('Failed to fetch the thesis metadata');
         }
 
-        // Parse the metadata JSON
         const thesisData = await response.json();
 
         if (!thesisData.ok || !thesisData.data) {
             return res.status(404).send('PDF URL not found');
         }
 
-        // Extract the URL for the PDF file
-        const pdfUrl = thesisData.data; // This is the URL to the actual PDF file
+        const pdfUrl = thesisData.data;
 
-        // Fetch the actual PDF from the URL
         const pdfResponse = await fetch(pdfUrl, {
             method: 'GET',
             headers: {
@@ -126,13 +160,11 @@ router.get('/read/proxy/:id', async (req, res, next) => {
             return res.status(pdfResponse.status).send('Failed to fetch the PDF file');
         }
 
-        // Convert the ReadableStream into a Node.js stream
-        const pdfStream = Readable.from(pdfResponse.body);  // Create a Readable stream from the response body
+        const pdfStream = Readable.from(pdfResponse.body); 
 
-        // Set the headers for PDF content and pipe the stream to the response
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'inline');
-        pdfStream.pipe(res);  // Pipe the PDF stream directly to the response
+        pdfStream.pipe(res);
     } catch (err) {
         console.error('Error: ', err);
         res.status(500).send('Internal Server Error');
