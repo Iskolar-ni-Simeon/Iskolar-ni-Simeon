@@ -42,7 +42,7 @@
                             Read
                         </button>
                         <button class="btn submeta save">
-                            Save
+                            <span class="savedStatus"><span id="loader" class="spinner-border spinner-border-sm text-success" role="status" aria-hidden="true"></span></span>
                         </button>
                     </div>
                 </div>
@@ -54,4 +54,70 @@
     <%- include('_footer.ejs') %>
     
 </body>
+<script>
+    const thesisId = '<%= thesis.id %>';
+    console.log('Thesis ID:', thesisId);
+
+    let savedTheses = localStorage.getItem('savedTheses');
+    savedTheses = savedTheses ? JSON.parse(savedTheses) : [];
+    console.log('Saved Theses from LocalStorage:', savedTheses);
+
+    // Ensure that savedTheses is an array before using array methods
+    if (!Array.isArray(savedTheses)) {
+        savedTheses = [];
+    }
+
+    const savedStatus = document.querySelector('.savedStatus');
+    const loader = document.querySelector('#loader');
+    let status;
+
+    if (savedTheses.includes(thesisId)) {
+        savedStatus.innerHTML = 'Saved';
+        status = 'remove';
+    } else {
+        savedStatus.innerHTML = 'Save';
+        status = 'add';
+    }
+    console.log('Initial Status:', status);
+
+    savedStatus.addEventListener('click', () => {
+        console.log('Save button clicked');
+        loader.style.display = 'inline-block';
+        savedStatus.textContent = '';
+
+        fetch('<%- server_api %>/userlibrary', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                thesisId: thesisId,
+                method: status,
+                userId: '<%- userId %>'
+            }),
+            'credentials': 'include'
+        }).then(response => {
+            console.log('Response received:', response);
+            if (response.ok) {
+                if (status === 'add') {
+                    savedTheses.push(thesisId);
+                    savedStatus.innerHTML = 'Saved';
+                    status = 'remove';
+                } else {
+                    savedTheses.splice(savedTheses.indexOf(thesisId), 1);
+                    savedStatus.innerHTML = 'Save';
+                    status = 'add';
+                }
+                console.log('Updated Status:', status);
+                localStorage.setItem('savedTheses', JSON.stringify(savedTheses));
+            }
+            loader.style.display = 'none';
+        }).catch(error => {
+            console.error('Error:', error);
+            loader.style.display = 'none';
+        });
+    });
+
+</script>
+
 </html>

@@ -49,6 +49,10 @@ svg {
     display: block;
 }
 
+#loader {
+    display: none;
+}
+
 .container .metadata {
     list-style-type: none;
     padding: 0;

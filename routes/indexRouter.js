@@ -15,14 +15,11 @@ router.get('/', (req, res) => {
 router.get('/me/library', (req, res) => {
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(decodeURIComponent(req.cookies.session), 'base64').toString('utf8')));
     const userId = decryptedSession.userId;
-    const savedTheses = JSON.parse(decodeURIComponent(req.cookies.savedTheses));
     res.render("./saved.ejs", {
         picture: decryptedSession.picture,
         currentRoute: req.originalUrl,
         name: decryptedSession.name,
-        savedTheses: Array.isArray(savedTheses) ? savedTheses : [savedTheses],
         serverAPI : process.env.SERVER_API,
-        token: req.cookies.authorization,
         userId : userId
     })
 });

@@ -37,7 +37,6 @@
                 let alert = document.createElement('div');
                 alert.className = 'alert alert-warning alert-dismissible fade show';
                 alert.innerHTML = `<strong>Error</strong>: Please enter a search query to get results.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 `;
                 document.querySelector('.results-inner-container').appendChild(alert);
 
@@ -46,8 +45,7 @@
                 let searchResults = fetch("<%= server_api %>/advanced", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization" : `Bearer <%= token %>`
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
                         titleContains: "<%= data.title %>",
@@ -56,7 +54,8 @@
                         keywords: "<%= data.keyword %>",
                         beforeYear: "<%= data.syear %>",
                         afterYear: "<%= data.eyear %>"
-                    })
+                    }),
+                    'credentials': 'include'
                 })
                 .then(res => {
                     if (!res.ok) {
@@ -66,7 +65,6 @@
                                 alert.className = 'alert alert-danger alert-dismissible fade show';
                                 alert.innerHTML = `
                                     <strong>Error:</strong> ${data.message}. Please log in again.
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 `;
                                 document.querySelector('.results-inner-container').appendChild(alert);
                             });
@@ -80,7 +78,6 @@
                         alert.className = 'alert alert-warning alert-dismissible fade show';
                         alert.innerHTML = `
                             No results found. Please try again.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         `;
                         document.querySelector('.results-inner-container').appendChild(alert);
                         resultsCount.innerHTML = `Found 0 theses:`;
@@ -118,7 +115,7 @@
                     alert.className = 'alert alert-danger alert-dismissible fade show';
                     alert.innerHTML = `
                         <strong>Error:</strong> ${err.message}. Try logging in again.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                       
                     `;
                     document.querySelector('.results-inner-container').appendChild(alert);
                 })}

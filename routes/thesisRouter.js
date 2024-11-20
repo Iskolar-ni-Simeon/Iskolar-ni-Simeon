@@ -11,7 +11,6 @@ router.get('/search', (req, res, next) => {
     res.render("./search.ejs", {
         picture: decryptedSession.picture,
         currentRoute: req.originalUrl,
-        token: req.cookies.authorization,
         server_api: process.env.SERVER_API,
         searchQuery: query
     });
@@ -23,7 +22,6 @@ router.get('/advanced', (req, res, next) => {
     res.render("./advanced.ejs", {
         picture: decryptedSession.picture,
         currentRoute: req.originalUrl,
-        token: req.cookies.authorization,
         server_api: process.env.SERVER_API,
         query: q
     });
@@ -49,7 +47,6 @@ router.get('/search/advanced', (req, res, nexxt) => {
     res.render("./advancedsearch.ejs", {
         picture: decryptedSession.picture,
         currentRoute: req.originalUrl,
-        token: req.cookies.authorization,
         server_api: process.env.SERVER_API,
         data: data
     });
@@ -62,15 +59,13 @@ router.get('/thesis/:id', async (req, res, next) => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${req.cookies.authorization}`
-            }
+                Authorization: req.cookies.authorization
+            },
+            credentials: 'include',
         });
 
         if (!response.ok) {
-            if (response.status === 401) {
-                return res.redirect('/login');
-            }
-            return res.status(response.status).send('Error fetching thesis');
+            return res.status(response.status).send('Error fetching thesis: ' + response.statusText);
         }
 
         const thesis = await response.json();
@@ -81,12 +76,14 @@ router.get('/thesis/:id', async (req, res, next) => {
                 currentRoute: req.originalUrl,
             });
         };
-
+        
         res.render("./thesis.ejs", {
             picture: decryptedSession.picture,
             currentRoute: req.originalUrl,
             thesis: thesis.data,
-            thesisId: req.params.id
+            thesisId: req.params.id,
+            server_api: process.env.SERVER_API,
+            userId: decryptedSession.userId
         });
     } catch (error) {
         console.error(error);
@@ -99,9 +96,9 @@ router.get('/read/:id', async (req, res, next) => {
         const response = await fetch(`${process.env.SERVER_API}/accessthesis?uuid=${req.params.id}`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${req.cookies.authorization}`,
+                'Content-Type': 'application/json'
             },
+            'credentials': 'include'
         });
 
         if (!response.ok) {
@@ -132,9 +129,9 @@ router.get('/read/proxy/:id', async (req, res, next) => {
         const response = await fetch(`${process.env.SERVER_API}/accessthesis?uuid=${req.params.id}`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${req.cookies.authorization}`,
+                'Content-Type': 'application/json'
             },
+            'credentials': 'include'
         });
 
         if (!response.ok) {
@@ -151,9 +148,7 @@ router.get('/read/proxy/:id', async (req, res, next) => {
 
         const pdfResponse = await fetch(pdfUrl, {
             method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${req.cookies.authorization}`,
-            },
+            'credentials': 'include'
         });
 
         if (!pdfResponse.ok) {
@@ -177,9 +172,9 @@ router.get('/keyword/:keywordId', async (req, res, next) => {
         const response = await fetch(`${process.env.SERVER_API}/keyword?uuid=${req.params.keywordId}`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${req.cookies.authorization}`
-            }
+                'Content-Type': 'application/json'
+            },
+            'credentials': 'include'
         });
 
         if (!response.ok) {
@@ -219,9 +214,9 @@ router.get('/author/:authorId', async (req, res, next) => {
             {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${req.cookies.authorization}`
-                }
+                    'Content-Type': 'application/json'
+                },
+                'credentials': 'include'
             }
         ).then(response => {
             if (!response.ok) {
