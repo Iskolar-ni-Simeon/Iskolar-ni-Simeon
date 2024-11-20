@@ -22,11 +22,13 @@ router.post('/setup-session', (req, res) => {
             userId,
             name,
             picture,
-            email,
-            savedTheses
+            email
         };
-        const encryptedData = Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64')
+        const encryptedData = encodeURIComponent(Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64'));
+        const savedThesesIDs = JSON.stringify(savedTheses.map(thesis => thesis.id || []));
+
         res.cookie('session', encryptedData, { maxAge: 1000 * 60 * 60, httpOnly: true});
+        res.cookie('savedTheses', savedThesesIDs, { maxAge: 1000 * 60 * 60, httpOnly: true});
         res.status(200).send("Session setup successful");
     } else {
         console.log("Invalid user data");
@@ -36,6 +38,7 @@ router.post('/setup-session', (req, res) => {
 
 router.get('/logout', (req, res) => {
     res.clearCookie('authorization');
+    res.clearCookie('savedTheses');
     res.clearCookie('session');
     res.redirect('/');
 });

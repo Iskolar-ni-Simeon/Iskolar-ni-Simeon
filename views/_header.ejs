@@ -13,7 +13,6 @@
                       Profile
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item <%= currentRoute === '/me' ? 'fw-bold' : ''%>" href="/me">My Profile</a>
                       <a class="dropdown-item <%= currentRoute === '/me/library' ? 'fw-bold' : ''%>" href="/me/library">My Library</a>
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="/login/logout">Sign out</a>
@@ -41,9 +40,6 @@
                 <a class="nav-link <%= (currentRoute === '/me/library' ? 'active fw-bold' : '')%>" href="/me/library">My Library</a>
             </li>
             <hr>
-            <li class="nav-item d-lg-none">
-                <a class="nav-link <%= (currentRoute === '/me' ? 'active fw-bold' : '')%>" href="/me">My Profile</a>
-            </li>
             <li class="nav-item d-lg-none">
                 <a class="nav-link" href="/login/logout">Sign out</a>
             </li>
