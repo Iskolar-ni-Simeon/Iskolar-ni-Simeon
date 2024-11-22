@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
 router.post('/setup-session', (req, res) => {
     const { userId, name, picture, email, jwtToken} = req.body;
     if (userId) {
-        res.cookie('authorization', jwtToken, { maxAge: 1000 * 60 * 60, httpOnly: true, sameSite: 'none', secure: process.env.NODE_ENV === 'production', path: '/'});
+        res.cookie('authorization', jwtToken, { maxAge: 1000 * 60 * 60, httpOnly: true});
         const sessionData = {
             userId,
             name,

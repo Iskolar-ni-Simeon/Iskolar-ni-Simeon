@@ -27,14 +27,14 @@ router.get('/advanced', (req, res, next) => {
     });
 });
 
-router.get('/search/advanced', (req, res, nexxt) => {
-    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
-    var fromTitle = req.query.title
-    var fromAuthor = req.query.authors
-    var fromKeyword = req.query.keywords
-    var fromAbstract = req.query.abstract
-    var startYear = req.query.syear
-    var endYear = req.query.eyear
+router.get('/search/advanced', async (req, res, next) => {
+    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
+    const fromTitle = req.query.title;
+    const fromAuthor = req.query.authors;
+    const fromKeyword = req.query.keywords;
+    const fromAbstract = req.query.abstract;
+    const startYear = req.query.syear;
+    const endYear = req.query.eyear;
 
     const data = {
         title: fromTitle,
@@ -43,14 +43,56 @@ router.get('/search/advanced', (req, res, nexxt) => {
         abstract: fromAbstract,
         syear: startYear,
         eyear: endYear
+    };
+
+    try {
+        const response = await fetch(`${process.env.SERVER_API}/advanced`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": req.cookies.authorization
+            },
+            body: JSON.stringify({
+                titleContains: data.title,
+                absContains: data.abstract,
+                authors: data.author,
+                keywords: data.keyword,
+                beforeYear: data.syear,
+                afterYear: data.eyear
+            }),
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                const errorData = await response.json();
+                return res.render("./advancedsearch.ejs", {
+                    picture: decryptedSession.picture,
+                    currentRoute: req.originalUrl,
+                    server_api: process.env.SERVER_API,
+                    data: data,
+                    error: errorData.message
+                });
+            }
+        }
+
+        const searchResults = await response.json();
+        console.log(JSON.stringify(searchResults.data))
+
+        res.render("./advancedsearch.ejs", {
+            picture: decryptedSession.picture,
+            currentRoute: req.originalUrl,
+            searchResults: searchResults.data
+        });
+    } catch (err) {
+        console.log(err)
+        res.render("./advancedsearch.ejs", {
+            picture: decryptedSession.picture,
+            currentRoute: req.originalUrl,
+            server_api: process.env.SERVER_API,
+        });
     }
-    res.render("./advancedsearch.ejs", {
-        picture: decryptedSession.picture,
-        currentRoute: req.originalUrl,
-        server_api: process.env.SERVER_API,
-        data: data
-    });
-})
+});
 
 router.get('/thesis/:id', async (req, res, next) => {
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
