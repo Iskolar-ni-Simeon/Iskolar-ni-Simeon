@@ -89,7 +89,6 @@ router.get('/search/advanced', async (req, res, next) => {
         }
 
         const searchResults = await response.json();
-        console.log(JSON.stringify(searchResults.data))
 
         res.render("./advancedsearch.ejs", {
             picture: decryptedSession.picture,
@@ -97,7 +96,6 @@ router.get('/search/advanced', async (req, res, next) => {
             searchResults: searchResults.data
         });
     } catch (err) {
-        console.log(err)
         res.render("./advancedsearch.ejs", {
             picture: decryptedSession.picture,
             currentRoute: req.originalUrl,
@@ -151,7 +149,6 @@ router.post('/save/:id', async (req, res, next) => {
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
     const method = req.body.method;
 
-    console.log(method)
     const save = fetch(`${process.env.SERVER_API}/userlibrary`, {
         method: 'POST',
         headers: {
@@ -268,8 +265,6 @@ router.get('/keyword/:keywordId', async (req, res, next) => {
         }
 
         const data = await response.json();
-        console.log(JSON.stringify(data))
-
         if (!data.ok) {
             res.render("./404.ejs", {
                 picture: decryptedSession.picture,

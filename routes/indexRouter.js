@@ -31,7 +31,6 @@ router.get('/me/library', async (req, res) => {
             }
             return response.json();
         })
-        console.log(searchResults);
         res.render("./saved.ejs", {
             picture: decryptedSession.picture,
             currentRoute: req.originalUrl,

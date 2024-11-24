@@ -31,7 +31,6 @@ router.post('/setup-session', (req, res) => {
         res.cookie('session', encryptedData, { maxAge: 1000 * 60 * 60, httpOnly: true});
         res.status(200).send("Session setup successful");
     } else {
-        console.log("Invalid user data");
         res.status(400).send("Invalid user data");
     }
 });
