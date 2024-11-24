@@ -2,23 +2,34 @@ const express = require('express');
 const router = express.Router();
 const { SessionAuthentication } = require('../public/scripts/auth');
 const { Readable } = require('stream');
+const crypto = require('crypto');
+const methods = require('methods');
 require('dotenv').config();
 const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
-router.get('/search', (req, res, next) => {
+router.get('/search', async (req, res, next) => {
     const query = req.query.q || "";
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
+    const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
+    const searchResults = await fetch(`${process.env.SERVER_API}/search?q=${query}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': authCookie
+        }
+    }).then(response => {return response.json()});
+
     res.render("./search.ejs", {
         picture: decryptedSession.picture,
         currentRoute: req.originalUrl,
-        server_api: process.env.SERVER_API,
-        searchQuery: query
+        searchQuery: query,
+        searchResults: searchResults.data,
     });
 });
 
 router.get('/advanced', (req, res, next) => {
     const q = req.query.q || "";
-    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
+    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
     res.render("./advanced.ejs", {
         picture: decryptedSession.picture,
         currentRoute: req.originalUrl,
@@ -29,6 +40,7 @@ router.get('/advanced', (req, res, next) => {
 
 router.get('/search/advanced', async (req, res, next) => {
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
+    const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
     const fromTitle = req.query.title;
     const fromAuthor = req.query.authors;
     const fromKeyword = req.query.keywords;
@@ -50,7 +62,7 @@ router.get('/search/advanced', async (req, res, next) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": req.cookies.authorization
+                "Authorization": authCookie
             },
             body: JSON.stringify({
                 titleContains: data.title,
@@ -96,12 +108,13 @@ router.get('/search/advanced', async (req, res, next) => {
 
 router.get('/thesis/:id', async (req, res, next) => {
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
+    const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
     try {
         const response = await fetch(`${process.env.SERVER_API}/thesis?uuid=` + req.params.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: req.cookies.authorization
+                'Authorization': authCookie
             },
             credentials: 'include',
         });
@@ -133,88 +146,113 @@ router.get('/thesis/:id', async (req, res, next) => {
     }
 });
 
+router.post('/save/:id', async (req, res, next) => {
+    const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
+    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
+    const method = req.body.method;
+
+    console.log(method)
+    const save = fetch(`${process.env.SERVER_API}/userlibrary`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': authCookie
+        },
+        body: JSON.stringify({
+            thesisId: req.params.id,
+            userId: decryptedSession.userId,
+            method: method
+        })
+    }).then(response => {return response.json()});
+    
+    return res.json(await save);
+
+})
+
 router.get('/read/:id', async (req, res, next) => {
-    try {
-        const response = await fetch(`${process.env.SERVER_API}/accessthesis?uuid=${req.params.id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            'credentials': 'include'
-        });
+    // const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
+    // const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
+    const token = crypto.createHmac('sha256', process.env.FILE_SECRET_KEY)
+                        .update(req.params.id)
+                        .digest('hex');
 
-        if (!response.ok) {
-            if (response.status === 401) {
-                return res.redirect('/login');
-            }
-            return res.status(response.status).render('./404.ejs', {
-                picture: req.session.picture,
-                currentRoute: req.originalUrl,
-            });
-        }
-
-        const thesis = await response.json();
-
-        res.render('./read.ejs', {
-            title: 'Read Thesis',
-            pdfLink: `/read/proxy/${req.params.id}`, // Proxy endpoint for secure access to the PDF file
-        });
-    } catch (err) {
-        console.error('Error: ', err);
-        res.status(500).send('Internal Server Error');
-    }
+    res.render('./read.ejs', {
+        title: 'Read Thesis',
+        pdfLink: `/read/proxy/${req.params.id}?token=${token}`,
+    });
 });
 
 
 router.get('/read/proxy/:id', async (req, res, next) => {
-    try {
-        const response = await fetch(`${process.env.SERVER_API}/accessthesis?uuid=${req.params.id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            'credentials': 'include'
-        });
+    const { token } = req.query;
+    const referer = req.get('Referer');
+    if (!token || !referer || !referer.includes(`/read/`)) {
+        res.redirect('/404')
+    } else {
 
-        if (!response.ok) {
-            return res.status(response.status).send('Failed to fetch the thesis metadata');
+        const expectedToken = crypto.createHmac('sha256', process.env.FILE_SECRET_KEY)
+                                    .update(req.params.id)
+                                    .digest('hex');
+
+        if (token !== expectedToken) {
+            return res.status(403).send('Invalid token');
         }
 
-        const thesisData = await response.json();
+        const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
 
-        if (!thesisData.ok || !thesisData.data) {
-            return res.status(404).send('PDF URL not found');
+        try {
+            const response = await fetch(`${process.env.SERVER_API}/accessthesis?uuid=${req.params.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': authCookie
+                },
+                'credentials': 'include'
+            });
+
+            if (!response.ok) {
+                return res.status(response.status).send('Failed to fetch the thesis metadata');
+            }
+
+            const thesisData = await response.json();
+
+            if (!thesisData.ok || !thesisData.data) {
+                return res.status(404).send('PDF URL not found');
+            }
+
+            const pdfUrl = thesisData.data;
+
+            const pdfResponse = await fetch(pdfUrl, {
+                method: 'GET',
+                'credentials': 'include'
+            });
+
+            if (!pdfResponse.ok) {
+                return res.status(pdfResponse.status).send('Failed to fetch the PDF file');
+            }
+
+            const pdfStream = Readable.from(pdfResponse.body);
+
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'inline');
+            pdfStream.pipe(res);
+        } catch (err) {
+            console.error('Error: ', err);
+            res.status(500).send('Internal Server Error');
         }
-
-        const pdfUrl = thesisData.data;
-
-        const pdfResponse = await fetch(pdfUrl, {
-            method: 'GET',
-            'credentials': 'include'
-        });
-
-        if (!pdfResponse.ok) {
-            return res.status(pdfResponse.status).send('Failed to fetch the PDF file');
-        }
-
-        const pdfStream = Readable.from(pdfResponse.body); 
-
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'inline');
-        pdfStream.pipe(res);
-    } catch (err) {
-        console.error('Error: ', err);
-        res.status(500).send('Internal Server Error');
-    }
+    };
 });
+
 
 router.get('/keyword/:keywordId', async (req, res, next) => {
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
+    const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
     try {
         const response = await fetch(`${process.env.SERVER_API}/keyword?uuid=${req.params.keywordId}`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization' : authCookie
             },
             'credentials': 'include'
         });
@@ -230,6 +268,7 @@ router.get('/keyword/:keywordId', async (req, res, next) => {
         }
 
         const data = await response.json();
+        console.log(JSON.stringify(data))
 
         if (!data.ok) {
             res.render("./404.ejs", {
@@ -242,6 +281,7 @@ router.get('/keyword/:keywordId', async (req, res, next) => {
             picture: decryptedSession.picture,
             currentRoute: req.originalUrl,
             keyword: data.data,
+            searchResults: data.data.theses
         });
 
     } catch (err) {
@@ -251,12 +291,14 @@ router.get('/keyword/:keywordId', async (req, res, next) => {
 });
 router.get('/author/:authorId', async (req, res, next) => {
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
+    const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
     try {
         const response = await fetch(`${process.env.SERVER_API}/author?uuid=${req.params.authorId}`,
             {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': authCookie
                 },
                 'credentials': 'include'
             }
@@ -277,7 +319,8 @@ router.get('/author/:authorId', async (req, res, next) => {
         res.render('./author.ejs', {
             picture: decryptedSession.picture,
             currentRoute: req.originalUrl,
-            author: data.data
+            author: data.data,
+            searchResults: data.data.theses
         })
     } catch (err) {
         console.error('Error: ', err)

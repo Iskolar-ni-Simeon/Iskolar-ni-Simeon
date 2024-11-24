@@ -17,14 +17,16 @@ router.get('/', (req, res) => {
 router.post('/setup-session', (req, res) => {
     const { userId, name, picture, email, jwtToken} = req.body;
     if (userId) {
-        res.cookie('authorization', jwtToken, { maxAge: 1000 * 60 * 60, httpOnly: true});
+        const encryptedAuthCookie = Buffer.from(JSON.stringify(sessAuth.encrypt(jwtToken))).toString('base64');
+        res.cookie('authorization', encryptedAuthCookie, { maxAge: 1000 * 60 * 60, httpOnly: true});
+
         const sessionData = {
             userId,
             name,
             picture,
             email
         };
-        const encryptedData = encodeURIComponent(Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64'));
+        const encryptedData = Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64');
 
         res.cookie('session', encryptedData, { maxAge: 1000 * 60 * 60, httpOnly: true});
         res.status(200).send("Session setup successful");
@@ -33,6 +35,7 @@ router.post('/setup-session', (req, res) => {
         res.status(400).send("Invalid user data");
     }
 });
+
 
 router.get('/logout', (req, res) => {
     res.clearCookie('authorization');

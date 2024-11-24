@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/keyword.css">
 </head>
 <body>
-    <%- include('_header.ejs') %>
+    <%- include('partials/header.ejs') %>
     <div class="outer-container">
         <div class="row">
             <div class="text-center ml-5">
@@ -19,60 +19,12 @@
         </div>
         <div class="row mt-5">
             <div class="results-container d-flex justify-content-center flex-wrap">
-                <div class="results-inner-container">
+                <%- include('partials/resultsContainer.ejs') %>
                 </div>
             </div>
         </div>
     </div>
-    <%- include('_footer.ejs') %>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const theses = <%- JSON.stringify(keyword.theses || []) %>; // THIS IS NOT AN ERROR HUHUHU
+    <%- include('partials/footer.ejs') %>
 
-        console.log(theses);
-
-        const container = document.querySelector('.results-inner-container');
-
-        if (theses.length === 0) {
-            let alert = document.createElement('div');
-            alert.className = 'alert alert-warning alert-dismissible fade show';
-            alert.innerHTML = `<strong>Error</strong>: No theses found for "<b><i><%= keyword.word %></i></b>". 
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
-            container.appendChild(alert);
-        } else {
-            theses.forEach(thesis => {
-                let card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div class="card-body">
-                        <h5 class="card-title">${thesis.title}</h5>
-                        <p class="card-text text-truncate">${thesis.abstract}</p>
-                        <a href="/thesis/${thesis.id}" class="btn btn-success">Read thesis</a>
-                    </div>
-                    <div class="card-footer text-muted">
-                        <b>Authors:</b> ${thesis.authors.map(author => formatName(author)).join(', ')}<br>
-                        <b>Published:</b> ${thesis.year}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                setTimeout(() => {
-                    card.classList.add('animate');
-                }, 100);
-            });
-        }
-    });
-
-    function formatName(name) {
-        const parts = name.split(' ');
-        const lastName = parts.pop();
-        const initials = parts.map(part => part.charAt(0) + '.').join(' ');
-        return `${lastName}, ${initials}`;
-    }
-    </script>
 </body>
 </html>

@@ -9,96 +9,17 @@
     <link rel="stylesheet" href="/css/saved.css">
 </head>
 <body>
-    <%- include('_header.ejs') %>
+    <%- include('partials/header.ejs') %>
     <div class="outer-container">
-        <h1 class="greeting"></h1>
+        <h1 class="greeting">Good <%= new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening' %>, <%= name %>!</h1>
         <hr>
         <h2 class="title">Your saved theses:</h2>
         <div class="inner-container">
             <div class="results-inner-container">
-                <span id="loader" class="spinner-border spinner-border-sm text-success" role="status" aria-hidden="true"></span>
+                <%- include('partials/resultsContainer', { searchResults, errmessage }) %>
             </div>
         </div>
-            <script>
-                const savedTheses = localStorage.getItem('savedTheses') ? JSON.parse(localStorage.getItem('savedTheses')) : [];
-                function formatName(name) {
-                    const parts = name.split(' ');
-                    const lastName = parts.pop();
-                    const initials = parts.map(part => part.charAt(0) + '.').join(' ');
-                    return `${lastName}, ${initials}`;
-                }
-                if (savedTheses.length === 0) {
-                    loader.remove();
-                    const noResults = document.createElement('div');
-                    noResults.classList.add('alert', 'alert-warning', 'alert-dismissible', 'fade', 'show');
-                    noResults.innerHTML = `
-                        You have no saved theses. Click the <strong>save</strong> button when you find a thesis you like to save it here.
-
-                    `;
-                    document.querySelector('.results-inner-container').appendChild(noResults);
-                } else {
-                    console.log("Fetching saved theses...");
-                    const results = fetch('<%= serverAPI %>/userlibrary?id=<%= userId %>',{
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include'
-
-                    }).then(results => {
-                        if (!results.ok) {
-                            let alert = document.createElement('div');
-                            alert.className = 'alert alert-danger alert-dismissible fade show';
-                            alert.innerHTML = `
-                                <strong>Error:</strong> ${results.message}. Please log in again.
-                            `;
-                            document.querySelector('.results-inner-container').appendChild(alert);
-                        }
-                        return results.json();
-                    }).then(data => {
-                        data.data.forEach(result => {
-                        authors = result.authors.map(author => formatName(author)).join(', ');
-                        let card = document.createElement('div');
-                        card.className = 'card text-left';
-                        card.innerHTML = `
-                            <div class="card-body">
-                                <h5 class="card-title">${result.title}</h5>
-                                <p class="card-text text-truncate">${result.abstract}</p>
-                                <a href="/thesis/${result.id}" class="btn btn-success">Read thesis</a>
-                            </div>
-                            <div class="card-footer text-muted">
-                                <b>Authors:</b> ${authors}<br>
-                                <b>Published:</b> ${result.year}
-                            </div>
-                        `;
-                        document.querySelector('.results-inner-container').appendChild(card);
-                        setTimeout(() => {
-                            card.classList.add('animate');
-                        }, 100);
-                        });
-                    }).finally(() => {
-                        document.getElementById('loader').remove();
-                    });
-                }
-            </script>
-        </div>
     </div>
-    <%- include('_footer.ejs') %>
+    <%- include('partials/footer.ejs') %>
 </body>
-<script>
-    const greeting = document.querySelector('.greeting');
-    const date = new Date();
-    const hour = date.getHours();
-    let message = '';
-
-    if (hour >= 0 && hour < 12) {
-        message = 'Good morning';
-    } else if (hour >= 12 && hour < 18) {
-        message = 'Good afternoon';
-    } else {
-        message = 'Good evening';
-    }
-
-    greeting.textContent = `${message}, <%= name %>!`;
-</script>
 </html>

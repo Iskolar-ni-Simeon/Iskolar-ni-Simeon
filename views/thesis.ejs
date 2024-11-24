@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/thesis.css">
 </head>
 <body>
-    <%- include('_header.ejs') %>
+    <%- include('partials/header.ejs') %>
     
     <div class="container">
         <div class="row">
@@ -23,7 +23,7 @@
                     <b>Author/s:</b>
                     <ul class="metadata">
                         <% thesis.authors.forEach(author => { %>
-                            <li class="submeta"><a href="https://iskolar-ni-simeon.vercel.app/author/<%= author.id %>"><%= author.name %></a></li>
+                            <li class="submeta"><a href="/author/<%= author.id %>"><%= author.name %></a></li>
                         <% }) %>
                     </ul>
                     <b>Published:</b>
@@ -33,16 +33,17 @@
                     <b>Keywords:</b>
                     <ul class="metadata">
                         <% thesis.keywords.forEach(keyword => { %>
-                            <li class="submeta"><a href="https://iskolar-ni-simeon.vercel.app/keyword/<%= keyword.id %>"><%= keyword.keyword %></a></li>
+                            <li class="submeta"><a href="/keyword/<%= keyword.id %>"><%= keyword.keyword %></a></li>
                         <% }) %>
                     </ul>
 
                     <div class="card-utils d-flex justify-content-center">
                         <button class="btn submeta read" onclick="window.location = '/read/<%= thesisId %>'">
                             Read
+                            <span class="spinner-border spinner-border-sm text-light d-none" role="status" aria-hidden="true"></span>
                         </button>
                         <button class="btn submeta save">
-                            <span class="savedStatus"><span id="loader" class="spinner-border spinner-border-sm text-success" role="status" aria-hidden="true"></span></span>
+                            <span class="savedStatus"></span>
                         </button>
                     </div>
                 </div>
@@ -51,73 +52,56 @@
     </div>
     
     </div>
-    <%- include('_footer.ejs') %>
+    <%- include('partials/footer.ejs') %>
     
 </body>
 <script>
-    const thesisId = '<%= thesis.id %>';
-    console.log('Thesis ID:', thesisId);
-
+    const thesisId = '<%= thesisId %>';
+    const savedStatus = document.querySelector('.savedStatus');
     let savedTheses = localStorage.getItem('savedTheses');
-    savedTheses = savedTheses ? JSON.parse(savedTheses) : [];
+    savedTheses = savedTheses ? new Set(JSON.parse(savedTheses)) : new Set();
     console.log('Saved Theses from LocalStorage:', savedTheses);
 
-    // Ensure that savedTheses is an array before using array methods
-    if (!Array.isArray(savedTheses)) {
-        savedTheses = [];
-    }
-
-    const savedStatus = document.querySelector('.savedStatus');
-    const loader = document.querySelector('#loader');
-    let status;
-
-    if (savedTheses.includes(thesisId)) {
-        savedStatus.innerHTML = 'Saved';
-        status = 'remove';
-    } else {
-        savedStatus.innerHTML = 'Save';
-        status = 'add';
-    }
-    console.log('Initial Status:', status);
+    let method = savedTheses.has(thesisId) ? 'remove' : 'add';
+    savedStatus.innerHTML = method === 'add' ? 'Save' : 'Saved';
 
     savedStatus.addEventListener('click', () => {
-        console.log('Save button clicked');
-        loader.style.display = 'inline-block';
-        savedStatus.textContent = '';
+        savedStatus.disabled = true;
+        savedStatus.innerHTML = `
+            <span class="spinner-border spinner-border-sm text-success" role="status" aria-hidden="true"></span>
+        `;
 
-        fetch('<%- server_api %>/userlibrary', {
+        fetch(`/save/${thesisId}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                thesisId: thesisId,
-                method: status,
-                userId: '<%- userId %>'
-            }),
-            'credentials': 'include'
+                method: method
+            })
         }).then(response => {
-            console.log('Response received:', response);
             if (response.ok) {
-                if (status === 'add') {
-                    savedTheses.push(thesisId);
+                if (method === 'add') {
+                    savedTheses.add(thesisId); // Add to the set
                     savedStatus.innerHTML = 'Saved';
-                    status = 'remove';
+                    method = 'remove';
                 } else {
-                    savedTheses.splice(savedTheses.indexOf(thesisId), 1);
+                    savedTheses.delete(thesisId); // Remove from the set
                     savedStatus.innerHTML = 'Save';
-                    status = 'add';
+                    method = 'add';
                 }
-                console.log('Updated Status:', status);
-                localStorage.setItem('savedTheses', JSON.stringify(savedTheses));
+                localStorage.setItem('savedTheses', JSON.stringify([...savedTheses])); // Convert Set to Array for storage
+            } else {
+                console.error('Failed to save/remove thesis:', response.statusText);
+                savedStatus.innerHTML = method === 'add' ? 'Save' : 'Saved'; // Reset the UI
             }
-            loader.style.display = 'none';
         }).catch(error => {
-            console.error('Error:', error);
-            loader.style.display = 'none';
+            console.error('Error during fetch:', error);
+            savedStatus.innerHTML = method === 'add' ? 'Save' : 'Saved';
+        }).finally(() => {
+            savedStatus.disabled = false;
         });
     });
-
 </script>
 
 </html>

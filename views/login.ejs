@@ -38,7 +38,7 @@
               body: JSON.stringify({ 'credential': response.credential }),
           })
           .then(response => {
-              console.timeEnd("Total Login Time");  // Log the total login time
+              console.timeEnd("Total Login Time"); 
               if (!response.ok) {
                   console.error("Error fetching API.");
               }
@@ -92,7 +92,7 @@
           });
           google.accounts.id.renderButton(
               document.getElementById("buttonDiv"),
-              { theme: "outline", size: "large", text: "signin", shape: "pill", locale: "ph_tl"}
+              { theme: "outline", size: "large", text: "signin", shape: "pill", locale: "us_en"}
           );
           google.accounts.id.prompt();
         

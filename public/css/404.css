@@ -4,6 +4,11 @@ body {
     font-family: 'Montserrat', sans-serif;
 }
 
+.display-1 {
+    text-align: center
+}
+
 .lead {
-	text-align: center
+	text-align: center;
+    width: 90%;
 }

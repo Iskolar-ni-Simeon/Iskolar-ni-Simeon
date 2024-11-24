@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="/css/home.css">
 </head>
 <body>
+    <%- include('partials/header.ejs') %>
     <div class="wrapper">
-        <%- include('_header.ejs') %>
         <div class="container-sm d-flex justify-content-center align-items-center bodycontainer" style="height: 75dvh;">
             <div class="d-flex flex-column align-items-center justify-content-center">
                 
@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <%- include('_footer.ejs') %>
+        
     </div>
     <script>
         document.getElementById('searchButton').addEventListener('click', function() {
@@ -44,5 +44,6 @@
             window.location.href = `/advanced${query.trim() === '' ? '' : `?q=${query}`}`;
         });
     </script>
+    <%- include('partials/footer.ejs') %>
 </body>
 </html>

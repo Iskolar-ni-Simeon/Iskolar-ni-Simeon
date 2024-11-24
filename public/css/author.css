@@ -22,15 +22,8 @@ body {
 }
 
 .card {
-    opacity: 0;
-    transform: translateY(-20px); 
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-    margin-bottom: 1rem; /* Add margin to create gap between cards */
-}
-
-.card.animate {
-    opacity: 1;
-    transform: translateY(0);
+    margin-bottom: 1rem;
+    animation: fadeDrop 0.5s ease-out forwards;
 }
 
 .results-inner-container {

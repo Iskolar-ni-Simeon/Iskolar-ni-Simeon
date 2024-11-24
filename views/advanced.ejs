@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/advanced.css">
 </head>
 <body>
-    <%- include('_header.ejs') %>
+    <%- include('partials/header.ejs') %>
     <div class="outer-container">
         <h1 class="fw-bold">Advanced Search</h1>
         <div class="form-group firstGroup">
@@ -43,7 +43,7 @@
         
         <button type="submit" class="btn btn-success fw-bold" id="searchButton">Search</button>
     </div>
-    <%- include('_footer.ejs') %>
+    <%- include('partials/footer.ejs') %>
 </body>
 <script>
     const titleContains = document.getElementById('titleContains');
@@ -54,19 +54,19 @@
     const includesKeywords = document.getElementById('includesKeywords');
 
     titleContains.addEventListener('input', () => {
-        document.querySelector('.titleContains').innerHTML = `<b><i>${titleContains.value === '' ? "'iskolar ni simeon'" : titleContains.value}</i></b>`;
+        document.querySelector('.titleContains').innerHTML = `<b><i>'${titleContains.value === '' ? "iskolar ni simeon" : titleContains.value}'</i></b>`;
     });
 
     abstractContains.addEventListener('input', () => {
-        document.querySelector('.abstractContains').innerHTML = `<b><i>${abstractContains.value === '' ? "'centralized platforms'" : abstractContains.value}</i></b>`;
+        document.querySelector('.abstractContains').innerHTML = `<b><i>'${abstractContains.value === '' ? "centralized platforms" : abstractContains.value}'</i></b>`;
     });
 
     authoredTheses.addEventListener('input', () => {
-        document.querySelector('.authoredTheses').innerHTML = `<b><i>${authoredTheses.value === '' ? "john doe" : authoredTheses.value}</i></b>`;
+        document.querySelector('.authoredTheses').innerHTML = `<b><i>'${authoredTheses.value === '' ? "john doe" : authoredTheses.value}'</i></b>`;
     });
     
     includesKeywords.addEventListener('input', () => {
-        document.querySelector('.includesKeywords').innerHTML = `<b><i>${includesKeywords.value === '' ? "library" : includesKeywords.value}</i></b>`;
+        document.querySelector('.includesKeywords').innerHTML = `<b><i>'${includesKeywords.value === '' ? "library" : includesKeywords.value}'</i></b>`;
     });
 
     const updateYearRange = () => {

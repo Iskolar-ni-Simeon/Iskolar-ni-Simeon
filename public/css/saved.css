@@ -24,15 +24,8 @@ html, body {
 }
 
 .card {
-    opacity: 0;
-    transform: translateY(-20px); 
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
     margin-bottom: 1rem;
-}
-
-.card.animate {
-    opacity: 1;
-    transform: translateY(0);
+    animation: fadeDrop 0.5s ease-out forwards;
 }
 
 .inner-container {
@@ -77,6 +70,6 @@ html, body {
         font-size: small;
     }
     .results-inner-container {
-        width: 90%;
+        width: 100%;
     }
 }

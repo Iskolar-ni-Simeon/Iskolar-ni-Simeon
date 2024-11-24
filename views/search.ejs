@@ -11,110 +11,21 @@
 </head>
 <body>
     
-    <%- include('_header.ejs') %>
+    <%- include('partials/header.ejs') %>
     <div class="outer-container">
         <div class="text-center ml-5">
             <p class="display-5 fw-bold text-left mt-5">Search results for: <i> <%= searchQuery %></i></p>
-            <p class="text-muted resultscount">Found <span id="loader" class="spinner-border spinner-border-sm text-success" role="status" aria-hidden="true"></span> thesis:</p>
+            <p class="text-muted resultscount">Found <%= searchResults.length %> thesis:</p>
         </div>
         <div class="row mt-5">
             <div class="results-container d-flex justify-content-center flex-wrap">
                 <div class="results-inner-container">
+                    <%- include('partials/resultsContainer.ejs') %>
                 </div>
             </div>
         </div>
-
-        <script>
-            const loader = document.getElementById('loader');
-            const resultsCount = document.querySelector('.resultscount');
-            function formatName(name) {
-                const parts = name.split(' ');
-                const lastName = parts.pop();
-                const initials = parts.map(part => part.charAt(0) + '.').join(' ');
-                return `${lastName}, ${initials}`;
-            }
-            if ("<%= searchQuery %>" === '') {
-                let alert = document.createElement('div');
-                alert.className = 'alert alert-warning alert-dismissible fade show';
-                alert.innerHTML = `<strong>Error</strong>: Please enter a search query to get results.
-                `;
-                document.querySelector('.results-inner-container').appendChild(alert);
-
-                loader.remove();
-            } else {
-                let searchResults = fetch("<%= server_api %>/search?q=<%= searchQuery %>", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    credentials: 'include'
-                })
-                .then(res => {
-                    if (!res.ok) {
-                        if (res.status === 401) {
-                            res.json().then(data => {
-                                let alert = document.createElement('div');
-                                alert.className = 'alert alert-danger alert-dismissible fade show';
-                                alert.innerHTML = `
-                                    <strong>Error:</strong> ${data.message}. Please log in again.
-                                    
-                                `;
-                                document.querySelector('.results-inner-container').appendChild(alert);
-                            });
-                        }
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    if (data.data.length === 0) {
-                        let alert = document.createElement('div');
-                        alert.className = 'alert alert-warning alert-dismissible fade show';
-                        alert.innerHTML = `
-                            No results found for "<b><i><%= searchQuery %></i></b>". Please try again.
-                        `;
-                        document.querySelector('.results-inner-container').appendChild(alert);
-                        resultsCount.innerHTML = `Found 0 theses:`;
-                    } else {
-                        data.data.forEach(result => {
-                        authors = result.authors.map(author => formatName(author)).join(', ');
-                        let card = document.createElement('div');
-                        card.className = 'card text-left';
-                        card.innerHTML = `
-                            <div class="card-body">
-                                <h5 class="card-title">${result.title}</h5>
-                                <p class="card-text text-truncate">${result.abstract}</p>
-                                <a href="/thesis/${result.id}" class="btn btn-success">Read thesis</a>
-                            </div>
-                            <div class="card-footer text-muted">
-                                <b>Authors:</b> ${authors}<br>
-                                <b>Published:</b> ${result.year}
-                            </div>
-                        `;
-                        document.querySelector('.results-inner-container').appendChild(card);
-                        setTimeout(() => {
-                            card.classList.add('animate');
-                        }, 100);
-                        resultsCount.innerHTML = `Found ${data.data.length} ${data.data.length > 1 ? 'theses' : 'thesis'}:`;
-                    });
-
-                    }
-
-                })
-                .finally(() => {
-                    loader.remove();
-                })
-                .catch(err => {
-                    let alert = document.createElement('div');
-                    alert.className = 'alert alert-danger alert-dismissible fade show';
-                    alert.innerHTML = `
-                        <strong>Error:</strong> ${err.message}. Try logging in again.
-                       
-                    `;
-                    document.querySelector('.results-inner-container').appendChild(alert);
-                })}
-        </script>
     </div>
 
-    <%- include('_footer.ejs') %>
+    <%- include('partials/footer.ejs') %>
 </body>
 </html>

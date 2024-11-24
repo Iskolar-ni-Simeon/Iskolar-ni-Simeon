@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 | Iskolar ni Simeon</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/css/404.css">
+    <title>Malformed Token | Iskolar ni Simeon</title>
+    <link rel="stylesheet" href="css/404.css">
 </head>
 <body>
     <div class="wrapper">
         <%- include('partials/header.ejs') %>
         <div class="container-sm d-flex justify-content-center align-items-center bodycontainer" style="height: 75dvh;">
             <div class="d-flex flex-column align-items-center justify-content-center">
-                <h1 class="display-1 fw-bold">404</h1>
-                <p class="lead">Okay lang 'yan. Balik ka sa <a href="/" style="text-decoration: none; color: #000;" class="fw-bold">homepage</a>.</p>
+                <h1 class="display-1 fw-bold">Warning: Token possibly tampered.</h1>
+                <p class="lead">Your credentials is invalid, which likely seems that it has been tampered with. Please <a href="/login/logout" class="fw-bold" style="text-decoration: none; color: #000">login</a> again to re-authenticate with the platform.</p>
             </div>
         </div>
         <%- include('partials/footer.ejs') %>

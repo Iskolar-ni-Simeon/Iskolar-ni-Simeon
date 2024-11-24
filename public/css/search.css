@@ -51,7 +51,7 @@ body {
 
 @media (max-width: 768px) {
     .card {
-        width: 100%; /* Adjusted width */
+        width: 100%;
         font-size: small;
     }
     .results-inner-container {

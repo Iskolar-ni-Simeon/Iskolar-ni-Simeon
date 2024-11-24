@@ -11,7 +11,7 @@
 </head>
 <body>
     
-    <%- include('_header.ejs') %>
+    <%- include('partials/header.ejs') %>
     <div class="outer-container">
         <div class="text-center ml-5">
             <p class="display-5 fw-bold text-left mt-5">Advanced Search</p>
@@ -20,39 +20,11 @@
         <div class="row mt-5">
             <div class="results-container d-flex justify-content-center flex-wrap">
                 <div class="results-inner-container">
-                    <% if (searchResults.length === 0) { %>
-                        <div class="alert alert-warning alert-dismissible fade show">
-                            No results found. Please try again with different search terms.
-                        </div>
-                    <% } else { %>
-                        <% searchResults.forEach(result => { %>
-                            <% 
-                                const authors = result.authors.map(author => {
-                                    const parts = author.split(' ');
-                                    const lastName = parts.pop();
-                                    const initials = parts.map(part => part.charAt(0) + '.').join(' ');
-                                    return `${lastName}, ${initials}`;
-                                }).join(', ');
-                            %>
-                            <div class="card text-left mb-3">
-                                <div class="card-body">
-                                    <h5 class="card-title"><%= result.title %></h5>
-                                    <p class="card-text text-truncate"><%= result.abstract %></p>
-                                    <a href="/thesis/<%= result.id %>" class="btn btn-success">Read thesis</a>
-                                </div>
-                                <div class="card-footer text-muted">
-                                    <b>Authors:</b> <%= authors %><br>
-                                    <b>Published:</b> <%= result.year %>
-                                </div>
-                            </div>
-                        <% }); %>
-                    <% } %>
+                    <%- include('partials/resultsContainer.ejs') %>
                 </div>
             </div>
         </div>
     </div>
-
-    <%- include('_footer.ejs') %>
-
+    <%- include('partials/footer.ejs') %>
 </body>
 </html>
