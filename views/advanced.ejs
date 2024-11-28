@@ -79,29 +79,41 @@
     yearAfter.addEventListener('input', updateYearRange);
 
     document.getElementById('searchButton').addEventListener('click', () => {
-        let queryParams = new URLSearchParams();
         
-        if (titleContains.value.trim() !== '') {
-            queryParams.append('title', titleContains.value.trim());
+        if (
+            titleContains.value.trim() === '' &&
+            abstractContains.value.trim() === '' &&
+            authoredTheses.value.trim() === '' && 
+            includesKeywords.value.trim() === '' && 
+            yearBefore.value.trim() === '' &&
+            yearAfter.value.trim() === ''
+        ) {
+            alert("Please fill in one or more of the forms.")
+        } else {
+            let queryParams = new URLSearchParams();
+        
+            if (titleContains.value.trim() !== '') {
+                queryParams.append('title', titleContains.value.trim());
+            }
+            if (abstractContains.value.trim() !== '') {
+                queryParams.append('abstract', abstractContains.value.trim());
+            }
+            if (authoredTheses.value.trim() !== '') {
+                queryParams.append('authors', authoredTheses.value.trim());
+            }
+            if (includesKeywords.value.trim() !== '') {
+                queryParams.append('keywords', includesKeywords.value.trim());
+            }
+            if (yearBefore.value.trim() !== '') {
+                queryParams.append('syear', yearBefore.value.trim());
+            }
+            if (yearAfter.value.trim() !== '') {
+                queryParams.append('eyear', yearAfter.value.trim());
+            }
+            const query = queryParams.toString();
+            window.location.href = `/search/advanced${query ? `?${query}` : ''}`;
         }
-        if (abstractContains.value.trim() !== '') {
-            queryParams.append('abstract', abstractContains.value.trim());
-        }
-        if (authoredTheses.value.trim() !== '') {
-            queryParams.append('authors', authoredTheses.value.trim());
-        }
-        if (includesKeywords.value.trim() !== '') {
-            queryParams.append('keywords', includesKeywords.value.trim());
-        }
-        if (yearBefore.value.trim() !== '') {
-            queryParams.append('syear', yearBefore.value.trim());
-        }
-        if (yearAfter.value.trim() !== '') {
-            queryParams.append('eyear', yearAfter.value.trim());
-        }
-    
-        const query = queryParams.toString();
-        window.location.href = `/search/advanced${query ? `?${query}` : ''}`;
     });
+
 </script>
 </html>

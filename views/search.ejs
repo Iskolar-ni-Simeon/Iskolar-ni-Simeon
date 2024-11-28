@@ -15,7 +15,7 @@
     <div class="outer-container">
         <div class="text-center ml-5">
             <p class="display-5 fw-bold text-left mt-5">Search results for: <i> <%= searchQuery %></i></p>
-            <p class="text-muted resultscount">Found <%= searchResults.length %> thesis:</p>
+            <p class="text-muted resultscount">Found <%= searchResults ? searchResults.length : 0%> thesis:</p>
         </div>
         <div class="row mt-5">
             <div class="results-container d-flex justify-content-center flex-wrap">

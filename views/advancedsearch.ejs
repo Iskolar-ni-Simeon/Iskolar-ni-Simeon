@@ -14,8 +14,8 @@
     <%- include('partials/header.ejs') %>
     <div class="outer-container">
         <div class="text-center ml-5">
-            <p class="display-5 fw-bold text-left mt-5">Advanced Search</p>
-            <p class="text-muted resultscount">Found <%= searchResults.length %> thesis<%= searchResults.length !== 1 ? 's' : '' %>:</p>
+            <p class="display-5 fw-bold text-left mt-5">Advanced Search</i></p>
+            <p class="text-muted resultscount">Found <%= searchResults ? searchResults.length : 0%> thesis:</p>
         </div>
         <div class="row mt-5">
             <div class="results-container d-flex justify-content-center flex-wrap">
@@ -25,6 +25,7 @@
             </div>
         </div>
     </div>
+
     <%- include('partials/footer.ejs') %>
 </body>
 </html>

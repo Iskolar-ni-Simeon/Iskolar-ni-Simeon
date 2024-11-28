@@ -1,6 +1,6 @@
 <% if (searchResults.length === 0) { %>
     <div class="alert alert-warning alert-dismissible fade show">
-        <%- errmessage %>
+        <strong>Error: </strong> <%= errmessage %>
     </div>
 <% } else { %>
     <% searchResults.forEach(result => { %>
@@ -13,10 +13,14 @@
             }).join(', ');
         %>
         <div class="card text-left mb-3">
-            <div class="card-body">
+            <div class="card-body" id="<%= result.id%>">
                 <h5 class="card-title"><%= result.title %></h5>
                 <p class="card-text text-truncate"><%= result.abstract %></p>
                 <a href="/thesis/<%= result.id %>" class="btn btn-success">Read thesis</a>
+                <button class="btn btn-outline-success">
+                    <span class="savedStatus">
+                    </span>
+                </button>
             </div>
             <div class="card-footer text-muted">
                 <b>Authors:</b> <%= authors %><br>
@@ -25,3 +29,57 @@
         </div>
     <% }); %>
 <% } %>
+
+<script>
+    let thesisId;
+    let savedTheses = localStorage.getItem('savedTheses');
+    savedTheses = savedTheses ? new Set(JSON.parse(savedTheses)) : new Set();
+
+    const cards = document.getElementsByClassName("card-body");
+    for (let i = 0; i < cards.length; i++) {
+        thesisId = cards.item(i).id;
+        const savedStatus = document.querySelector('.savedStatus');
+
+        let method = savedTheses.has(thesisId) ? 'remove' : 'add';
+        savedStatus.innerHTML = method === 'add' ? 'Save' : 'Saved';
+
+        savedStatus.addEventListener('click', () => {
+            savedStatus.disabled = true;
+            savedStatus.innerHTML = `
+                <span class="spinner-border spinner-border-sm text-success" role="status" aria-hidden="true"></span>
+            `;
+
+            fetch(`/save/${thesisId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    method: method
+                })
+            }).then(response => {
+                if (response.ok) {
+                    if (method === 'add') {
+                        savedTheses.add(thesisId); 
+                        savedStatus.innerHTML = 'Saved';
+                        method = 'remove';
+                    } else {
+                        savedTheses.delete(thesisId);
+                        savedStatus.innerHTML = 'Save';
+                        method = 'add';
+                    }
+                    localStorage.setItem('savedTheses', JSON.stringify([...savedTheses]));
+                } else {
+                    console.error('Failed to save/remove thesis:', response.statusText);
+                    savedStatus.innerHTML = method === 'add' ? 'Save' : 'Saved';
+                }
+            }).catch(error => {
+                console.error('Error during fetch:', error);
+                savedStatus.innerHTML = method === 'add' ? 'Save' : 'Saved';
+            }).finally(() => {
+                savedStatus.disabled = false;
+            });
+        });
+    }
+    
+</script>

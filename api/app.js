@@ -7,6 +7,7 @@ const favicon = require('serve-favicon');
 const indexRouter = require('../routes/indexRouter.js');
 const loginRouter = require('../routes/loginRouter.js');
 const thesisRouter = require('../routes/thesisRouter.js');
+const thesisManagementRouter = require('../routes/thesisManagementRouter.js');
 
 const { authMiddleware } = require('../public/scripts/auth');
 const { SessionAuthentication } = require('../public/scripts/auth');
@@ -30,6 +31,7 @@ app.use('/pdfjs', express.static(path.join(__dirname, '../web')));
 
 app.use("/", authMiddleware, indexRouter);
 app.use("/",  authMiddleware, thesisRouter);
+app.use("/addthesis", authMiddleware, thesisManagementRouter);
 
 app.get('/warning', (req, res) => {
     res.render("./warning.ejs", {

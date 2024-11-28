@@ -25,8 +25,12 @@
       var loaderTimeout;
     
       function handleCredentialResponse(response) {
-          clearTimeout(loaderTimeout);
-      
+        
+        signin.style.opacity = "0";
+        signin.style.visibility = "hidden";
+        loader.style.opacity = "1";
+        loader.style.visibility = "visible";
+
           console.time("Total Login Time");
           fetch("<%= server_api %>", {
               method: 'POST',
@@ -46,8 +50,7 @@
               return response.json();
           })
           .then(data => {
-            console.log(data);
-            localStorage.setItem('savedTheses', JSON.stringify(JSON.stringify(data.saved.data.map(thesis => thesis.id || []))));
+            localStorage.setItem('savedTheses', JSON.stringify(data.saved.data.map(thesis => thesis.id || [])));
 
               fetch('/login/setup-session', {
                   method: 'POST',
@@ -97,11 +100,6 @@
           google.accounts.id.prompt();
         
           document.getElementById("buttonDiv").onclick = function() {
-              signin.style.opacity = "0";
-              signin.style.visibility = "hidden";
-              loader.style.opacity = "1";
-              loader.style.visibility = "visible";
-          
               loaderTimeout = setTimeout(resetLoader, 10000);
           };
       }

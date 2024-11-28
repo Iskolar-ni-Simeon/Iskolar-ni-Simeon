@@ -3,7 +3,6 @@ const router = express.Router();
 const { SessionAuthentication } = require('../public/scripts/auth');
 const { Readable } = require('stream');
 const crypto = require('crypto');
-const methods = require('methods');
 require('dotenv').config();
 const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
@@ -11,20 +10,31 @@ router.get('/search', async (req, res, next) => {
     const query = req.query.q || "";
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
     const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
-    const searchResults = await fetch(`${process.env.SERVER_API}/search?q=${query}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': authCookie
-        }
-    }).then(response => {return response.json()});
+    if (req.query.q === "" || req.query.q === undefined) {
+        res.render('./search.ejs', {
+            picture: decryptedSession.picture,
+            currentRoute: req.originalUrl,
+            searchQuery: query,
+            errmessage: "No query identified.",
+            searchResults: []
+        })
+    } else {
+        const searchResults = await fetch(`${process.env.SERVER_API}/search?q=${query}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': authCookie
+            }
+        }).then(response => {return response.json()});
 
-    res.render("./search.ejs", {
-        picture: decryptedSession.picture,
-        currentRoute: req.originalUrl,
-        searchQuery: query,
-        searchResults: searchResults.data,
-    });
+        res.render("./search.ejs", {
+            picture: decryptedSession.picture,
+            currentRoute: req.originalUrl,
+            searchQuery: query,
+            searchResults: searchResults.data,
+            errmessage: searchResults.data && searchResults.data.length == [] ? "No results found." : undefined
+        });
+    }
 });
 
 router.get('/advanced', (req, res, next) => {
@@ -58,43 +68,62 @@ router.get('/search/advanced', async (req, res, next) => {
     };
 
     try {
-        const response = await fetch(`${process.env.SERVER_API}/advanced`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": authCookie
-            },
-            body: JSON.stringify({
-                titleContains: data.title,
-                absContains: data.abstract,
-                authors: data.author,
-                keywords: data.keyword,
-                beforeYear: data.syear,
-                afterYear: data.eyear
-            }),
-            credentials: 'include'
-        });
-
-        if (!response.ok) {
-            if (response.status === 401) {
-                const errorData = await response.json();
-                return res.render("./advancedsearch.ejs", {
+        if (Object.values(data).every(value => value === undefined || value === "")) {
+            res.render('./advancedSearch.ejs', {
+                picture: decryptedSession.picture,
+                searchResults: [], 
+                currentRoute: req.originalUrl,
+                errmessage: "No query identified.",
+            });
+        } else {
+            try {
+                const response = await fetch(`${process.env.SERVER_API}/advanced`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": authCookie
+                    },
+                    body: JSON.stringify({
+                        titleContains: data.title,
+                        absContains: data.abstract,
+                        authors: data.author,
+                        keywords: data.keyword,
+                        beforeYear: data.syear,
+                        afterYear: data.eyear
+                    }),
+                    credentials: 'include'
+                });
+        
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        const errorData = await response.json();
+                        return res.render("./advancedsearch.ejs", {
+                            picture: decryptedSession.picture,
+                            currentRoute: req.originalUrl,
+                            data: data,
+                            error: errorData.message,
+                            searchResults: []
+                        });
+                    }
+                }
+        
+                const searchResults = await response.json();
+                res.render("./advancedsearch.ejs", {
+                    picture: decryptedSession.picture,
+                    currentRoute: req.originalUrl,
+                    searchResults: searchResults.data || [],
+                    errmessage: searchResults.data && searchResults.data.length == [] ? "No results found." : undefined
+                });
+            } catch (err) {
+                res.render("./advancedsearch.ejs", {
                     picture: decryptedSession.picture,
                     currentRoute: req.originalUrl,
                     server_api: process.env.SERVER_API,
-                    data: data,
-                    error: errorData.message
+                    searchResults: []
                 });
             }
         }
-
-        const searchResults = await response.json();
-
-        res.render("./advancedsearch.ejs", {
-            picture: decryptedSession.picture,
-            currentRoute: req.originalUrl,
-            searchResults: searchResults.data
-        });
+        
     } catch (err) {
         res.render("./advancedsearch.ejs", {
             picture: decryptedSession.picture,
@@ -321,6 +350,7 @@ router.get('/author/:authorId', async (req, res, next) => {
         console.error('Error: ', err)
     }
 });
+
 
 
 module.exports = router;

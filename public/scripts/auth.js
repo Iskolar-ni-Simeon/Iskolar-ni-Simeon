@@ -49,14 +49,13 @@ const authMiddleware = (req, res, next) => {
             const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
             
             if (sessionData &&  authCookie) {
-            next();
-        }
+                next();
+            }
         } catch (err) {
             res.redirect('/warning')
         }
         
     } else {
-        console.log('Redirecting to /login');
         res.redirect('/login');
     }
 };
