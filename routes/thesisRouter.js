@@ -69,7 +69,7 @@ router.get('/search/advanced', async (req, res, next) => {
 
     try {
         if (Object.values(data).every(value => value === undefined || value === "")) {
-            res.render('./advancedSearch.ejs', {
+            res.render('./advancedsearch.ejs', {
                 picture: decryptedSession.picture,
                 searchResults: [], 
                 currentRoute: req.originalUrl,
