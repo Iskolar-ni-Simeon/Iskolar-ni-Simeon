@@ -108,12 +108,14 @@ router.get('/search/advanced', async (req, res, next) => {
                 }
         
                 const searchResults = await response.json();
-                res.render("./advancedsearch.ejs", {
-                    picture: decryptedSession.picture,
-                    currentRoute: req.originalUrl,
-                    searchResults: searchResults.data || [],
-                    errmessage: searchResults.data && searchResults.data.length == [] ? "No results found." : undefined
-                });
+                if (searchResults.data && searchResults.data.length == 0) {
+                    res.render("./advancedsearch.ejs", {
+                        picture: decryptedSession.picture,
+                        currentRoute: req.originalUrl,
+                        searchResults: searchResults.data || [],
+                        errmessage: searchResults.data && searchResults.data.length == [] ? "No results found." : undefined
+                    });
+                }
             } catch (err) {
                 res.render("./advancedsearch.ejs", {
                     picture: decryptedSession.picture,
