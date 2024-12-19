@@ -3106,12 +3106,17 @@
   border:var(--page-border);
   background-clip:content-box;
   background-color:var(--page-bg-color, rgb(255 255 255));
+  user-select: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .pdfViewer .dummyPage{
   position:relative;
   width:0;
   height:var(--viewer-container-height);
+  pointer-events: none;
 }
 
 .pdfViewer.noUserSelect{
@@ -3145,16 +3150,19 @@
 .pdfViewer:is(.scrollHorizontal, .scrollWrapped) :is(.page, .spread){
   display:inline-block;
   vertical-align:middle;
+  pointer-events: none;
 }
 
 .spread .page,
 .pdfViewer:is(.scrollHorizontal, .scrollWrapped) .page{
   margin-inline:var(--spreadHorizontalWrapped-margin-LR);
+  pointer-events: none;
 }
 
 .pdfViewer.removePageBorders .spread .page,
 .pdfViewer.removePageBorders:is(.scrollHorizontal, .scrollWrapped) .page{
   margin-inline:5px;
+  pointer-events: none;
 }
 
 .pdfViewer .page.loadingIcon::after{
@@ -3174,6 +3182,7 @@
 
 .pdfViewer .page.loading::after{
   display:block;
+  pointer-events: none;
 }
 
 .pdfViewer .page:not(.loading)::after{
