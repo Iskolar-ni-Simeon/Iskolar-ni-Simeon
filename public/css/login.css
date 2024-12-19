@@ -20,7 +20,7 @@ body, html {
     font-family: Arial, sans-serif;
 }
 
-.container {
+.outer-container {
     display: flex;
     height: 100dvh;
 }
@@ -181,12 +181,12 @@ body, html {
 
 @media (max-width: 768px) {
     .logintitle {
-        font-size: 8vw; /* Adjust font size for smaller screens */
+        font-size: 8vw;
     }
 }
 
 @media (min-width: 1200px) {
     .logintitle {
-        font-size: 3vw; /* Adjust font size for larger screens */
+        font-size: 3vw;
     }
 }
