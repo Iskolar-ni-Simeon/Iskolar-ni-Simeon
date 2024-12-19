@@ -67,8 +67,10 @@ router.get('/search/advanced', async (req, res, next) => {
         eyear: endYear
     };
 
+    console.log(data)
     try {
         if (Object.values(data).every(value => value === undefined || value === "")) {
+            console.log('no query found')
             res.render('./advancedsearch.ejs', {
                 picture: decryptedSession.picture,
                 searchResults: [], 
@@ -77,7 +79,7 @@ router.get('/search/advanced', async (req, res, next) => {
             });
         } else {
             try {
-                const response = await fetch(`${process.env.SERVER_API}/advanced`, {
+                const searchResults = await fetch(`${process.env.SERVER_API}/advanced`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -92,23 +94,19 @@ router.get('/search/advanced', async (req, res, next) => {
                         afterYear: data.eyear
                     }),
                     credentials: 'include'
-                });
-        
-                if (!response.ok) {
-                    if (response.status === 401) {
-                        const errorData = await response.json();
-                        return res.render("./advancedsearch.ejs", {
-                            picture: decryptedSession.picture,
-                            currentRoute: req.originalUrl,
-                            data: data,
-                            error: errorData.message,
-                            searchResults: []
-                        });
-                    }
-                }
-        
-                const searchResults = await response.json();
+                }).then(res => {return res.json()})
+    
+                console.log("search results:", JSON.stringify(searchResults.data))
+
                 if (searchResults.data && searchResults.data.length == 0) {
+                    console.log(searchResults.data)
+                    res.render("./advancedsearch.ejs", {
+                        picture: decryptedSession.picture,
+                        currentRoute: req.originalUrl,
+                        searchResults: searchResults.data || [],
+                        errmessage: searchResults.data && searchResults.data.length == [] ? "No results found." : undefined
+                    });
+                } else {
                     res.render("./advancedsearch.ejs", {
                         picture: decryptedSession.picture,
                         currentRoute: req.originalUrl,
@@ -121,7 +119,8 @@ router.get('/search/advanced', async (req, res, next) => {
                     picture: decryptedSession.picture,
                     currentRoute: req.originalUrl,
                     server_api: process.env.SERVER_API,
-                    searchResults: []
+                    searchResults: [],
+                    errmessage: err
                 });
             }
         }
@@ -198,8 +197,6 @@ router.post('/save/:id', async (req, res, next) => {
 })
 
 router.get('/read/:id', async (req, res, next) => {
-    // const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
-    // const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
     const token = crypto.createHmac('sha256', process.env.FILE_SECRET_KEY)
                         .update(req.params.id)
                         .digest('hex');

@@ -56,6 +56,7 @@
     
 </body>
 <script>
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
     const thesisId = '<%= thesisId %>';
     const savedStatus = document.querySelector('.savedStatus');
     let savedTheses = localStorage.getItem('savedTheses');
@@ -82,18 +83,18 @@
         }).then(response => {
             if (response.ok) {
                 if (method === 'add') {
-                    savedTheses.add(thesisId); // Add to the set
+                    savedTheses.add(thesisId);
                     savedStatus.innerHTML = 'Saved';
                     method = 'remove';
                 } else {
-                    savedTheses.delete(thesisId); // Remove from the set
+                    savedTheses.delete(thesisId);
                     savedStatus.innerHTML = 'Save';
                     method = 'add';
                 }
-                localStorage.setItem('savedTheses', JSON.stringify([...savedTheses])); // Convert Set to Array for storage
+                localStorage.setItem('savedTheses', JSON.stringify([...savedTheses]));
             } else {
                 console.error('Failed to save/remove thesis:', response.statusText);
-                savedStatus.innerHTML = method === 'add' ? 'Save' : 'Saved'; // Reset the UI
+                savedStatus.innerHTML = method === 'add' ? 'Save' : 'Saved'; 
             }
         }).catch(error => {
             console.error('Error during fetch:', error);
