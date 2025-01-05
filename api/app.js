@@ -7,14 +7,12 @@ const favicon = require('serve-favicon');
 const indexRouter = require('../routes/indexRouter.js');
 const loginRouter = require('../routes/loginRouter.js');
 const thesisRouter = require('../routes/thesisRouter.js');
-const thesisManagementRouter = require('../routes/thesisManagementRouter.js');
 
 const { authMiddleware } = require('../public/scripts/auth');
 const { SessionAuthentication } = require('../public/scripts/auth');
 
 const app = express();
 const PORT = 8080;
-const key1 = crypto.randomBytes(32).toString('hex');
 const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
 app.set('view engine', 'ejs');
@@ -30,8 +28,7 @@ app.use("/login", loginRouter);
 app.use('/pdfjs', express.static(path.join(__dirname, '../web')));
 
 app.use("/", authMiddleware, indexRouter);
-app.use("/",  authMiddleware, thesisRouter);
-app.use("/addthesis", authMiddleware, thesisManagementRouter);
+app.use("/", authMiddleware, thesisRouter);
 
 app.get('/warning', (req, res) => {
     res.render("./warning.ejs", {
@@ -47,7 +44,6 @@ app.all('*', authMiddleware, (req, res) => {
         currentRoute: req.originalUrl,
     });
 });
-
 
 
 app.listen(PORT, function () {

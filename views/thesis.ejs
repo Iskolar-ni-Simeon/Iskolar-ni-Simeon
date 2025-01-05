@@ -11,47 +11,128 @@
 <body>
     <%- include('partials/header.ejs') %>
     
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-lg thesis">
-                <h1><%= thesis.title %></h1>
-                <p class="abstract"><%= thesis.abstract %></p>
+    <main class="thesis-page">
+        <div class="thesis-hero mb-4 bg-success bg-opacity-10">
+            <div class="container py-4">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <h1 class="text-center mb-3 no-select"><%= thesis.title %></h1>
+                    </div>
+                </div>
             </div>
-            <div class="col-12 col-lg card">
-                <div class="card-title"></div>
-                <div class="card-body">
-                    <b>Author/s:</b>
-                    <ul class="metadata">
-                        <% thesis.authors.forEach(author => { %>
-                            <li class="submeta"><a href="/author/<%= author.id %>"><%= author.name %></a></li>
-                        <% }) %>
-                    </ul>
-                    <b>Published:</b>
-                    <ul class="metadata">
-                        <li class="submeta"><%= thesis.year %></li>
-                    </ul>
-                    <b>Keywords:</b>
-                    <ul class="metadata">
-                        <% thesis.keywords.forEach(keyword => { %>
-                            <li class="submeta"><a href="/keyword/<%= keyword.id %>"><%= keyword.keyword %></a></li>
-                        <% }) %>
-                    </ul>
+        </div>
 
-                    <div class="card-utils d-flex justify-content-center">
-                        <button class="btn submeta read" onclick="window.location = '/read/<%= thesisId %>'">
-                            Read
-                            <span class="spinner-border spinner-border-sm text-light d-none" role="status" aria-hidden="true"></span>
-                        </button>
-                        <button class="btn submeta save">
-                            <span class="savedStatus"></span>
-                        </button>
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-12 col-lg-8">
+                    <div class="content-wrapper">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Abstract</h5>
+                                <p class="abstract no-select text-justify mb-0"><%= thesis.abstract %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Details</h5>
+                            
+                            <div class="metadata-group mb-4">
+                                <h6 class="fw-bold mb-2">Author/s</h6>
+                                <ul class="metadata list-unstyled mb-0">
+                                    <% thesis.authors.forEach(author => { %>
+                                        <li class="submeta mb-1">
+                                            <a href="/author/<%= author.id %>" class="text-success text-decoration-none">
+                                                <i class="bi bi-person"></i> <%= author.name %>
+                                            </a>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                            </div>
+
+                            <div class="metadata-group mb-4">
+                                <h6 class="fw-bold mb-2">Published</h6>
+                                <ul class="metadata list-unstyled mb-0">
+                                    <li class="submeta">
+                                        <a class="text-success text-decoration-none">
+                                            <i class="bi bi-calendar"></i> <%= thesis.year %>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="metadata-group mb-4">
+                                <h6 class="fw-bold mb-2">Keywords</h6>
+                                <ul class="metadata list-unstyled mb-0">
+                                    <% thesis.keywords.forEach(keyword => { %>
+                                        <li class="submeta mb-1">
+                                            <a href="/keyword/<%= keyword.id %>" class="text-success text-decoration-none">
+                                                <i class="bi bi-tag"></i> <%= keyword.keyword %>
+                                            </a>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                            </div>
+
+                            <div class="card-utils d-flex justify-content-center gap-2">
+                                <button class="btn btn-success w-100" onclick="window.location = '/read/<%= thesisId %>'">
+                                    <i class="bi bi-book me-2"></i> Read
+                                    <span class="spinner-border spinner-border-sm text-light d-none" role="status"></span>
+                                </button>
+                                <button class="btn btn-outline-success save w-100">
+                                    <i class="bi bi-bookmark me-2"></i>
+                                    <span class="savedStatus"></span>
+                                </button>
+                            </div>
+                            <div class="card-utils d-flex justify-content-center mt-2">
+                                <button class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#citeModal">
+                                    <i class="bi bi-quote me-2"></i> Cite
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Citation Modal -->
+    <div class="modal fade" id="citeModal" tabindex="-1" aria-labelledby="citeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="citeModalLabel">Cite This Thesis</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="citationFormat" class="form-label">Citation Format</label>
+                            <select class="form-select" id="citationFormat">
+                                <option value="apa">APA 7th Edition</option>
+                                <option value="mla">MLA 9th Edition</option>
+                                <option value="chicago">Chicago 17th Edition</option>
+                                <option value="harvard">Harvard</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="citationText" class="form-label">Citation</label>
+                            <div class="citation-container">
+                                <div id="citationText" class="form-control citation-text" contenteditable="false"></div>
+                                <button class="btn btn-sm btn-outline-success copy-btn" onclick="copyCitation()">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    </div>
+
     <%- include('partials/footer.ejs') %>
     
 </body>
@@ -103,6 +184,81 @@
             savedStatus.disabled = false;
         });
     });
-</script>
 
+    // Citation functionality
+    const citationFormat = document.getElementById('citationFormat');
+    const citationText = document.getElementById('citationText');
+    const thesis = {
+        title: '<%= thesis.title %>',
+        authors: <%- JSON.stringify(thesis.authors) %>,
+        year: '<%= thesis.year %>',
+        institution: 'General de Jesus College'
+    };
+
+    function generateCitation(format) {
+        const authorNames = thesis.authors.map(author => author.name);
+        let citation = '';
+
+        switch (format) {
+            case 'apa':
+                const apaAuthors = authorNames.map(name => {
+                    const parts = name.split(' ');
+                    const lastName = parts.pop();
+                    const initials = parts.map(part => `${part.charAt(0)}.`).join(' ');
+                    return `${lastName}, ${initials}`;
+                });
+                const lastAuthor = apaAuthors.pop();
+                const authorString = apaAuthors.length ? apaAuthors.join(', ') + ', & ' + lastAuthor : lastAuthor;
+                citation = `${authorString} (${thesis.year}). <i>${thesis.title}</i> [Unpublished undergraduate thesis]. ${thesis.institution}.`;
+                break;
+
+            case 'mla':
+                const firstAuthorParts = authorNames[0].split(' ');
+                const firstAuthorLastName = firstAuthorParts.pop();
+                const firstAuthorFirstName = firstAuthorParts.join(' ');
+                const mlaAuthor = `${firstAuthorLastName}, ${firstAuthorFirstName}`;
+                citation = `${mlaAuthor}${authorNames.length > 1 ? ', et al' : ''}. <i>${thesis.title}</i>. ${thesis.year}. ${thesis.institution}, Undergraduate thesis.`;
+                break;
+
+            case 'chicago':
+                citation = `${authorNames.join(', ')}. ${thesis.year}. <i>${thesis.title}</i>. ${thesis.institution}. Undergraduate thesis.`;
+                break;
+
+            case 'harvard':
+                const harvardAuthors = authorNames.map(name => {
+                    const parts = name.split(' ');
+                    const lastName = parts.pop();
+                    const initials = parts.map(part => `${part.charAt(0)}.`).join('');
+                    return `${lastName}, ${initials}`;
+                });
+                const authorList = harvardAuthors.join(', ');
+                citation = `${authorList}, ${thesis.year}. <i>${thesis.title}</i>. Undergraduate thesis. ${thesis.institution}.`;
+                break;
+        }
+        return citation;
+    }
+
+    citationFormat.addEventListener('change', () => {
+        citationText.innerHTML = generateCitation(citationFormat.value);
+    });
+
+    // Initialize with APA citation
+    citationText.innerHTML = generateCitation('apa');
+
+    function copyCitation() {
+        const range = document.createRange();
+        range.selectNode(citationText);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        
+        const copyBtn = document.querySelector('.copy-btn');
+        const originalHTML = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="bi bi-check"></i>';
+        setTimeout(() => {
+            copyBtn.innerHTML = originalHTML;
+        }, 2000);
+    }
+</script>
 </html>

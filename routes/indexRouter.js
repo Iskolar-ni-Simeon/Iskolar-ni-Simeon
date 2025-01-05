@@ -17,6 +17,8 @@ router.get('/me/library', async (req, res) => {
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(decodeURIComponent(req.cookies.session), 'base64').toString('utf8')));
     const userId = decryptedSession.userId;
     const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
+    const page = parseInt(req.query.page) || 1;
+    const itemsPerPage = 6; // Changed from 10 to 6
     let error;
     try {
         const searchResults = await fetch(`${process.env.SERVER_API}/userlibrary?id=${userId}`, {
@@ -32,12 +34,25 @@ router.get('/me/library', async (req, res) => {
             }
             return response.json();
         })
+
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const totalItems = searchResults.data.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const paginatedResults = searchResults.data.slice(startIndex, endIndex);
+
         res.render("./saved.ejs", {
             picture: decryptedSession.picture,
             currentRoute: req.originalUrl,
             name: decryptedSession.name,
-            searchResults: searchResults.data,
-            errmessage: 'You have no saved theses. Click the <strong>save</strong> button when you find a thesis you like to save it here.'
+            searchResults: paginatedResults,
+            errmessage: 'You have no saved theses. Click the <strong>save</strong> button when you find a thesis you like to save it here.',
+            pagination: {
+                currentPage: page,
+                totalPages: totalPages,
+                hasNext: page < totalPages,
+                hasPrev: page > 1
+            }
         })
     } catch (err) {
         console.log(err);

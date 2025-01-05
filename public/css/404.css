@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css");
+
+* {
+    font-family: 'Montserrat', sans-serif;
+}
 
 body {
     font-family: 'Montserrat', sans-serif;
@@ -9,6 +14,87 @@ body {
 }
 
 .lead {
-	text-align: center;
-    width: 90%;
+    width: auto;
+    margin: 0 auto;
+    max-width: 90%;
+}
+
+.error-page {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    margin-top: 60px;
+    background-color: #f8f9fa;
+}
+
+.error-content {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.08);
+}
+
+.error-icon {
+    font-size: 5rem;
+    color: #198754;
+    opacity: 1;
+}
+
+.error-icon i {
+    animation: pulse 2s infinite;
+}
+
+/* Add warning styles */
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000;
+}
+
+.btn-warning:hover {
+    background-color: #ffca2c;
+    border-color: #ffc720;
+    color: #000;
+}
+
+.error-icon .bi-exclamation-triangle {
+    font-size: 4rem;
+    color: #ffc107;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+}
+
+@media (max-width: 768px) {
+    .error-page {
+        padding: 1rem;
+    }
+    
+    .error-content {
+        padding: 2rem 1rem;
+    }
+
+    .error-icon {
+        font-size: 4rem;
+    }
 }

@@ -27,12 +27,13 @@ body, html {
 
 #background {
     flex: 2;
-    background-color: #002708;
+    background: linear-gradient(135deg, #002708 0%, #004012 100%);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     position: relative;
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
 }
 
 #background img {
@@ -46,9 +47,10 @@ body, html {
 
 .backgroundtitle {
     color: #fff;
-    font-size: 5vmax;
+    font-size: 4.5vmax;
     margin-left: 3.5vmax;
     margin-bottom: 1vmax;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .backgroundsubtitle {
@@ -70,8 +72,9 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #f4f4f4;
+    background-color: #ffffff;
     position: relative;
+    transition: background-color 0.3s ease;
 }
 
 #login img {
@@ -116,21 +119,168 @@ body, html {
     width: fit-content;
     opacity: 1;
     visibility: visible;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    transition: all 0.5s ease;
     margin: 0;
+    transform: scale(1.2);
 }
 
 .loader {
-    border: 30px solid #002203; /* Light grey */
-    border-top: 30px solid #006500; /* Blue */
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    animation: spin 2s linear infinite;
+    position: relative;
+    width: 60px;
+    height: 60px;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-    margin: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    margin: 0 auto;  /* Remove bottom margin */
+}
+
+.loader::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #002708;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loader.success::after {
+    border: none;
+    animation: none;
+}
+
+.loader.success::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 60px;
+    height: 60px;
+    background: #e8f5e9;
+    border-radius: 50%;
+    animation: successPop 0.3s ease forwards;
+}
+
+.loader.success .check {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 32px;
+    height: 16px;
+    border: 4px solid #002708;
+    border-top: none;
+    border-right: none;
+    background: transparent;
+    transform-origin: center;
+    transform: translate(-50%, -70%) rotate(-45deg) scale(0);
+    animation: checkmark 0.4s ease-in-out 0.2s forwards;
+    opacity: 1;
+}
+
+.loader.error::after {
+    border: none;
+    animation: none;
+}
+
+.loader.error::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 60px;
+    height: 60px;
+    background: #ffebee;
+    border-radius: 50%;
+    animation: successPop 0.3s ease forwards;
+}
+
+.loader.error .error-x {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    transform: translate(-50%, -50%) rotate(45deg) scale(0);
+    opacity: 1;
+}
+
+.loader.error .error-x::before,
+.loader.error .error-x::after {
+    content: '';
+    position: absolute;
+    background: #d32f2f;
+    border-radius: 2px;
+}
+
+.loader.error .error-x::before {
+    width: 100%;
+    height: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.loader.error .error-x::after {
+    width: 4px;
+    height: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.loader.error .error-x {
+    animation: checkmark 0.4s ease-in-out 0.2s forwards;
+}
+
+.loader.redirect::after {
+    border: none;
+    animation: none;
+}
+
+.loader.redirect::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 60px;
+    height: 60px;
+    background: #e8f5e9;
+    border-radius: 50%;
+    animation: successPop 0.3s ease forwards;
+}
+
+.loader.redirect .check {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 4px solid #002708;
+    border-left: 0;
+    border-bottom: 0;
+    background: transparent;
+    transform-origin: center;
+    transform: translate(-50%, -50%) rotate(45deg) scale(0);  /* Changed initial position */
+    animation: arrowSlide 1s ease-in-out infinite;
+}
+
+.loader-text {
+    visibility: hidden;
+    position: relative;
+    width: 200px;
+    text-align: center;
+    margin: 20px auto 0;  /* Changed positioning to use margin auto */
+    transform: none;  /* Remove transform */
+    left: auto;  /* Remove left positioning */
+    color: #002708;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    opacity: 1;
+    transition: opacity 0.3s ease;
 }
 
 @keyframes dropFadeIn {
@@ -145,6 +295,49 @@ body, html {
     100% { transform: rotate(360deg); }
 }
 
+@keyframes successPop {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes checkmark {
+    0% {
+        transform: translate(-50%, -70%) rotate(-45deg) scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(-50%, -70%) rotate(-45deg) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes arrowSlide {
+    0% {
+        transform: translate(-75%, -50%) rotate(45deg) scale(1);  /* Start more left */
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) rotate(45deg) scale(1);  /* Center point */
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-25%, -50%) rotate(45deg) scale(1);  /* End more right */
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
@@ -157,7 +350,7 @@ body, html {
     #login {
         flex: 1;
         width: 100%;
-        background: linear-gradient(180deg, rgba(0,41,8,1) 20%, rgba(0,0,0,1) 100%);
+        background: linear-gradient(135deg, #002708 0%, #004012 100%);
     }
     #login img {
         display: block
@@ -176,6 +369,44 @@ body, html {
     }
     .verse {
         color: #fff;
+        font-size: 1.2vmax;
+        opacity: 0.9;
+    }
+
+    .loader::after {
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        border-top: 3px solid #ffffff;
+    }
+
+    .loader.success::before {
+        background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .loader.success .check {
+        border-width: 4px;
+        border-color: #ffffff;
+    }
+
+    .loader.error::before {
+        background: rgba(255, 0, 0, 0.15);
+    }
+    
+    .loader.error .error-x::before,
+    .loader.error .error-x::after {
+        background: #ffffff;
+    }
+
+    .loader.redirect::before {
+        background: rgba(255, 255, 255, 0.15);  /* Add transparent white background */
+    }
+
+    .loader.redirect .check {
+        border-color: #ffffff;
+        border-width: 4px;  /* Make the arrow thicker */
+    }
+
+    .loader-text {
+        color: #ffffff;
     }
 }
 
@@ -189,4 +420,42 @@ body, html {
     .logintitle {
         font-size: 3vw;
     }
+}
+
+/* Add smooth hover effect for buttons */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal improvements */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background-color: #002708;
+    color: white;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.modal-footer .btn-primary {
+    background-color: #002708;
+    border-color: #002708;
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #004012;
+    border-color: #004012;
 }

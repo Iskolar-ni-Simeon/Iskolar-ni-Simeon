@@ -9,16 +9,26 @@ const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
 router.get('/search', async (req, res, next) => {
     const query = req.query.q || "";
+    const sort = req.query.sort || "relevance"; 
+    const yearRange = req.query.yearRange;
+    const yearFrom = parseInt(req.query.yearFrom);
+    const yearTo = parseInt(req.query.yearTo);
+    const currentYear = new Date().getFullYear();
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')))
     const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
-    if (req.query.q === "" || req.query.q === undefined) {
+    if (query === "" || query === undefined) {
         res.render('./search.ejs', {
             picture: decryptedSession.picture,
             currentRoute: req.originalUrl,
             searchQuery: query,
+            sort: sort,
+            yearRange,
+            yearFrom: yearFrom || '',
+            yearTo: yearTo || '',
             errmessage: "No query identified.",
             searchResults: []
-        })
+        });
+        return;
     } else {
         const searchResults = await fetch(`${process.env.SERVER_API}/search?q=${query}`, {
             method: 'GET',
@@ -28,109 +38,46 @@ router.get('/search', async (req, res, next) => {
             }
         }).then(response => {return response.json()});
 
+        let filteredResults = searchResults.data;
+        
+        // Apply year filters
+        if (yearRange) {
+            try {
+                switch (yearRange) {
+                    case 'last-year':
+                        filteredResults = filteredResults.filter(result => 
+                            parseInt(result.year) >= currentYear - 1
+                        );
+                        break;
+                    case 'last-5-years':
+                        filteredResults = filteredResults.filter(result => 
+                            parseInt(result.year) >= currentYear - 5
+                        );
+                        break;
+                    case 'custom':
+                        if (!isNaN(yearFrom) && !isNaN(yearTo)) {
+                            filteredResults = filteredResults.filter(result => {
+                                const year = parseInt(result.year);
+                                return year >= yearFrom && year <= yearTo;
+                            });
+                        }
+                        break;
+                }
+            } catch (error) {
+                console.error('Error applying year filter:', error);
+            }
+        }
+
         res.render("./search.ejs", {
             picture: decryptedSession.picture,
             currentRoute: req.originalUrl,
             searchQuery: query,
-            searchResults: searchResults.data,
-            errmessage: searchResults.data && searchResults.data.length == [] ? "No results found." : undefined
-        });
-    }
-});
-
-router.get('/advanced', (req, res, next) => {
-    const q = req.query.q || "";
-    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
-    res.render("./advanced.ejs", {
-        picture: decryptedSession.picture,
-        currentRoute: req.originalUrl,
-        server_api: process.env.SERVER_API,
-        query: q
-    });
-});
-
-router.get('/search/advanced', async (req, res, next) => {
-    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
-    const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
-    const fromTitle = req.query.title;
-    const fromAuthor = req.query.authors;
-    const fromKeyword = req.query.keywords;
-    const fromAbstract = req.query.abstract;
-    const startYear = req.query.syear;
-    const endYear = req.query.eyear;
-
-    const data = {
-        title: fromTitle,
-        author: fromAuthor,
-        keyword: fromKeyword,
-        abstract: fromAbstract,
-        syear: startYear,
-        eyear: endYear
-    };
-
-    console.log(data)
-    try {
-        if (Object.values(data).every(value => value === undefined || value === "")) {
-            console.log('no query found')
-            res.render('./advancedsearch.ejs', {
-                picture: decryptedSession.picture,
-                searchResults: [], 
-                currentRoute: req.originalUrl,
-                errmessage: "No query identified.",
-            });
-        } else {
-            try {
-                const searchResults = await fetch(`${process.env.SERVER_API}/advanced`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": authCookie
-                    },
-                    body: JSON.stringify({
-                        titleContains: data.title,
-                        absContains: data.abstract,
-                        authors: data.author,
-                        keywords: data.keyword,
-                        beforeYear: data.syear,
-                        afterYear: data.eyear
-                    }),
-                    credentials: 'include'
-                }).then(res => {return res.json()})
-    
-                console.log("search results:", JSON.stringify(searchResults.data))
-
-                if (searchResults.data && searchResults.data.length == 0) {
-                    console.log(searchResults.data)
-                    res.render("./advancedsearch.ejs", {
-                        picture: decryptedSession.picture,
-                        currentRoute: req.originalUrl,
-                        searchResults: searchResults.data || [],
-                        errmessage: searchResults.data && searchResults.data.length == [] ? "No results found." : undefined
-                    });
-                } else {
-                    res.render("./advancedsearch.ejs", {
-                        picture: decryptedSession.picture,
-                        currentRoute: req.originalUrl,
-                        searchResults: searchResults.data || [],
-                        errmessage: searchResults.data && searchResults.data.length == [] ? "No results found." : undefined
-                    });
-                }
-            } catch (err) {
-                res.render("./advancedsearch.ejs", {
-                    picture: decryptedSession.picture,
-                    currentRoute: req.originalUrl,
-                    server_api: process.env.SERVER_API,
-                    searchResults: [],
-                    errmessage: err
-                });
-            }
-        }
-        
-    } catch (err) {
-        res.render("./advancedsearch.ejs", {
-            picture: decryptedSession.picture,
-            currentRoute: req.originalUrl,
-            server_api: process.env.SERVER_API,
+            sort: sort,
+            yearRange,
+            yearFrom: yearFrom || '',
+            yearTo: yearTo || '',
+            searchResults: filteredResults,
+            errmessage: (!filteredResults || filteredResults.length === 0) ? "No results found." : undefined
         });
     }
 });
@@ -313,6 +260,7 @@ router.get('/keyword/:keywordId', async (req, res, next) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
 router.get('/author/:authorId', async (req, res, next) => {
     const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
     const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
@@ -350,7 +298,5 @@ router.get('/author/:authorId', async (req, res, next) => {
         console.error('Error: ', err)
     }
 });
-
-
 
 module.exports = router;

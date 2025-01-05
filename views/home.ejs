@@ -4,44 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Home | Iskolar ni Simeon</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/home.css">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <%- include('partials/header.ejs') %>
-    <div class="wrapper">
-        <div class="container-sm d-flex justify-content-center align-items-center bodycontainer" style="height: 75dvh;">
-            <div class="d-flex flex-column align-items-center justify-content-center">
-                
-                <img class="mx-auto d-block logo" src="images/insblack.svg" draggable="false">
-                <div class="row g-3 justify-content-center align-items-center d-flex flex-column mt-3">
-                    <div class="col-10 col-md-8 w-100">
-                        <input type="text" id="searchInput" class="form-control form-control-lg fw-bold" aria-label=".form-control-lg" placeholder="Search">
+    <main class="d-flex align-items-center justify-content-center flex-grow-1">
+        <div class="hero-content text-center">
+            <img class="logo mb-4" src="images/insblack.svg" alt="Logo" draggable="false">
+            <h1 class="h2 fw-bold text-success mb-3">Iskolar ni Simeon</h1>
+            <p class="lead text-muted mb-4">Access a comprehensive collection of research papers, theses, and academic chubachenis from General de Jesus University.</p>
+            
+            <div class="search-box mb-4">
+                <div class="input-group input-group-lg mb-3">
+                    <input type="text" 
+                           id="searchInput" 
+                           class="form-control" 
+                           placeholder="Search for titles, authors, or keywords..."
+                           aria-label="Search">
+                    <button class="btn btn-success px-4" type="button" id="searchButton">
+                        <i class="bi bi-search me-2"></i>
+                        Search
+                    </button>
+                </div>
+            </div>
+
+            <div class="features row g-4 text-start mt-2">
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="bi bi-journal-text text-success fs-4"></i>
+                        <h3 class="h6 fw-bold mt-3">Research Papers</h3>
+                        <p class="small text-muted">Access academic papers across multiple disciplines</p>
                     </div>
-                    <div class="col col-auto mt-3 w-10">
-                        <button type="button" id="searchButton" class="btn btn-success fw-bold">Search</button>
-                        <button type="button" id="advancedSearch" class="btn btn-success fw-bold">Advanced Search</button>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="bi bi-clock-history text-success fs-4"></i>
+                        <h3 class="h6 fw-bold mt-3">Latest Additions</h3>
+                        <p class="small text-muted">Recently published works are added regularly</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="bi bi-bookmark-star text-success fs-4"></i>
+                        <h3 class="h6 fw-bold mt-3">Save for Later</h3>
+                        <p class="small text-muted">Save research papers for later use</p>
                     </div>
                 </div>
             </div>
         </div>
-        
-    </div>
+    </main>
     <script>
-        document.getElementById('searchButton').addEventListener('click', function() {
-            const query = document.getElementById('searchInput').value;
-            if (query.trim() === '') {
-                alert('Please enter a search query.');
-            } else {
-                window.location.href = `/search?q=${query}`;
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query === '') {
+                searchInput.classList.add('is-invalid');
+                return;
+            }
+            window.location.href = `/search?q=${encodeURIComponent(query)}`;
+        }
+
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
             }
         });
-
-        document.getElementById('advancedSearch').addEventListener('click', function() {
-            const query = document.getElementById('searchInput').value;
-            window.location.href = `/advanced${query.trim() === '' ? '' : `?q=${query}`}`;
+        searchInput.addEventListener('input', () => {
+            searchInput.classList.remove('is-invalid');
         });
     </script>
     <%- include('partials/footer.ejs') %>

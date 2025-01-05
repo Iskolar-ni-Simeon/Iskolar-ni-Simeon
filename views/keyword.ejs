@@ -10,21 +10,32 @@
 </head>
 <body>
     <%- include('partials/header.ejs') %>
-    <div class="outer-container">
-        <div class="row">
-            <div class="text-center ml-5">
-                <p class="display-5 text-left mt-5 fw-bold">Theses with keyword: <i><%= keyword.word %></i></p>
-                <p class="text-muted">Found <%= keyword.theses.length %> <%= (keyword.theses.length > 1 ? 'theses' : 'thesis') %>: </p>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="results-container d-flex justify-content-center flex-wrap">
-                <%- include('partials/resultsContainer.ejs') %>
+    <main class="keyword-page">
+        <div class="keyword-hero mb-4 bg-success bg-opacity-10">
+            <div class="container py-4">
+                <div class="text-center">
+                    <h1 class="display-6 fw-bold text-success mb-2">Keyword: "<i><%= keyword.word %></i>"</h1>
+                    <p class="lead text-muted">
+                        <%= keyword.theses.length %> <%= (keyword.theses.length > 1 ? 'theses' : 'thesis') %> found
+                    </p>
                 </div>
             </div>
         </div>
-    </div>
-    <%- include('partials/footer.ejs') %>
 
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="results-wrapper card border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="results-container">
+                                <%- include('partials/resultsContainer.ejs', {searchResults: keyword.theses, hideSort: true, sort: 'newest', searchQuery: '', errmessage: 'No theses found with this keyword.' }) %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <%- include('partials/footer.ejs') %>
 </body>
 </html>

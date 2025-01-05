@@ -1,11 +1,63 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css");
 
-body {
-    overflow: hidden; /* Prevent whole page scroll */
-    padding-bottom: 2rem; /* Add padding to prevent content cut-off */
+* {
     font-family: 'Montserrat', sans-serif;
-    padding-top: 50px;
-    padding-bottom: 80px;
+}
+
+
+.keyword-page {
+    min-height: calc(100vh - 120px); /* Account for navbar and footer */
+    background: #ffffff;
+    padding: 1rem;
+    padding-bottom: 2rem; /* Add bottom padding for footer */
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 60px);
+}
+
+
+.keyword-hero {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    margin-bottom: 1rem !important;
+    padding: 3rem 0;  /* Added padding to match author page */
+}
+
+.results-wrapper {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    padding: 1rem 0;
+}
+
+.results-container {
+    min-height: 200px;
+}
+
+.card {
+    margin-bottom: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: fadeDrop 0.5s ease-out forwards;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.save-btn {
+    opacity: 1; /* Changed from 0 to always show */
+}
+
+/* Remove or comment out the hover opacity change */
+/* .card:hover .save-btn {
+    opacity: 1;
+} */
+
+.save-btn.active {
+    opacity: 1;
+    background-color: #198754;
+    color: white;
+    border-color: #198754;
 }
 
 .results {
@@ -21,11 +73,6 @@ body {
     min-height: 100vh; /* Using min-height instead of height */
 }
 
-.card {
-    margin-bottom: 1rem;
-    animation: fadeDrop 0.5s ease-out forwards;
-}
-
 .results-inner-container {
     padding: 1rem;
     border: 2px solid #ddd; 
@@ -36,6 +83,21 @@ body {
     overflow-y: auto;
     height: 50dvh;
     width: 80%;
+}
+
+.pagination {
+    margin-bottom: 0;
+}
+
+.pagination .page-link {
+    color: #198754;
+    border-color: #198754;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #198754;
+    border-color: #198754;
+    color: white;
 }
 
 @keyframes fadeDrop {
@@ -50,11 +112,39 @@ body {
 }
 
 @media (max-width: 768px) {
-    .card {
-        width: 100%; /* Adjusted width */
-        font-size: small;
+    .keyword-page {
+        background-color: #f8f9fa;
+        padding: 0;
+        min-height: 100dvh;
     }
+
+    .keyword-hero {
+        background-color: #fff;
+        padding: 1.5rem 0;
+        margin-bottom: 1rem;
+    }
+
+    .results-wrapper {
+        background: #fff;
+        margin: 0.5rem;
+        border-radius: 0.5rem;
+    }
+
+    .results-wrapper {
+        border-radius: 0;
+        padding: 1rem;
+    }
+
+    .card {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
     .results-inner-container {
         width: 90%;
+    }
+
+    .save-btn {
+        opacity: 1;
     }
 }

@@ -9,15 +9,25 @@
     <link rel="stylesheet" href="/css/404.css">
 </head>
 <body>
-    <div class="wrapper">
-        <%- include('partials/header.ejs') %>
-        <div class="container-sm d-flex justify-content-center align-items-center bodycontainer" style="height: 75dvh;">
-            <div class="d-flex flex-column align-items-center justify-content-center">
-                <h1 class="display-1 fw-bold">404</h1>
-                <p class="lead">Okay lang 'yan. Balik ka sa <a href="/" style="text-decoration: none; color: #000;" class="fw-bold">homepage</a>.</p>
+    <%- include('partials/header.ejs') %>
+    <main class="error-page">
+        <div class="container">
+            <div class="error-content text-center">
+                <div class="error-icon mb-4">
+                    <i class="bi bi-exclamation-circle"></i>
+                </div>
+                <h1 class="display-1 fw-bold text-success mb-3">404</h1>
+                <h2 class="h4 mb-4">Not found.</h2>
+                <div class="d-flex justify-content-center">
+                    <p class="lead mb-4">Okay lang 'yan. Maaari ba tayong bumalik sa umpisa?</p>
+                </div>
+                <a href="/" class="btn btn-success btn-lg px-4">
+                    <i class="bi bi-house-door me-2"></i>
+                    Back to homepage
+                </a>
             </div>
         </div>
-        <%- include('partials/footer.ejs') %>
-    </div>
+    </main>
+    <%- include('partials/footer.ejs') %>
 </body>
 </html>

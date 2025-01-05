@@ -1,12 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css");
 
 body {
     font-family: 'Montserrat', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
     margin: 0; 
     padding: 0;
     overflow-x: hidden;
-}
+} 
 
+.no-select {
+    user-select: none;
+    -webkit-user-select: none; 
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+  
 .container {
     display: flex;
     flex-direction: row;
@@ -66,54 +74,161 @@ svg {
 
 .card-utils {
     gap: 1rem;
-    margin: 0;
+    margin-top: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
 }
 
-.card-utils .read {
-    background-color: rgb(0, 36, 4);
-    padding: 0.5rem 1rem;
-    color: #fff;
+.btn-success,
+.btn-outline-success {
     text-transform: uppercase;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
+    font-weight: 600;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: row;
 }
 
-.card-utils .read:hover {
-    background-color: transparent;
-    color: rgb(0, 36, 4);
-    border: 1px solid rgb(0, 36, 4);
+.btn-success:hover {
+    background-color: #157347;
+    border-color: #157347;
 }
 
-.card-utils .save {
-    background-color: transparent;
-    border: 1px solid rgb(0, 36, 4);
-    color: rgb(0, 36, 4);
-    padding: 0.5rem 1rem;
-    text-transform: uppercase;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-}
-
-.card-utils .save:hover {
-    background-color: rgb(0, 36, 4);
+.btn-outline-success:hover {
+    background-color: #198754;
     color: #fff;
+}
+
+.thesis-page {
+    margin-top: 60px;
+    min-height: calc(100vh - 120px);
+    background-color: #f8f9fa;
+    padding-bottom: 2rem;
+}
+
+.thesis-hero {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.thesis-hero h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #198754;
+}
+
+.content-wrapper, .card {
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.abstract {
+    line-height: 1.6;
+    color: #4a4a4a;
+}
+
+.metadata-group h6 {
+    color: #198754;
+}
+
+.submeta {
+    font-size: 0.95rem;
+}
+
+.submeta a {
+    transition: color 0.2s;
+}
+
+.submeta a:hover {
+    color: #157347 !important;
+}
+
+.btn.read {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.btn.read:hover {
+    background-color: #157347;
+    border-color: #157347;
+}
+
+.btn.save:hover {
+    background-color: #198754;
+    color: #fff;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+.citation-container {
+    position: relative;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+#citationText {
+    padding-right: 2.5rem;
+    resize: none;
+    background-color: #f8f9fa;
+}
+
+.citation-text {
+    padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+    min-height: 100px;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    cursor: default;
+    line-height: 1.5;
+}
+
+.citation-text:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #198754;
+}
+
+.citation-text i {
+    font-style: italic;
+}
+
+.modal-content {
+    border-radius: 0.75rem;
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }
 
 @media (max-width: 992px) {
+    .thesis-hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .container {
+        padding: 0.5rem;
+    }
+
+    .content-wrapper, .card {
+        margin: 0.5rem;
+    }
+
     .container {
         display: flex;
         flex-direction: column;
@@ -126,7 +241,7 @@ svg {
 
     .container .thesis,
     .container .card {
-        width: 100%; /* Ensures both elements take full width on mobile */
+        width: 100%;
         margin: 0;
     }
 }
