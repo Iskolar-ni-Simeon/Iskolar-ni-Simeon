@@ -239,8 +239,8 @@ router.get('/keyword/:keywordId', async (req, res, next) => {
                 currentRoute: req.originalUrl,
             });
         }
-
         const data = await response.json();
+    
         if (!data.ok) {
             res.render("./404.ejs", {
                 picture: decryptedSession.picture,
