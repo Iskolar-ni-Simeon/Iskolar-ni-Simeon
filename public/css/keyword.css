@@ -5,17 +5,16 @@
     font-family: 'Montserrat', sans-serif;
 }
 
-body {
-    padding-top: 50px;
-}
 
 .keyword-page {
-    margin-top: 0;
-    min-height: calc(100vh);
-    padding: 0;
+    min-height: calc(100vh - 120px); /* Account for navbar and footer */
+    background: #ffffff;
+    padding: 1rem;
+    padding-bottom: 2rem; /* Add bottom padding for footer */
     background-color: #f8f9fa;
-    margin-bottom: 200px;
+    min-height: calc(100vh - 60px);
 }
+
 
 .keyword-hero {
     border-bottom: 1px solid rgba(0,0,0,0.1);
