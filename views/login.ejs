@@ -41,6 +41,7 @@
       <img src="images/inswhite.svg" alt="Logo" draggable="false">
       <h1 class="montserrat-800 logintitle"></h1>
       <div id="buttonDiv" class="signin" data-bs-toggle="modal"></div>
+      <button class="btn-success-outline" id="guest">Continue as guest</button>
       <div id="loader" class="loader">
         <div class="check"></div>
         <div class="error-x"></div>
@@ -117,7 +118,6 @@ document.addEventListener("DOMContentLoaded", function() {
         return response.json();
       })
       .then(data => {
-        console.log(data);
         localStorage.setItem('savedTheses', JSON.stringify(data.saved.data.map(thesis => thesis.id || [])));
         fetch('/login/setup-session', {
           method: 'POST',
@@ -145,6 +145,55 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     }
   }
+  document.getElementById("guest").addEventListener('click', () => {
+    // isshow mo 'yung modal.
+    var termsModal = new bootstrap.Modal(document.getElementById('termsModal'));
+    termsModal.show();
+
+    understood.disabled = true;
+    understood.innerText = "Read the Terms and Conditions first.";
+    var termsContent = document.getElementById("termsModal").getElementsByClassName("modal-body")[0];
+    
+    termsContent.onscroll = function() {
+      if ((termsContent.scrollTop + termsContent.clientHeight) >= termsContent.scrollHeight - 1) {
+        console.log('Scroll reached bottom');
+        understood.innerText = "I Understand";
+        understood.disabled = false;
+      }
+    }
+    understood.onclick = function () {
+      fetch("<%= server_api %>", {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json',
+          'Accept' : 'application/json',
+          'Origin' : "<%= origin %>"
+        },
+        body: {
+          signinas : 'guest',
+          API_KEY: "<% libraryKey %>"
+        }
+      }).then(response => {
+       if (response.ok) {
+            console.log("ok sia :>>>")
+          }
+        console.log(response.json())
+        return response.json()
+      }).then(data => {
+          fetch('/login/setup-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type' : 'application/json'
+          },
+          body: {
+            userId: "guest",
+            name: "guest",
+            picture: "public/images/guest.png",
+            jwtToken: data.jwtToken
+          }
+      })
+    })}
+      
 
   function showSuccess(message) {
     loader.classList.remove('error');
@@ -194,6 +243,8 @@ document.addEventListener("DOMContentLoaded", function() {
     );
     google.accounts.id.prompt();
   }
+})
+
 });
 </script>
 
