@@ -99,6 +99,19 @@
         </div>
     </main>
 
+    <!-- Guest Save Toast -->
+    <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1070">
+        <div id="guestSaveToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="30000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    Please log in to save theses to your account.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <!-- Citation Modal -->
     <div class="modal fade" id="citeModal" tabindex="-1" aria-labelledby="citeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -133,13 +146,18 @@
         </div>
     </div>
 
-    <%- include('partials/footer.ejs') %>
+    <% if (userId === "guest") { %>
+        <%- include('partials/footer.ejs') %>
+    <% } %>
+
+
     
 </body>
 <script>
     document.addEventListener('contextmenu', (e) => e.preventDefault());
     const thesisId = '<%= thesisId %>';
     const savedStatus = document.querySelector('.savedStatus');
+    const toast = new bootstrap.Toast(document.getElementById('guestSaveToast'));
     let savedTheses = localStorage.getItem('savedTheses');
     savedTheses = savedTheses ? new Set(JSON.parse(savedTheses)) : new Set();
     console.log('Saved Theses from LocalStorage:', savedTheses);
@@ -148,6 +166,13 @@
     savedStatus.innerHTML = method === 'add' ? 'Save' : 'Saved';
 
     savedStatus.addEventListener('click', () => {
+        const userId = '<%= locals.userId %>';
+        
+        if (userId === 'guest') {
+            toast.show();
+            return;
+        }
+
         savedStatus.disabled = true;
         savedStatus.innerHTML = `
             <span class="spinner-border spinner-border-sm text-success" role="status" aria-hidden="true"></span>

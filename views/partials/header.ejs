@@ -15,7 +15,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                       <a class="dropdown-item <%= currentRoute === '/me/library' ? 'fw-bold' : ''%>" href="/me/library">My Library</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="/login/logout">Sign out</a>
+                      <a class="dropdown-item" href="/auth/logout">Sign out</a>
                     </div>
                   </li>
             </ul>
@@ -26,7 +26,7 @@
         </button>
 
         <div class="navbar-brand">
-            <img src="<%= picture %>" width="35" height="35" class="d-inline-block align-top rounded-circle" alt="Profile Picture">
+            <img src="<%= picture %>" width="35" height="35" class="d-inline-block align-top rounded-circle" alt="Profile Picture" id="profilePic">
         </div>
     </nav>
 
@@ -41,7 +41,7 @@
             </li>
             <hr>
             <li class="nav-item d-lg-none">
-                <a class="nav-link" href="/login/logout">Sign out</a>
+                <a class="nav-link" onclick="localStorage.clear(); window.location.href = '/auth/logout';">Sign out</a>
             </li>
         </ul>
          <p class="footer">&copy; Group INS</p>
@@ -54,6 +54,20 @@
         function toggleMenu() {
             const menu = document.getElementById('fullscreenMenu');
             menu.classList.toggle('show');
+        }
+
+        // Easter egg for guest users
+        if ("<%= picture %>" === "/images/guest.png") {
+            let clickCount = 0;
+            const profilePic = document.getElementById('profilePic');
+            
+            profilePic.addEventListener('click', () => {
+                clickCount++;
+                if (clickCount === 10) {
+                    profilePic.src = '/images/sirronnie.png';
+                    profilePic.classList.add('easter-egg');
+                }
+            });
         }
     </script>
     

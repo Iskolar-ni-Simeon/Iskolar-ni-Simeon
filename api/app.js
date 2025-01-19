@@ -3,12 +3,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
 const favicon = require('serve-favicon');
+const cors = require('cors');  // Add this line
 
 const indexRouter = require('../routes/indexRouter.js');
 const loginRouter = require('../routes/loginRouter.js');
 const thesisRouter = require('../routes/thesisRouter.js');
 
-const { authMiddleware } = require('../public/scripts/auth');
+const { authMiddleware, sessionMiddleware } = require('../public/scripts/middleware');
 const { SessionAuthentication } = require('../public/scripts/auth');
 
 const app = express();
@@ -21,14 +22,30 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(favicon(path.join(__dirname, '../public/images/favicon.ico')));
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/static', express.static('../static'));
+
+// Update CORS configuration
+app.use(cors({
+    origin: true, // Allow all origins, or specify array of allowed domains
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin'],
+    exposedHeaders: ['Set-Cookie']
+}));
+
+// Move this before other middleware
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/login", loginRouter);
+app.use(sessionMiddleware);
+app.use(authMiddleware);
+
+app.use("/auth", loginRouter);
 app.use('/pdfjs', express.static(path.join(__dirname, '../web')));
 
-app.use("/", authMiddleware, indexRouter);
-app.use("/", authMiddleware, thesisRouter);
+app.use("/", indexRouter);
+app.use("/", thesisRouter);
+
+
 
 app.get('/warning', (req, res) => {
     res.render("./warning.ejs", {

@@ -53,6 +53,15 @@
                                     </h5>
                                     <hr>
                                     <div class="filter-group">
+                                        <h6 class="fw-bold mb-3">Sort by</h6>
+                                        <select class="form-select mb-3" id="sortSelect" name="sort">
+                                            <option value="relevance" <%= sort === 'relevance' || !sort ? 'selected' : '' %>>Relevance</option>
+                                            <option value="newest" <%= sort === 'newest' ? 'selected' : '' %>>Newest first</option>
+                                            <option value="oldest" <%= sort === 'oldest' ? 'selected' : '' %>>Oldest first</option>
+                                        </select>
+                                    </div>
+                                    <hr>
+                                    <div class="filter-group">
                                         <h6 class="fw-bold mb-3">Year Range</h6>
                                         <div class="mb-3">
                                             <select class="form-select mb-3" id="yearRange" name="yearRange">
@@ -97,26 +106,6 @@
                                     <h4 class="mb-1 text-success">Search Results</h4>
                                     <p class="text-muted mb-0">Found <%= searchResults.length %> results for "<%=
                                                 searchQuery %>"</p>
-                                </div>
-                                <div class="dropdown">
-                                    <form id="sortForm" method="GET" action="/search">
-                                        <input type="hidden" name="q" value="<%= searchQuery %>">
-                                        <input type="hidden" name="sort" id="sortInput"
-                                            value="<%= sort || 'relevance' %>">
-                                        <button class="btn btn-outline-success dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown">
-                                            Sort by: <%= sort ? sort.charAt(0).toUpperCase() + sort.slice(1)
-                                                : 'Relevance' %>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item sort-option" href="#"
-                                                    data-sort="relevance">Relevance</a></li>
-                                            <li><a class="dropdown-item sort-option" href="#" data-sort="newest">Newest
-                                                    first</a></li>
-                                            <li><a class="dropdown-item sort-option" href="#" data-sort="oldest">Oldest
-                                                    first</a></li>
-                                        </ul>
-                                    </form>
                                 </div>
                             </div>
                             <hr>
@@ -182,12 +171,15 @@
                 // Create new URL with search parameters
                 const newUrl = new URL('/search', window.location.origin);
 
-                // Preserve query and sort
+                // Preserve query
                 const query = searchParams.get('q');
                 if (query) newUrl.searchParams.set('q', query);
 
-                const sort = searchParams.get('sort');
-                if (sort) newUrl.searchParams.set('sort', sort);
+                // Add sort parameter
+                const sortValue = document.getElementById('sortSelect').value;
+                if (sortValue && sortValue !== 'relevance') {
+                    newUrl.searchParams.set('sort', sortValue);
+                }
 
                 // Add year range parameters
                 const selectedRange = yearRangeSelect.value;
@@ -268,6 +260,7 @@
             });
         </script>
 </body>
-<%- include('partials/footer.ejs') %>
-
+<% if (userId === "guest") { %>
+    <%- include('partials/footer.ejs') %>
+<% } %>
 </html>

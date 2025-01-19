@@ -6,16 +6,16 @@ require('dotenv').config();
 const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
 router.get('/', (req, res) => {
-    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(decodeURIComponent(req.cookies.session), 'base64').toString('utf8')));
+    console.log(res.locals);
     res.render("./home.ejs", {
-        picture: decryptedSession.picture,
+        picture: res.locals.picture,
         currentRoute: req.originalUrl,
+        userId: res.locals.userId,
     })
 });
 
 router.get('/me/library', async (req, res) => {
-    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(decodeURIComponent(req.cookies.session), 'base64').toString('utf8')));
-    const userId = decryptedSession.userId;
+    const userId = res.locals.userId;
     const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = 6; // Changed from 10 to 6
@@ -42,11 +42,11 @@ router.get('/me/library', async (req, res) => {
         const paginatedResults = searchResults.data.slice(startIndex, endIndex);
 
         res.render("./saved.ejs", {
-            picture: decryptedSession.picture,
+            picture: res.locals.picture,
             currentRoute: req.originalUrl,
-            name: decryptedSession.name,
+            name: res.locals.name,
             searchResults: paginatedResults,
-            errmessage: 'You have no saved theses. Click the <strong>save</strong> button when you find a thesis you like to save it here.',
+            errmessage: (res.locals.userId === "guest") ? "Login to enable this functionality." : "You have no saved items. Click the <strong>save</strong> button on the search results to save an item.",
             pagination: {
                 currentPage: page,
                 totalPages: totalPages,
@@ -60,9 +60,8 @@ router.get('/me/library', async (req, res) => {
 });
 
 router.get('/about', (req, res) => {
-    const decryptedSession = sessAuth.decrypt(JSON.parse(Buffer.from(decodeURIComponent(req.cookies.session), 'base64').toString('utf8')));
     res.render("./about.ejs", {
-        picture: decryptedSession.picture,
+        picture: res.locals.picture,
         currentRoute: req.originalUrl,
     })
 });

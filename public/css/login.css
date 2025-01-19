@@ -283,6 +283,68 @@ body, html {
     transition: opacity 0.3s ease;
 }
 
+.separator {
+    width: 80%;
+    margin: 15px auto;
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.guest-btn {
+    background: transparent;
+    border: none;
+    color: #28a745;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    opacity: 1;
+    visibility: visible;
+}
+
+.guest-btn:hover {
+    color: #218838;
+}
+
+.divider {
+    width: 80%;
+    margin: 15px auto;
+    position: relative;
+    text-align: center;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 30px);
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.divider::before {
+    left: 0;
+}
+
+.divider::after {
+    right: 0;
+}
+
+.divider-text {
+    background-color: #fff;
+    padding: 0 15px;
+    color: #6c757d;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+}
+
 @keyframes dropFadeIn {
     to {
         opacity: 1;
@@ -407,6 +469,28 @@ body, html {
 
     .loader-text {
         color: #ffffff;
+    }
+
+    .separator {
+        border-top-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .guest-btn {
+        color: #4caf50;
+    }
+
+    .guest-btn:hover {
+        color: #81c784;
+    }
+
+    .divider::before,
+    .divider::after {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .divider-text {
+        background-color: transparent;
+        color: rgba(255, 255, 255, 0.7);
     }
 }
 

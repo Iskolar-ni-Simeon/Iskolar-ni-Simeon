@@ -36,6 +36,9 @@
             </div>
         </div>
     </main>
-    <%- include('partials/footer.ejs') %>
+    <% if (userId === "guest") { %>
+        <%- include('partials/footer.ejs') %>
+    <% } %>
+
 </body>
 </html>

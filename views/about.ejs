@@ -22,5 +22,9 @@
                 </div>
             </div>
         </div>
+        <% if (userId === "guest") { %>
+            <%- include('partials/footer.ejs') %>
+        <% } %>
+
 </body>
 </html>

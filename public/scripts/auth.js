@@ -37,29 +37,4 @@ class SessionAuthentication {
     }
 }
 
-const authMiddleware = (req, res, next) => { 
-    if (req.path === '/login' || req.path === '/setup-session' || req.path === '/warning') {
-        return next();
-    }
-    if (req.cookies.session) {
-        const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
-
-        try {
-            const sessionData = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.session, 'base64').toString('utf8')));
-            const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
-            
-            if (sessionData &&  authCookie) {
-                next();
-            }
-        } catch (err) {
-            res.redirect('/warning')
-        }
-        
-    } else {
-        res.redirect('/login');
-    }
-};
-
-
-
-module.exports = {authMiddleware, SessionAuthentication}
+module.exports = {SessionAuthentication}

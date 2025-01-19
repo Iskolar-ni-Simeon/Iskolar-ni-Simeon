@@ -135,9 +135,28 @@ if (sort === 'oldest') {
         </div>
     </div>
 
+    <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1070">
+        <div id="guestSaveToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="30000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    Please log in to save theses to your account.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Saved theses management
+        const toast = new bootstrap.Toast(document.getElementById('guestSaveToast'));
+
         const savedTheses = new Set(JSON.parse(localStorage.getItem('savedTheses') || '[]'));
+        
+        if ("<%= userId %>" === "guest") {
+            document.querySelectorAll('.save-btn').forEach(button => {
+                button.disabled = false;
+            });
+        }
 
         document.querySelectorAll('.save-btn').forEach(button => {
             const thesisId = button.dataset.thesisId;
@@ -149,6 +168,13 @@ if (sort === 'oldest') {
             }
 
             button.addEventListener('click', async () => {
+                const userId = '<%= locals.userId %>';
+                
+                if (userId === 'guest') {
+                    toast.show();
+                    return;
+                }
+
                 if (button.disabled) return;
                 
                 const method = savedTheses.has(thesisId) ? 'remove' : 'add';
@@ -216,5 +242,6 @@ if (sort === 'oldest') {
                 }
             });
         });
+
     </script>
 <% } %>

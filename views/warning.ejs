@@ -21,13 +21,16 @@
                 <div class="d-flex justify-content-center">
                     <p class="lead mb-4">Your credentials are invalid. Please re-authenticate with the platform.</p>
                 </div>
-                <a href="/login/logout" class="btn btn-warning btn-lg px-4">
+                <a href="/auth/logout" class="btn btn-warning btn-lg px-4">
                     <i class="bi bi-box-arrow-right me-2"></i>
                     Login again
                 </a>
             </div>
         </div>
     </main>
-    <%- include('partials/footer.ejs') %>
+    <% if (userId === "guest") { %>
+        <%- include('partials/footer.ejs') %>
+    <% } %>
+
 </body>
 </html>
