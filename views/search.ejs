@@ -11,6 +11,7 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/css/search.css">
+    <meta name="theme-color" content="#296c32">
 </head>
 
 <body>
@@ -260,7 +261,7 @@
             });
         </script>
 </body>
-<% if (userId === "guest") { %>
+<% if (userId.split('-')[0] === "guest") { %>
     <%- include('partials/footer.ejs') %>
-<% } %>
+        <% } %>
 </html>

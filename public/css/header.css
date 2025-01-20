@@ -83,6 +83,28 @@
     transform: translateY(0);
 }
 
+.navbar {
+    background-color: rgb(41, 108, 50, 0.95) !important;
+    backdrop-filter: blur(8px);
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: white !important;
+}
+
+.navbar-light .navbar-nav .nav-link.active {
+    color: white !important;
+    font-weight: bold;
+}
+
+.navbar-light .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.75)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+.navbar-light .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
 @media (max-width: 768px) {
   #fullscreenMenu {
     padding: 0 20px;

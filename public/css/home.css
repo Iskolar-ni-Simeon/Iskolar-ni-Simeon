@@ -178,6 +178,15 @@ main {
         padding: 1rem;
         margin-bottom: 40px; /* Smaller margin for mobile */
     }
+
+    .search-text {
+        display: none;
+    }
+
+    .btn-success {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
 }
 
 @media (max-width: 767px) {

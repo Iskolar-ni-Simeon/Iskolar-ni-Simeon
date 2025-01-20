@@ -15,28 +15,35 @@ router.get('/search', async (req, res, next) => {
     const yearTo = parseInt(req.query.yearTo);
     const currentYear = new Date().getFullYear();
     const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
-    if (query === "" || query === undefined) {
-        res.render('./search.ejs', {
-            picture: res.locals.picture,
-            currentRoute: req.originalUrl,
-            searchQuery: query,
-            sort: sort,
-            yearRange,
-            yearFrom: yearFrom || '',
-            yearTo: yearTo || '',
-            errmessage: "No query identified.",
-            searchResults: []
-        });
-        return;
-    } else {
-        const searchResults = await fetch(`${process.env.SERVER_API}/search?q=${query}`, {
+
+    try {
+        if (query === "" || query === undefined) {
+            return res.render('./search.ejs', {
+                picture: res.locals.picture,
+                currentRoute: req.originalUrl,
+                searchQuery: query,
+                sort: sort,
+                yearRange,
+                yearFrom: yearFrom || '',
+                yearTo: yearTo || '',
+                errmessage: "No query identified.",
+                searchResults: []
+            });
+        }
+
+        const response = await fetch(`${process.env.SERVER_API}/search?q=${query}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': authCookie
             }
-        }).then(response => {return response.json()});
+        });
 
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const searchResults = await response.json();
         let filteredResults = searchResults.data;
         
         // Apply year filters
@@ -78,6 +85,19 @@ router.get('/search', async (req, res, next) => {
             searchResults: filteredResults,
             errmessage: (!filteredResults || filteredResults.length === 0) ? "No results found." : undefined,
             userId: res.locals.userId
+        });
+    } catch (error) {
+        console.error('Search error:', error);
+        return res.render('./search.ejs', {
+            picture: res.locals.picture,
+            currentRoute: req.originalUrl,
+            searchQuery: query,
+            sort: sort,
+            yearRange,
+            yearFrom: yearFrom || '',
+            yearTo: yearTo || '',
+            errmessage: "Error connecting to search service. Please try again later.",
+            searchResults: []
         });
     }
 });
@@ -122,6 +142,14 @@ router.get('/thesis/:id', async (req, res, next) => {
 });
 
 router.post('/save/:id', async (req, res, next) => {
+    // Prevent guest users from saving
+    if (res.locals.userId.split('-')[0] === 'guest') {
+        return res.status(403).json({
+            ok: false,
+            message: 'Guest users cannot save theses'
+        });
+    }
+
     const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
     const method = req.body.method;
 

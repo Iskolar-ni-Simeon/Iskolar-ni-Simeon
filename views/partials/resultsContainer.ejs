@@ -32,6 +32,18 @@ function calculateScore(result, query) {
            (countMatches(result.keywords.join(' ')) * 2);
 }
 
+function highlightAuthorName(author, query) {
+    if (!query) return author;
+    const searchTerms = query.split(/\s+/).filter(term => term.length > 0);
+    const regex = new RegExp(`(${searchTerms.join('|')})`, 'gi');
+    
+    // If any part of the author name matches the query, highlight the whole name
+    if (regex.test(author)) {
+        return `<strong class="text-match">${author}</strong>`;
+    }
+    return author;
+}
+
 // Initialize pagination
 const itemsPerPage = 5;
 const totalPages = Math.ceil(searchResults.length / itemsPerPage);
@@ -54,10 +66,6 @@ if (sort === 'oldest') {
     </div>
 <% } else { %>
     <div class="results-container">
-        <% if (!hideSort) { %>
-            <!-- ...existing sorting controls code... -->
-        <% } %>
-        
         <div id="searchResults">
             <% searchResults.forEach((result, index) => { %>
                 <% 
@@ -65,7 +73,8 @@ if (sort === 'oldest') {
                     const parts = author.split(' ');
                     const lastName = parts.pop();
                     const initials = parts.map(part => part.charAt(0) + '.').join(' ');
-                    return `${lastName}, ${initials}`;
+                    const formattedName = `${lastName}, ${initials}`;
+                    return highlightAuthorName(formattedName, searchQuery);
                 }).join(', ');
                 %>
                 <div class="card border-0 shadow-sm hover-card mb-3 result-item" data-page="<%= Math.floor(index / itemsPerPage) + 1 %>">
@@ -80,7 +89,7 @@ if (sort === 'oldest') {
                         </h5>
                         <div class="meta mb-2">
                             <i class="bi bi-people"></i>
-                            <%- highlightMatch(authors, searchQuery) %>
+                            <%- authors %>
                         </div>
                         <div class="meta mb-3">
                             <i class="bi bi-calendar"></i>
@@ -149,18 +158,20 @@ if (sort === 'oldest') {
 
     <script>
         const toast = new bootstrap.Toast(document.getElementById('guestSaveToast'));
-
         const savedTheses = new Set(JSON.parse(localStorage.getItem('savedTheses') || '[]'));
-        
-        if ("<%= userId %>" === "guest") {
-            document.querySelectorAll('.save-btn').forEach(button => {
-                button.disabled = false;
-            });
-        }
 
         document.querySelectorAll('.save-btn').forEach(button => {
             const thesisId = button.dataset.thesisId;
             const saveText = button.querySelector('.save-text');
+            const userId = '<%= locals.userId %>';
+            
+            // Disable save button for guest users
+            if (userId.split('-')[0] === 'guest') {
+                button.disabled = true;
+                button.title = 'Please log in to save theses';
+                saveText.textContent = 'Log in to save';
+                return;
+            }
             
             if (savedTheses.has(thesisId)) {
                 button.classList.add('active');
@@ -170,7 +181,7 @@ if (sort === 'oldest') {
             button.addEventListener('click', async () => {
                 const userId = '<%= locals.userId %>';
                 
-                if (userId === 'guest') {
+                if (userId.split('-')[0] === 'guest') {
                     toast.show();
                     return;
                 }

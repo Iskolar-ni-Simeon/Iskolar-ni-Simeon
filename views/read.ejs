@@ -19,20 +19,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="/css/read.css">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-        iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-        }
-    </style>
 </head>
 <body>
     <iframe
@@ -41,6 +27,10 @@
         height="100%"
         style="border: none;">
     </iframe>
+
+    <div class="watermark">
+        &copy; GENERAL DE JESUS COLLEGE
+    </div>
 
     <!-- Tools Button and Menu -->
     <div class="tools-container">
@@ -131,8 +121,15 @@
         const savedTheses = new Set(JSON.parse(localStorage.getItem('savedTheses') || '[]'));
         const saveBtn = document.querySelector('.save-btn');
         const thesisId = '<%= typeof thesisId !== "undefined" ? thesisId : "" %>';
+        const userId = '<%= locals.userId %>';
 
         if (saveBtn && thesisId) {
+            // Disable save button for guest users
+            if (userId.split('-')[0] === 'guest') {
+                saveBtn.disabled = true;
+                saveBtn.title = 'Please log in to save theses';
+            }
+
             // Initialize save button state
             if (savedTheses.has(thesisId)) {
                 saveBtn.classList.add('active');
@@ -141,14 +138,6 @@
             }
 
             saveBtn.addEventListener('click', async () => {
-                const userId = '<%= locals.userId %>';
-            
-                if (userId === 'guest') {
-                    toast.show();
-                    return;
-                }
-
-                if (saveBtn.disabled) return;
                 
                 const method = savedTheses.has(thesisId) ? 'remove' : 'add';
                 saveBtn.disabled = true;

@@ -3,7 +3,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
 const favicon = require('serve-favicon');
-const cors = require('cors');  // Add this line
+const cors = require('cors'); 
 
 const indexRouter = require('../routes/indexRouter.js');
 const loginRouter = require('../routes/loginRouter.js');
@@ -32,7 +32,6 @@ app.use(cors({
     exposedHeaders: ['Set-Cookie']
 }));
 
-// Move this before other middleware
 app.use(express.json());
 app.use(cookieParser());
 
@@ -45,7 +44,9 @@ app.use('/pdfjs', express.static(path.join(__dirname, '../web')));
 app.use("/", indexRouter);
 app.use("/", thesisRouter);
 
-
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 
 app.get('/warning', (req, res) => {
     res.render("./warning.ejs", {
@@ -62,6 +63,14 @@ app.all('*', authMiddleware, (req, res) => {
     });
 });
 
+// Add error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Global error handler:', err);
+    res.status(500).json({
+        error: 'Internal Server Error',
+        message: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+});
 
 app.listen(PORT, function () {
     console.log(`Listening on port: ${PORT}`);

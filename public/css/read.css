@@ -16,7 +16,20 @@ iframe {
     right: 2rem;
     z-index: 1000;
 }
-
+.watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-20deg);
+    font-size: 50px;
+    color: rgba(0, 0, 0, 0.15);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1000;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
 .tools-menu {
     position: absolute;
     bottom: 100%;

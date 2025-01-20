@@ -6,6 +6,16 @@ require('dotenv').config();
 
 const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
+// Add helper function for cookie settings
+function getCookieConfig() {
+  return {
+    maxAge: 1000 * 60 * 60,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
+  };
+}
+
 router.get('/login', (req, res) => {
     const origin = process.env.origin
     res.render('login', {
@@ -19,64 +29,38 @@ router.get('/login', (req, res) => {
 
 router.post('/setup-session', (req, res) => {
     const { userId, name, picture, jwtToken } = req.body;
-    if (userId) {
-        const encryptedAuthCookie = Buffer.from(JSON.stringify(sessAuth.encrypt(jwtToken))).toString('base64');
-        res.cookie('authorization', encryptedAuthCookie, { 
-            maxAge: 1000 * 60 * 60, 
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax'
-        });
+    if (!userId) return res.status(400).send("Invalid user data");
 
-        const sessionData = {
-            userId,
-            name,
-            picture
-        };
-        const encryptedData = Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64');
-        res.locals = sessionData;
-        res.cookie('session', encryptedData, { 
-            maxAge: 1000 * 60 * 60, 
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax'
-        });
-        res.status(200).send("Session setup successful");
-    } else {
-        res.status(400).send("Invalid user data");
-    }
+    const cookieConfig = getCookieConfig();
+    const encryptedAuthCookie = Buffer.from(JSON.stringify(sessAuth.encrypt(jwtToken))).toString('base64');
+    const sessionData = { userId, name, picture };
+    const encryptedData = Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64');
+
+    res.locals = sessionData;
+    res.cookie('authorization', encryptedAuthCookie, cookieConfig);
+    res.cookie('session', encryptedData, cookieConfig);
+    res.status(200).send("Session setup successful");
 });
 
 router.post('/guest-session', (req, res) => {
-    console.log(req.body)
-    const { jwtToken } = req.body;
+    const { jwtToken, userId } = req.body;
     
     if (!jwtToken) {
         return res.status(400).send("Invalid guest token");
     }
 
+    const cookieConfig = getCookieConfig();
     const encryptedAuthCookie = Buffer.from(JSON.stringify(sessAuth.encrypt(jwtToken))).toString('base64');
-    res.cookie('authorization', encryptedAuthCookie, { 
-        maxAge: 1000 * 60 * 60, 
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax'
-    });
-
     const sessionData = {
-        userId: 'guest',
+        userId: userId, 
         name: 'Guest User',
         picture: '/images/guest.png'
     };
-    res.locals = sessionData;
     const encryptedData = Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64');
-    res.cookie('session', encryptedData, { 
-        maxAge: 1000 * 60 * 60, 
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax'
-    });
-    
+
+    res.locals = sessionData;
+    res.cookie('authorization', encryptedAuthCookie, cookieConfig);
+    res.cookie('session', encryptedData, cookieConfig);
     res.status(200).send("Guest session setup successful");
 });
 
