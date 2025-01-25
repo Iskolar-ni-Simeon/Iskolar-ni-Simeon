@@ -42,27 +42,32 @@ router.post('/setup-session', (req, res) => {
     res.status(200).send("Session setup successful");
 });
 
-router.post('/guest-session', (req, res) => {
-    const { jwtToken, userId } = req.body;
+if (process.env.PORT === "library") {
+    router.get("/test", (req, res) => {
+        res.send("Library test successful");
+    })
+    router.post('/guest-session', (req, res) => {
+        const { jwtToken, userId } = req.body;
+        
+        if (!jwtToken) {
+            return res.status(400).send("Invalid guest token");
+        }
     
-    if (!jwtToken) {
-        return res.status(400).send("Invalid guest token");
-    }
-
-    const cookieConfig = getCookieConfig();
-    const encryptedAuthCookie = Buffer.from(JSON.stringify(sessAuth.encrypt(jwtToken))).toString('base64');
-    const sessionData = {
-        userId: userId, 
-        name: 'Guest User',
-        picture: '/images/guest.png'
-    };
-    const encryptedData = Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64');
-
-    res.locals = sessionData;
-    res.cookie('authorization', encryptedAuthCookie, cookieConfig);
-    res.cookie('session', encryptedData, cookieConfig);
-    res.status(200).send("Guest session setup successful");
-});
+        const cookieConfig = getCookieConfig();
+        const encryptedAuthCookie = Buffer.from(JSON.stringify(sessAuth.encrypt(jwtToken))).toString('base64');
+        const sessionData = {
+            userId: userId, 
+            name: 'Guest User',
+            picture: '/images/guest.png'
+        };
+        const encryptedData = Buffer.from(JSON.stringify(sessAuth.encrypt(sessionData))).toString('base64');
+    
+        res.locals = sessionData;
+        res.cookie('authorization', encryptedAuthCookie, cookieConfig);
+        res.cookie('session', encryptedData, cookieConfig);
+        res.status(200).send("Guest session setup successful");
+    });
+}
 
 router.get('/logout', (req, res) => {
     res.clearCookie('authorization');

@@ -170,6 +170,10 @@ body, html {
     z-index: 1;
 }
 
+.text-error {
+    color: #d32f2f;
+}
+
 .loader .check,
 .loader .error-x {
     position: relative;
