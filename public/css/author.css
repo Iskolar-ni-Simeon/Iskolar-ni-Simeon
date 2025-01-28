@@ -3,10 +3,8 @@
 
 body {
     overflow: hidden; /* Prevent whole page scroll */
-    padding-bottom: 2rem; /* Add padding to prevent content cut-off */
+    padding-bottom: 80px; /* Adjusted padding-bottom */
     font-family: 'Montserrat', sans-serif;
-    padding-top: 50px;
-    padding-bottom: 80px;
 }
 
 .results {

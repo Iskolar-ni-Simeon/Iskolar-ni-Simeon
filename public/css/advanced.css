@@ -8,7 +8,6 @@ body {
     display: flex;
     flex-direction: column;
     padding: 0 3rem;
-    padding-top: 50px;
     padding-bottom: 80px;
     margin-top: 5dvh;
 }
