@@ -66,6 +66,30 @@
                             </div>
 
                             <div class="metadata-group mb-4">
+                                <h6 class="fw-bold mb-2">Research Type</h6>
+                                <ul class="metadata list-unstyled mb-0">
+                                    <li class="submeta">
+                                        <a class="text-success text-decoration-none">
+                                            <i class="bi bi-journal-text"></i> 
+                                            <% 
+                                            let displayType = 'Not specified';
+                                            if (thesis.type) {
+                                                // Handle different possible type field names
+                                                const type = thesis.type.toLowerCase();
+                                                displayType = type.charAt(0).toUpperCase() + type.slice(1);
+                                            } else if (thesis.research_type) {
+                                                // Alternative field name
+                                                const type = thesis.research_type.toLowerCase();
+                                                displayType = type.charAt(0).toUpperCase() + type.slice(1);
+                                            }
+                                            %>
+                                            <%= displayType %>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="metadata-group mb-4">
                                 <h6 class="fw-bold mb-2">Keywords</h6>
                                 <ul class="metadata list-unstyled mb-0">
                                     <% thesis.keywords.forEach(keyword => { %>

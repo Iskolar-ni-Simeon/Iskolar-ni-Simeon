@@ -13,6 +13,7 @@ router.get('/search', async (req, res, next) => {
     const yearRange = req.query.yearRange;
     const yearFrom = parseInt(req.query.yearFrom);
     const yearTo = parseInt(req.query.yearTo);
+    const type = req.query.type;  // Add research type parameter
     const currentYear = new Date().getFullYear();
     const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
 
@@ -26,12 +27,20 @@ router.get('/search', async (req, res, next) => {
                 yearRange,
                 yearFrom: yearFrom || '',
                 yearTo: yearTo || '',
+                type: type || '',  // Pass type to template
                 errmessage: "No query identified.",
                 searchResults: []
             });
         }
 
-        const response = await fetch(`${process.env.SERVER_API}/search?q=${query}`, {
+        // Construct API URL with type parameter
+        const apiUrl = new URL(`${process.env.SERVER_API}/search`);
+        apiUrl.searchParams.set('q', query);
+        if (type && type !== 'any') {
+            apiUrl.searchParams.set('type', type);
+        }
+
+        const response = await fetch(apiUrl.toString(), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -45,8 +54,7 @@ router.get('/search', async (req, res, next) => {
 
         const searchResults = await response.json();
         let filteredResults = searchResults.data;
-        
-        // Apply year filters
+
         if (yearRange) {
             try {
                 switch (yearRange) {
@@ -73,7 +81,6 @@ router.get('/search', async (req, res, next) => {
                 console.error('Error applying year filter:', error);
             }
         }
-
         res.render("./search.ejs", {
             picture: res.locals.picture,
             currentRoute: req.originalUrl,
@@ -82,6 +89,7 @@ router.get('/search', async (req, res, next) => {
             yearRange,
             yearFrom: yearFrom || '',
             yearTo: yearTo || '',
+            type: type || '', 
             searchResults: filteredResults,
             errmessage: (!filteredResults || filteredResults.length === 0) ? "No results found." : undefined,
             userId: res.locals.userId
@@ -96,6 +104,7 @@ router.get('/search', async (req, res, next) => {
             yearRange,
             yearFrom: yearFrom || '',
             yearTo: yearTo || '',
+            type: type || '',  // Pass type to template
             errmessage: "Error connecting to search service. Please try again later.",
             searchResults: []
         });
@@ -142,7 +151,6 @@ router.get('/thesis/:id', async (req, res, next) => {
 });
 
 router.post('/save/:id', async (req, res, next) => {
-    // Prevent guest users from saving
     if (res.locals.userId.split('-')[0] === 'guest') {
         return res.status(403).json({
             ok: false,
@@ -217,7 +225,7 @@ router.get('/read/proxy/:id', async (req, res, next) => {
 
             const thesisData = await response.json();
 
-            if (!thesisData.ok || !thesisData.data) {
+            if (!thesisData.ok || !thhesisData.data) {
                 return res.status(404).send('PDF URL not found');
             }
 

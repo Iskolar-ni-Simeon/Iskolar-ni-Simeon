@@ -63,6 +63,18 @@
                                     </div>
                                     <hr>
                                     <div class="filter-group">
+                                        <h6 class="fw-bold mb-3">Research Type</h6>
+                                        <select class="form-select mb-3" id="typeSelect" name="type">
+                                            <option value="any" <%= !type ? 'selected' : '' %>>Any type</option>
+                                            <option value="qualitative" <%= type === 'qualitative' ? 'selected' : '' %>>Qualitative</option>
+                                            <option value="quantitative" <%= type === 'quantitative' ? 'selected' : '' %>>Quantitative</option>
+                                            <option value="thesis" <%= type === 'thesis' ? 'selected' : '' %>>Thesis</option>
+                                            <option value="capstone" <%= type === 'capstone' ? 'selected' : '' %>>Capstone</option>
+                                            <option value="dissertation" <%= type === 'dissertation' ? 'selected' : '' %>>Dissertation</option>
+                                        </select>
+                                    </div>
+                                    <hr>
+                                    <div class="filter-group">
                                         <h6 class="fw-bold mb-3">Year Range</h6>
                                         <div class="mb-3">
                                             <select class="form-select mb-3" id="yearRange" name="yearRange">
@@ -180,6 +192,12 @@
                 const sortValue = document.getElementById('sortSelect').value;
                 if (sortValue && sortValue !== 'relevance') {
                     newUrl.searchParams.set('sort', sortValue);
+                }
+
+                // Add research type parameter
+                const typeValue = document.getElementById('typeSelect').value;
+                if (typeValue && typeValue !== 'any') {
+                    newUrl.searchParams.set('type', typeValue);
                 }
 
                 // Add year range parameters
