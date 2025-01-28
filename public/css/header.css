@@ -4,6 +4,11 @@
     border-color: #008a101a;
 }
 
+header {
+    position: sticky;
+    top: 0;
+}
+
 #fullscreenMenu {
     display: flex;
     z-index: 9999;
