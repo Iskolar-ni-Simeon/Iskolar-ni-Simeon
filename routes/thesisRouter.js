@@ -222,10 +222,9 @@ router.get('/read/proxy/:id', async (req, res, next) => {
             if (!response.ok) {
                 return res.status(response.status).send('Failed to fetch the thesis metadata');
             }
-
             const thesisData = await response.json();
 
-            if (!thesisData.ok || !thhesisData.data) {
+            if (!thesisData.ok || !thesisData.data) {
                 return res.status(404).send('PDF URL not found');
             }
 
