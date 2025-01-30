@@ -174,7 +174,7 @@ html, body {
     }
 
     .hero-section {
-        padding: 1rem 0;
+        padding: 1rem;
     }
 
     .greeting {
@@ -208,14 +208,13 @@ html, body {
 }
 
 .saved-page {
-    margin-top: 60px;
     background-color: #f8f9fa;
-    min-height: calc(100vh - 60px);
     padding-bottom: 2rem;
 }
 
 .hero-section {
     border-bottom: 1px solid rgba(0,0,0,0.1);
+    
 }
 
 .greeting {

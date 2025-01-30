@@ -5,7 +5,7 @@ const { SessionAuthentication } = require('../public/scripts/auth');
 require('dotenv').config();
 const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
-router.get('/', (req, res) => {
+router.get('/dashboard', (req, res) => {
     res.render("./home.ejs", {
         picture: res.locals.picture,
         currentRoute: req.originalUrl,

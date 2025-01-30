@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
       setTimeout(() => {
         elements.loader.classList.add('redirect');
         elements.loaderText.textContent = "Redirecting...";
-        setTimeout(() => location.replace('/'), 1000);
+        setTimeout(() => location.replace('/dashboard'), 1000);
       }, 1500);
     } else {
       elements.loaderText.innerHTML = `
