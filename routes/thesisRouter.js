@@ -13,7 +13,7 @@ router.get('/search', async (req, res, next) => {
     const yearRange = req.query.yearRange;
     const yearFrom = parseInt(req.query.yearFrom);
     const yearTo = parseInt(req.query.yearTo);
-    const type = req.query.type;  // Add research type parameter
+    const type = req.query.type;
     const currentYear = new Date().getFullYear();
     const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
 
@@ -27,13 +27,12 @@ router.get('/search', async (req, res, next) => {
                 yearRange,
                 yearFrom: yearFrom || '',
                 yearTo: yearTo || '',
-                type: type || '',  // Pass type to template
+                type: type || '', 
                 errmessage: "No query identified.",
                 searchResults: []
             });
         }
 
-        // Construct API URL with type parameter
         const apiUrl = new URL(`${process.env.SERVER_API}/search`);
         apiUrl.searchParams.set('q', query);
         if (type && type !== 'any') {
