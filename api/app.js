@@ -35,6 +35,14 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+app.get("/terms-and-conditions", (req, res) => {
+    res.render("./terms.ejs");
+});
+
+app.get("/privacy-policy", (req, res) => {
+    res.render("./privacy.ejs");
+});
+
 app.use(sessionMiddleware);
 app.use(authMiddleware);
 

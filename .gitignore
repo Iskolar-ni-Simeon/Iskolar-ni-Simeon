@@ -29,3 +29,4 @@ coverage/
 
 # Package lock file
 package-lock.json
+.vercel
