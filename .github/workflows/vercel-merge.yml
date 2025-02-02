@@ -1,9 +1,9 @@
 # vercel-merge.yml
-name: Deploy to vercel on merge
+name: Deploy to vercel on push
 on:
   push:
     branches:
-      - main
+      - '*'
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
