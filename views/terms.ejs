@@ -11,22 +11,47 @@
     <meta name="theme-color" content="#296c32">
 </head>
 <body>
-    <main class="terms-container">
-        <div class="container py-5">
-            <div class="terms-header text-center mb-5">
-                <h1>Terms and Conditions</h1>
-                <p class="lead">Please read these terms carefully before using the platform</p>
-            </div>
+    <main class="container py-5">
+        <div class="terms-header text-center mb-5">
+            <h1>Terms and Conditions</h1>
+            <p class="lead">Please read these terms carefully before using the platform</p>
+        </div>
 
-            <div class="terms-wrapper">
-                <%- include('partials/tac.ejs') %>
-            </div>
+        <div class="terms-content">
+            <%- include('partials/tac.ejs') %>
+        </div>
 
-            <div class="text-center mt-5">
-                <p class="small text-muted">Last updated: January 2025</p>
-            </div>
+        <div class="text-center mt-5">
+            <p class="small text-muted">Last updated: January 2025</p>
         </div>
     </main>
+    
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h5>About Iskolar ni Simeon</h5>
+                    <p class="text-muted">A private repository of published studies in General de Jesus College, making research accessible for GJC students.</p>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
+                        <li><a href="/terms-and-conditions">Terms and Conditions</a></li>
+                        <li><a href="https://github.com/Iskolar-ni-Simeon/Iskolar-ni-Simeon" target="_blank">GitHub repository</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-envelope"></i> <a href="mailto:42310196@gendejesus.edu.ph">Email Us</a></li>
+                        <li><i class="bi bi-github"></i> <a href="https://github.com/Iskolar-ni-Simeon" target="_blank">GitHub Organization</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
