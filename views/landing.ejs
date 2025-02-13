@@ -27,6 +27,19 @@
                     With this, we would like you to be part of our beta testing phase. We are looking for students who are willing to test the platform and provide feedback as part of our research study.
                 </p>
 
+                <h2>Share Your Research</h2>
+                <p class="text-justify">
+                    We're also looking for research papers to be included in our repository! If you have a published research paper from GJC that you'd like to share, you can:
+                </p>
+                <ul class="feature-list">
+                    <li><i class="bi bi-check-circle-fill text-success me-2"></i>Upload your research paper through the platform</li>
+                    <li><i class="bi bi-check-circle-fill text-success me-2"></i>Contribute to GJC's growing research database</li>
+                    <li><i class="bi bi-check-circle-fill text-success me-2"></i>Help fellow students with their academic work</li>
+                </ul>
+                <p class="text-justify">
+                    Your research will be properly credited and protected by our platform's security features. Join us in building a comprehensive research repository for GJC!
+                </p>
+
                 <h2>Contact us</h2>
                 <p class="text-justify">
                     Should you have any questions, comments and/or concerns, bugs and vulnerabilities, feel free to create an issue through our <a href="https://github.com/Iskolar-ni-Simeon/Iskolar-ni-Simeon", target="_blank">GitHub</a> repository, or contact us through the following email addresses:
@@ -46,15 +59,19 @@
                     </ol>
                 </p>
 
-                <div class="text-center mt-5 d-flex flex-column flex-md-row justify-content-center gap-3">
-                    <a href="/auth/login" target="_blank" class="btn btn-primary btn-lg">
-                        <i class="bi bi-person-plus me-2"></i> Join Beta Testing
-                    </a>
-                    <a href="https://forms.gle/poMnEC9tJQWPWFpy7" target="_blank" class="btn btn-primary btn-lg">
-                        <i class="bi bi-pencil-square me-2"></i> Answer the survey
-                    </a>
+                <div class="text-center mt-5">
+                    <div class="button-group">
+                        <a href="/auth/login" target="_blank" class="btn btn-primary btn-lg">
+                            <i class="bi bi-person-plus me-2"></i> Join Beta Testing
+                        </a>
+                        <a href="https://forms.gle/poMnEC9tJQWPWFpy7" target="_blank" class="btn btn-primary btn-lg">
+                            <i class="bi bi-pencil-square me-2"></i> Answer the survey
+                        </a>
+                        <a href="#" target="_blank" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#privacyModal">
+                            <i class="bi bi-journal-plus me-2"></i> Add your paper
+                        </a>
+                    </div>
                 </div>
-
                 <div class="alert alert-info mt-4">
                     <i class="bi bi-info-circle-fill"></i>
                     Note: By participating, you agree to complete a feedback survey after testing the platform.
@@ -62,10 +79,83 @@
             </div>
         </article>
     </main>
-    <footer class="footer mt-5">
+
+    <!-- Add Privacy Policy Modal -->
+    <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="privacyModalLabel">Submit Research Paper</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs mb-3" id="modalTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="privacy-tab" data-bs-toggle="tab" data-bs-target="#privacy" type="button" role="tab">
+                                <i class="bi bi-shield-check me-2"></i>Privacy Policy
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="instructions-tab" data-bs-toggle="tab" data-bs-target="#instructions" type="button" role="tab">
+                                <i class="bi bi-info-circle me-2"></i>Upload Instructions
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="modalTabContent">
+                        <div class="tab-pane fade show active" id="privacy" role="tabpanel">
+                            <%- include('partials/privacy-content.ejs') %>
+                        </div>
+                        <div class="tab-pane fade" id="instructions" role="tabpanel">
+                            <div class="upload-instructions">
+                                <%- include('partials/uploadInstructions.ejs') %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-check mt-4">
+                        <input class="form-check-input" type="checkbox" id="privacyConsent">
+                        <label class="form-check-label" for="privacyConsent">
+                            I have read and agree to the privacy policy and upload instructions
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary modal-btn" id="continueButton" disabled>Continue to Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkbox = document.getElementById('privacyConsent');
+            const continueBtn = document.getElementById('continueButton');
+
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    continueBtn.removeAttribute('disabled');
+                } else {
+                    continueBtn.setAttribute('disabled', '');
+                }
+            });
+
+            continueBtn.addEventListener('click', function() {
+                if (!checkbox.checked) return;
+                const mailBody = `Title:
+                Author/s:
+                Keyword/s:
+                Abstract:
+                
+                Attach your research paper here.`;
+                window.location.href = 'mailto:42310196@gendejesus.edu.ph?subject=Iskolar ni Simeon: Paper Upload&body=' + encodeURIComponent(mailBody);
+            });
+        });
+    </script>
+
+    <footer class="footer mt-5 px-5">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 mb-4 mb-md-0">
+                <div class="col-md-6 mb-4">
                     <h5>About Iskolar ni Simeon</h5>
                     <p class="text-muted">A private repository of published studies in General de Jesus College, making research accessible for GJC students.</p>
                 </div>

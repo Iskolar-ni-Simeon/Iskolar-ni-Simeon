@@ -50,13 +50,34 @@ body {
     margin-bottom: 0.5rem;
 }
 
+.feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 1.5rem;
+}
+
+.feature-list li {
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+}
+
+.feature-list i {
+    color: #296c32;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
 .btn-primary {
     background-color: #296c32;
     border-color: #296c32;
     width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-    padding: 0.8rem 1rem;
+    padding: 0.8rem;
     font-weight: 600;
     white-space: nowrap;
 }
@@ -65,13 +86,27 @@ body {
     .btn-primary {
         width: auto;
         margin: 0;
-        padding: 0.8rem 2rem;
+        padding: 0.8rem 1.5rem;
     }
 }
 
 .btn-primary:hover {
     background-color: #1e5126;
     border-color: #1e5126;
+}
+
+@media (min-width: 768px) {
+    .button-group {
+        flex-direction: row;
+        justify-content: center;
+        max-width: none;
+        gap: 1.5rem;
+    }
+
+    .btn-primary {
+        min-width: 200px;
+        padding: 0.8rem 1.5rem;
+    }
 }
 
 .alert {
@@ -132,4 +167,129 @@ body {
     .footer h5 {
         margin-bottom: 1rem;
     }
+}
+
+/* Modal styles */
+.modal-content {
+    border-radius: 8px;
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-header .modal-title {
+    color: #296c32;
+    font-weight: 600;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+}
+
+.modal-btn {
+    min-width: auto !important;
+    width: auto !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.form-check-input {
+    cursor: pointer;
+    width: 1.2em;
+    height: 1.2em;
+    margin-top: 0.25em;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-check-input:checked {
+    background-color: #296c32;
+    border-color: #296c32;
+}
+
+.form-check-input:focus {
+    border-color: #296c32;
+    box-shadow: 0 0 0 0.2rem rgba(41, 108, 50, 0.25);
+}
+
+.form-check-label {
+    cursor: pointer;
+    user-select: none;
+}
+
+#continueButton {
+    transition: all 0.3s ease;
+}
+
+#continueButton:disabled {
+    background-color: #e9ecef !important;
+    border-color: #dee2e6 !important;
+    color: #6c757d !important;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+#continueButton:not(:disabled) {
+    background-color: #296c32 !important;
+    border-color: #296c32 !important;
+}
+
+#continueButton:not(:disabled):hover {
+    background-color: #1e5126 !important;
+    border-color: #1e5126 !important;
+    transform: translateY(-1px);
+}
+
+/* Disabled button style */
+.btn-primary:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Modal tab styles */
+.nav-tabs .nav-link {
+    color: #555;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    transition: all 0.2s;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #296c32;
+    border: none;
+    background: transparent;
+}
+
+.nav-tabs .nav-link.active {
+    color: #296c32;
+    border: none;
+    border-bottom: 2px solid #296c32;
+    font-weight: 600;
+}
+
+.upload-instructions {
+    padding: 1rem 0;
+}
+
+.upload-instructions h4 {
+    color: #296c32;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.instruction-steps {
+    padding-left: 1.2rem;
+}
+
+.instruction-steps li {
+    margin-bottom: 1rem;
+}
+
+.instruction-steps ul {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.instruction-steps ul li {
+    margin-bottom: 0.3rem;
 }
