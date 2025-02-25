@@ -47,7 +47,7 @@ header {
 
 .navbar-toggler-icon {
   background-color: transparent;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem;
 }
 
 .navbar-nav {
@@ -67,13 +67,13 @@ header {
 }
 
 .navbar-toggler {
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem;
     font-size: 1.25rem;
     line-height: 1;
     background-color: transparent;
     border: none;
     border-radius: 0.25rem;
-    margin-left: 10px;
+    margin-left: 0;  /* Remove left margin */
 }
 
 .dropdown-menu {
@@ -92,6 +92,10 @@ header {
 .navbar {
     background-color: rgb(41, 108, 50, 0.95) !important;
     backdrop-filter: blur(8px);
+    position: relative;
+    height: 65px;
+    display: flex;
+    align-items: center;
 }
 
 .navbar-light .navbar-nav .nav-link {
@@ -111,12 +115,40 @@ header {
     border-color: rgba(255, 255, 255, 0.3);
 }
 
+.navbar-brand img {
+    height: 40px;  /* Increased from 30px */
+    width: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.navbar-brand.mx-auto {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.navbar .position-absolute {
+    padding: 0.5rem
+}
+
 @media (max-width: 768px) {
   #fullscreenMenu {
     padding: 0 20px;
   }
   .navbar-nav {
     margin-left: 0;
+  }
+  .navbar-toggler {
+    margin-left: 10px;  /* Add specific margin for mobile */
+  }
+  .navbar-brand.mx-auto {
+    z-index: 1;  /* Ensure logo stays above other elements */
   }
 }
 
