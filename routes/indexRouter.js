@@ -1,4 +1,3 @@
-//kung ako nalang sana ang iyong minahal
 const express = require('express');
 const router = express.Router();
 const { SessionAuthentication } = require('../public/scripts/auth');

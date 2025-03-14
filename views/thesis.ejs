@@ -127,11 +127,11 @@
 
     <!-- Guest Save Toast -->
     <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1070">
-        <div id="guestSaveToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="30000">
+        <div id="guestSaveToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
-                    <i class="bi bi-exclamation-circle me-2"></i>
-                    Please log in to save theses to your account.
+                    <strong><i class="bi bi-exclamation-triangle-fill me-2"></i>Login Required</strong>
+                    <p class="mb-0 mt-1">Please log in to save theses to your account.</p>
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
@@ -183,7 +183,11 @@
     document.addEventListener('contextmenu', (e) => e.preventDefault());
     const thesisId = '<%= thesisId %>';
     const savedStatus = document.querySelector('.savedStatus');
-    const toast = new bootstrap.Toast(document.getElementById('guestSaveToast'));
+    const toastElement = document.getElementById('guestSaveToast');
+    const toast = new bootstrap.Toast(toastElement, {
+        delay: 60000, // Show for 60 seconds
+        autohide: false // Don't auto-hide, require user to close
+    });
     let savedTheses = localStorage.getItem('savedTheses');
     savedTheses = savedTheses ? new Set(JSON.parse(savedTheses)) : new Set();
     console.log('Saved Theses from LocalStorage:', savedTheses);
@@ -266,7 +270,7 @@
                 });
                 const lastAuthor = apaAuthors.pop();
                 const authorString = apaAuthors.length ? apaAuthors.join(', ') + ', & ' + lastAuthor : lastAuthor;
-                citation = `${authorString} (${thesis.year}). <i>${thesis.title}</i> [Unpublished undergraduate thesis]. ${thesis.institution}.`;
+                citation = `${authorString} (${thesis.year}). <i>${thesis.title}</i> [Undergraduate thesis]. ${thesis.institution}.`;
                 break;
 
             case 'mla':

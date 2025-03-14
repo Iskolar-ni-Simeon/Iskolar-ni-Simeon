@@ -280,7 +280,7 @@ router.get('/keyword/:keywordId', async (req, res, next) => {
                 currentRoute: req.originalUrl,
             });
         }
-
+        console.log(data)
         res.render('./keyword.ejs', {
             picture: res.locals.picture,
             currentRoute: req.originalUrl,

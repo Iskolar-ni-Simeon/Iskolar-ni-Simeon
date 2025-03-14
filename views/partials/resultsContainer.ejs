@@ -80,7 +80,7 @@ if (sort === 'oldest') {
                 <div class="card border-0 shadow-sm hover-card mb-3 result-item" data-page="<%= Math.floor(index / itemsPerPage) + 1 %>">
                     <div class="card-body" id="<%= result.id %>">
                         <h5 class="card-title mb-3">
-                            <%- highlightMatch(result.title, searchQuery) %>
+                            <a href="/thesis/<%=result.id%>" style="text-decoration: none; color: black"><%- highlightMatch(result.title, searchQuery) %></a>
                         </h5>
                         <div class="meta mb-2">
                             <i class="bi bi-people"></i>
