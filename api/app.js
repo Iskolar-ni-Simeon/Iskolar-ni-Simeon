@@ -23,9 +23,8 @@ app.use(favicon(path.join(__dirname, '../public/images/favicon.ico')));
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/static', express.static('../static'));
 
-// Update CORS configuration
 app.use(cors({
-    origin: true, // Allow all origins, or specify array of allowed domains
+    origin: true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin'],
@@ -76,7 +75,6 @@ app.all('*', authMiddleware, (req, res) => {
     });
 });
 
-// Add error handling middleware
 app.use((err, req, res, next) => {
     console.error('Global error handler:', err);
     res.status(500).json({

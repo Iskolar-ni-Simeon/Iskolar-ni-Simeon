@@ -16,7 +16,7 @@ router.get('/me/library', async (req, res) => {
     const userId = res.locals.userId;
     const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
     const page = parseInt(req.query.page) || 1;
-    const itemsPerPage = 6; // Changed from 10 to 6
+    const itemsPerPage = 6;
     let error;
     console.log(res.locals)
     if (res.locals.userId.split('-')[0] === 'guest') {

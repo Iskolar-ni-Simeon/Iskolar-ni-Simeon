@@ -8,7 +8,6 @@ const authMiddleware = (req, res, next) => {
         return;
     }
 
-    // Allow access to public routes
     if (req.path.startsWith('/auth/login') || req.path.startsWith('/auth/setup-session') || req.path.startsWith('/warning') || req.path.startsWith('/auth/guest-session')) {
         return next();
     }
@@ -43,7 +42,6 @@ const sessionMiddleware = (req, res, next) => {
         return;
     }
 
-    // Allow access to public routes
     if (req.path.startsWith('/auth/login') || req.path.startsWith('/auth/setup-session') || req.path.startsWith('/warning') || req.path.startsWith('/auth/guest-session')) {
         return next();
     }
@@ -62,7 +60,7 @@ const sessionMiddleware = (req, res, next) => {
         );
 
         if (sessionData && authCookie) {
-            res.locals = sessionData; // Attach session data to res.locals
+            res.locals = sessionData;
             return next();
         }
 
