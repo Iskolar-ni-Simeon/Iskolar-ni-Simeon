@@ -103,7 +103,7 @@ router.get('/search', async (req, res, next) => {
             yearRange,
             yearFrom: yearFrom || '',
             yearTo: yearTo || '',
-            type: type || '',  // Pass type to template
+            type: type || '', 
             errmessage: "Error connecting to search service. Please try again later.",
             searchResults: []
         });

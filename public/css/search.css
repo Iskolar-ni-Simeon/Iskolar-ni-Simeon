@@ -5,6 +5,13 @@
     font-family: 'Montserrat', sans-serif;
 }
 
+.no-select {
+    user-select: none;
+    -webkit-user-select: none; 
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
 .search-page {
     background: #ffffff;
     padding: 1rem;
