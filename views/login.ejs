@@ -9,29 +9,49 @@
     <meta name="theme-color" content="#296c32">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <title>Login | Iskolar ni Simeon</title>
 </head>
 <body>
-  <div class="modal fade" id="termsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="termsModalLabel">Terms and Conditions</h1>
+          <h5 class="modal-title" id="termsModalLabel">Terms and Conditions & Privacy Policy</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body px-4">
-          <%- include("partials/tac.ejs") %>
+          <ul class="nav nav-tabs mb-3" id="modalTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="privacy-tab" data-bs-toggle="tab" data-bs-target="#privacy" type="button" role="tab">
+                <i class="bi bi-shield-check me-2"></i>Privacy Policy
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="terms-tab" data-bs-toggle="tab" data-bs-target="#terms" type="button" role="tab">
+                <i class="bi bi-file-text me-2"></i>Terms and Conditions
+              </button>
+            </li>
+          </ul>
+          <div class="tab-content" id="modalTabContent">
+            <div class="tab-pane fade show active" id="privacy" role="tabpanel">
+              <%- include('partials/privacy-content') %>
+            </div>
+            <div class="tab-pane fade" id="terms" role="tabpanel">
+              <%- include('partials/tac') %>
+            </div>
+          </div>
           <hr>
           <div class="form-check mt-3">
             <input class="form-check-input" type="checkbox" id="agreeCheckbox">
             <label class="form-check-label" for="agreeCheckbox">
-              I have read and agree to the Terms and Conditions
+              I have read and agree to the Terms and Conditions and Privacy Policy
             </label>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-success" id="understoodBtn" disabled>
+          <button type="button" class="btn btn-primary modal-btn" id="understoodBtn" disabled>
             Proceed
           </button>
         </div>
@@ -77,216 +97,216 @@
     });
   </script>
 
-<script defer>
-document.addEventListener("DOMContentLoaded", function() {
+  <script defer>
+    document.addEventListener("DOMContentLoaded", function() {
 
-  const elements = {
-    signin: document.querySelector('.signin'),
-    loader: document.getElementById('loader'),
-    loaderText: document.getElementById('loaderText'),
-    divider: document.querySelector('.divider'),
-    guestBtn: document.querySelector('.guest-btn'),
-    understoodBtn: document.getElementById('understoodBtn')
-  };
+      const elements = {
+        signin: document.querySelector('.signin'),
+        loader: document.getElementById('loader'),
+        loaderText: document.getElementById('loaderText'),
+        divider: document.querySelector('.divider'),
+        guestBtn: document.querySelector('.guest-btn'),
+        understoodBtn: document.getElementById('understoodBtn')
+      };
 
-  function toggleElements(show) {
-    const display = show ? 'block' : 'none';
-    elements.signin.style.display = display;
-    if (elements.divider) {
-      elements.divider.style.display = display;
-      elements.guestBtn.style.display = display;
-    }
-    elements.loader.style.display = !show ? 'block' : 'none';
-    elements.loaderText.style.display = !show ? 'block' : 'none';
-  }
+      function toggleElements(show) {
+        const display = show ? 'block' : 'none';
+        elements.signin.style.display = display;
+        if (elements.divider) {
+          elements.divider.style.display = display;
+          elements.guestBtn.style.display = display;
+        }
+        elements.loader.style.display = !show ? 'block' : 'none';
+        elements.loaderText.style.display = !show ? 'block' : 'none';
+      }
 
-  function handleResponse(success, message) {
-    elements.loader.classList.remove('success', 'error');
-    elements.loader.classList.add(success ? 'success' : 'error');
-    elements.loaderText.textContent = message;
-    
-    if (success) {
-      setTimeout(() => {
-        elements.loader.classList.add('redirect');
-        elements.loaderText.textContent = "Redirecting...";
-        setTimeout(() => location.replace('/dashboard'), 1000);
-      }, 1500);
-    } else {
-      elements.loaderText.innerHTML = `
-        <div>Login error:</div>
-        <small class="text-white-50">${message}</small>
-        <div class="mt-2">
-          <button onclick="resetLoader()" class="btn btn-sm btn-outline-light">Try Again</button>
-        </div>`;
-    }
-  }
-
-  async function setupSession(data, isGuest = false) {
-    try {
-      const endpoint = isGuest ? '/auth/guest-session' : '/auth/setup-session';
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jwtToken: data.jwtToken, userId: data.token.sub, name: data.token.name, picture: data.token.picture })
-      });
-
-      if (!response.ok) throw new Error('Session setup failed');
-      handleResponse(true, isGuest ? "Logged in as guest!" : "Successfully logged in!");
-    } catch (error) {
-      console.error("Session setup error:", error);
-      handleResponse(false, error.message);
-    }
-  }
-
-  async function handleLogin(isGuest) {
-    if (isGuest) {
-      const termsModal = new bootstrap.Modal(document.getElementById('termsModal'));
-      termsModal.show();
-
-      const agreeCheckbox = document.getElementById('agreeCheckbox');
-      const understood = elements.understoodBtn;
-      
-      // Update button state based on checkbox
-      agreeCheckbox.addEventListener('change', function() {
-        understood.disabled = !this.checked;
-      });
-
-      understood.onclick = async function() {
-        termsModal.hide();
-        elements.signin.style.display = 'none';
-        elements.divider.style.display = 'none';
-        elements.guestBtn.style.display = 'none';
-        elements.loader.style.display = 'block';
-        elements.loader.style.opacity = '1';
-        elements.loader.style.visibility = 'visible';
-        elements.loaderText.style.display = 'block';
-        elements.loaderText.style.visibility = 'visible';
+      function handleResponse(success, message) {
+        elements.loader.classList.remove('success', 'error');
+        elements.loader.classList.add(success ? 'success' : 'error');
+        elements.loaderText.textContent = message;
         
+        if (success) {
+          setTimeout(() => {
+            elements.loader.classList.add('redirect');
+            elements.loaderText.textContent = "Redirecting...";
+            setTimeout(() => location.replace('/dashboard'), 1000);
+          }, 1500);
+        } else {
+          elements.loaderText.innerHTML = `
+            <div>Login error:</div>
+            <small class="text-error">${message}</small>
+            <div class="mt-2">
+              <button onclick="resetLoader()" class="btn btn-sm btn-outline-danger text-error">Try Again</button>
+            </div>`;
+        }
+      }
+
+      async function setupSession(data, isGuest = false) {
         try {
-          const response = await fetch('<%= server_api %>/guest-login', {
+          const endpoint = isGuest ? '/auth/guest-session' : '/auth/setup-session';
+          const response = await fetch(endpoint, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': '<%= guest_api_key %>'
-            },
-            credentials: 'include',
-            mode: 'cors',
-            body: JSON.stringify({ signinas: 'guest' })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jwtToken: data.jwtToken, userId: data.token.sub, name: data.token.name, picture: data.token.picture })
           });
 
-          if (!response.ok) throw new Error(`Guest login failed: ${response.status}`);
-          const data = await response.json();
-          await setupSession(data, true);
+          if (!response.ok) throw new Error('Session setup failed');
+          handleResponse(true, isGuest ? "Logged in as guest!" : "Successfully logged in!");
         } catch (error) {
-          console.error("Guest login error:", error);
+          console.error("Session setup error:", error);
           handleResponse(false, error.message);
         }
-      };
-    } else {
-      toggleElements(false);
-      
-      try {
-        const response = await fetch('<%= server_api %>/guest-login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': '<%= guest_api_key %>'
-          },
-          credentials: 'include',
-          mode: 'cors',
-          body: JSON.stringify({ signInAs: 'guest' })
-        });
-
-        if (!response.ok) throw new Error('Guest login failed');
-        const data = await response.json();
-        await setupSession(data, true);
       }
-      // Regular login handled by Google callback
-      catch (error) {
-        console.error(isGuest ? "Guest login error:" : "Login error:", error);
-        handleResponse(false, error.message);
-      }
-    }
-  }
 
-  function handleCredentialResponse(response) {
-    const termsModal = new bootstrap.Modal(document.getElementById('termsModal'));
-    termsModal.show();
+      async function handleLogin(isGuest) {
+        if (isGuest) {
+          const termsModal = new bootstrap.Modal(document.getElementById('termsModal'));
+          termsModal.show();
 
-    const agreeCheckbox = document.getElementById('agreeCheckbox');
-    const understood = elements.understoodBtn;
-    
-    // Update button state based on checkbox
-    agreeCheckbox.addEventListener('change', function() {
-      understood.disabled = !this.checked;
-    });
+          const agreeCheckbox = document.getElementById('agreeCheckbox');
+          const understood = elements.understoodBtn;
+          
+          // Update button state based on checkbox
+          agreeCheckbox.addEventListener('change', function() {
+            understood.disabled = !this.checked;
+          });
 
-    understood.onclick = async function() {
-      termsModal.hide();
-      toggleElements(false);
+          understood.onclick = async function() {
+            termsModal.hide();
+            elements.signin.style.display = 'none';
+            elements.divider.style.display = 'none';
+            elements.guestBtn.style.display = 'none';
+            elements.loader.style.display = 'block';
+            elements.loader.style.opacity = '1';
+            elements.loader.style.visibility = 'visible';
+            elements.loaderText.style.display = 'block';
+            elements.loaderText.style.visibility = 'visible';
+            
+            try {
+              const response = await fetch('<%= server_api %>/guest-login', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                  'Authorization': '<%= guest_api_key %>'
+                },
+                credentials: 'include',
+                mode: 'cors',
+                body: JSON.stringify({ signinas: 'guest' })
+              });
 
-      try {
-        const loginResponse = await fetch("<%= server_api %>/login", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          credentials: 'include',
-          mode: 'cors',
-          body: JSON.stringify({ 
-            'credential': response.credential, 
-            'clientId': response.clientId 
-          }),
-        });
+              if (!response.ok) throw new Error(`Guest login failed: ${response.status}`);
+              const data = await response.json();
+              await setupSession(data, true);
+            } catch (error) {
+              console.error("Guest login error:", error);
+              handleResponse(false, error.message);
+            }
+          };
+        } else {
+          toggleElements(false);
+          
+          try {
+            const response = await fetch('<%= server_api %>/guest-login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': '<%= guest_api_key %>'
+              },
+              credentials: 'include',
+              mode: 'cors',
+              body: JSON.stringify({ signInAs: 'guest' })
+            });
 
-        if (!loginResponse.ok) {
-          throw new Error(`Login failed: ${loginResponse.status}`);
+            if (!response.ok) throw new Error('Guest login failed');
+            const data = await response.json();
+            await setupSession(data, true);
+          }
+          // Regular login handled by Google callback
+          catch (error) {
+            console.error(isGuest ? "Guest login error:" : "Login error:", error);
+            handleResponse(false, error.message);
+          }
         }
-
-        const data = await loginResponse.json();
-        console.log(data);
-        localStorage.setItem('savedTheses', JSON.stringify(data.saved?.data?.map(thesis => thesis.id || [])));
-        
-        await setupSession(data);
-      } catch (error) {
-        console.error("Login error:", error);
-        const message = !navigator.onLine ? 
-          "You appear to be offline. Please check your internet connection." :
-          error.message.includes("Failed to fetch") ?
-          `Cannot reach server at ${window.location.origin}. Please try again later.` :
-          error.message || "Login failed. Please try again.";
-        
-        handleResponse(false, message);
       }
-    }
-  }
 
-  // Event Listeners
-  if (elements.guestBtn) {
-    elements.guestBtn.addEventListener('click', () => handleLogin(true));
-  }
+      function handleCredentialResponse(response) {
+        const termsModal = new bootstrap.Modal(document.getElementById('termsModal'));
+        termsModal.show();
 
-  // Google Sign-in initialization
-  window.onload = function() {
-    google.accounts.id.initialize({
-      client_id: '<%= oauthid %>',
-      callback: handleCredentialResponse
+        const agreeCheckbox = document.getElementById('agreeCheckbox');
+        const understood = elements.understoodBtn;
+        
+        // Update button state based on checkbox
+        agreeCheckbox.addEventListener('change', function() {
+          understood.disabled = !this.checked;
+        });
+
+        understood.onclick = async function() {
+          termsModal.hide();
+          toggleElements(false);
+
+          try {
+            const loginResponse = await fetch("<%= server_api %>/login", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              },
+              credentials: 'include',
+              mode: 'cors',
+              body: JSON.stringify({ 
+                'credential': response.credential, 
+                'clientId': response.clientId 
+              }),
+            });
+
+            if (!loginResponse.ok) {
+              throw new Error(`Login failed: ${loginResponse.status}`);
+            }
+
+            const data = await loginResponse.json();
+            console.log(data);
+            localStorage.setItem('savedTheses', JSON.stringify(data.saved?.data?.map(thesis => thesis.id || [])));
+            
+            await setupSession(data);
+          } catch (error) {
+            console.error("Login error:", error);
+            const message = !navigator.onLine ? 
+              "You appear to be offline. Please check your internet connection." :
+              error.message.includes("Failed to fetch") ?
+              `Cannot reach server at ${window.location.origin}. Please try again later.` :
+              error.message || "Login failed. Please try again.";
+            
+            handleResponse(false, message);
+          }
+        }
+      }
+
+      // Event Listeners
+      if (elements.guestBtn) {
+        elements.guestBtn.addEventListener('click', () => handleLogin(true));
+      }
+
+      // Google Sign-in initialization
+      window.onload = function() {
+        google.accounts.id.initialize({
+          client_id: '<%= oauthid %>',
+          callback: handleCredentialResponse
+        });
+        google.accounts.id.renderButton(
+          document.getElementById("buttonDiv"),
+          { theme: "outline", size: "medium", text: "signin", shape: "pill", locale: "us_en"}
+        );
+        google.accounts.id.prompt();
+      }
     });
-    google.accounts.id.renderButton(
-      document.getElementById("buttonDiv"),
-      { theme: "outline", size: "medium", text: "signin", shape: "pill", locale: "us_en"}
-    );
-    google.accounts.id.prompt();
-  }
-});
 
-// Add resetLoader function
-function resetLoader() {
-  window.location.reload();
-}
-</script>
+    // Add resetLoader function
+    function resetLoader() {
+      window.location.reload();
+    }
+  </script>
 </body>
 </html>

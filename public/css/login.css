@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* Base typography */
 .montserrat-800 {
     font-family: "Montserrat", sans-serif;
     font-optical-sizing: auto;
@@ -15,6 +16,8 @@
 * {
     font-family: "Montserrat", sans-serif;
 }
+
+/* Layout basics */
 body, html {
     margin: 0;
     padding: 0;
@@ -27,6 +30,7 @@ body, html {
     height: 100dvh;
 }
 
+/* Background section */
 #background {
     flex: 2;
     background: linear-gradient(135deg, #002708 0%, #004012 100%);
@@ -61,6 +65,7 @@ body, html {
     margin-left: 3.5vmax;
     margin-top: 0;
 }
+
 .backgroundsubtitle span {
     display: inline-block;
     opacity: 0;
@@ -68,6 +73,7 @@ body, html {
     animation: dropFadeIn 0.3s ease forwards;
 }
 
+/* Login section */
 #login {
     flex: 1;
     display: flex;
@@ -116,25 +122,67 @@ body, html {
     color: #000;
 }
 
+/* Signin button and divider */
 .signin {
     margin-top: 15dvh;
-    width: fit-content;
-    opacity: 1;
-    visibility: visible;
-    transition: all 0.5s ease;
-    margin: 0;
-    transform: scale(1.2);
-}
-
-/* Google Sign-in button container */
-.signin {
     width: 100%;
     display: flex;
     justify-content: center;
     margin: 10px 0;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.5s ease;
+    transform: scale(1.2);
 }
 
-/* Remove all existing loader styles and replace with these */
+.divider {
+    width: 80%;
+    margin: 15px auto;
+    position: relative;
+    text-align: center;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 30px);
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+
+.divider-text {
+    background-color: #fff;
+    padding: 0 15px;
+    color: #6c757d;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+}
+
+.guest-btn {
+    background: transparent;
+    border: none;
+    color: #28a745;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    opacity: 1;
+    visibility: visible;
+}
+
+.guest-btn:hover { color: #218838; }
+
+/* Loader styles */
 .loader {
     display: none;
     width: 60px;
@@ -151,7 +199,7 @@ body, html {
     transform: translate(-50%, -50%);
     width: 70px;
     height: 70px;
-    background: rgba(0, 39, 8, 0.05); /* Light green with low opacity */
+    background: rgba(0, 39, 8, 0.05);
     border-radius: 50%;
     z-index: 0;
 }
@@ -170,20 +218,16 @@ body, html {
     z-index: 1;
 }
 
-.text-error {
-    color: #d32f2f;
-}
-
 .loader .check,
 .loader .error-x {
     position: relative;
     z-index: 2;
 }
 
-/* Success State */
-.loader.success::after {
-    display: none;
-}
+/* Loader states */
+.loader.success::after,
+.loader.error::after,
+.loader.redirect::after { display: none; }
 
 .loader.success .check {
     position: absolute;
@@ -197,11 +241,6 @@ body, html {
     transform: translate(-50%, -70%) rotate(-45deg);
     animation: check-mark 0.6s ease forwards;
     opacity: 0;
-}
-
-/* Error State */
-.loader.error::after {
-    display: none;
 }
 
 .loader.error .error-x {
@@ -225,18 +264,8 @@ body, html {
     border-radius: 2px;
 }
 
-.loader.error .error-x::before {
-    transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.loader.error .error-x::after {
-    transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-/* Redirect State */
-.loader.redirect::after {
-    display: none;
-}
+.loader.error .error-x::before { transform: translate(-50%, -50%) rotate(45deg); }
+.loader.error .error-x::after { transform: translate(-50%, -50%) rotate(-45deg); }
 
 .loader.redirect .check {
     position: absolute;
@@ -252,7 +281,141 @@ body, html {
     animation: arrow-slide 1.5s ease-in-out infinite;
 }
 
+.loader-text {
+    display: none;
+    text-align: center;
+    margin-top: 10px;
+    color: #002708;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.text-error { color: #d32f2f; }
+
+/* Modal styles */
+.modal-content {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+    background-color: #fff;
+    color: #296c32;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.modal-header .modal-title {
+    color: #296c32;
+    font-weight: 600;
+}
+
+.modal-footer { border-top: 1px solid #e9ecef; }
+
+.btn-close { filter: brightness(0) invert(1); }
+
+/* Button styles */
+.btn { transition: all 0.3s ease; }
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-btn {
+    min-width: auto !important;
+    width: auto !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.modal-footer .btn-primary {
+    background-color: #002708;
+    border-color: #002708;
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #004012;
+    border-color: #004012;
+}
+
+#understoodBtn {
+    transition: all 0.3s ease;
+    background-color: #296c32;
+    border-color: #296c32;
+}
+
+#understoodBtn:disabled {
+    background-color: #e9ecef !important;
+    border-color: #dee2e6 !important;
+    color: #6c757d !important;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+#understoodBtn:not(:disabled) {
+    background-color: #296c32 !important;
+    border-color: #296c32 !important;
+}
+
+#understoodBtn:not(:disabled):hover {
+    background-color: #1e5126 !important;
+    border-color: #1e5126 !important;
+    transform: translateY(-1px);
+}
+
+/* Tab Navigation */
+.nav-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.nav-tabs .nav-item {
+    flex: 1;
+    text-align: center;
+}
+
+.nav-tabs .nav-link {
+    color: #555;
+    border: none;
+    padding: 0.8rem 0.5rem;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #296c32;
+    border: none;
+    background: transparent;
+}
+
+.nav-tabs .nav-link.active {
+    color: #296c32;
+    border: none;
+    border-bottom: 2px solid #296c32;
+    font-weight: 600;
+}
+
 /* Animations */
+@keyframes dropFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 @keyframes check-mark {
     0% {
         opacity: 0;
@@ -269,313 +432,109 @@ body, html {
 }
 
 @keyframes arrow-slide {
-    0% {
-        transform: translate(-75%, -50%) rotate(45deg);
-        opacity: 0;
-    }
-    50% {
-        transform: translate(-50%, -50%) rotate(45deg);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(-25%, -50%) rotate(45deg);
-        opacity: 0;
-    }
+    0% { transform: translate(-75%, -50%) rotate(45deg); opacity: 0; }
+    50% { transform: translate(-50%, -50%) rotate(45deg); opacity: 1; }
+    100% { transform: translate(-25%, -50%) rotate(45deg); opacity: 0; }
 }
 
-/* Mobile dark theme adjustments */
-@media (max-width: 768px) {
-    .loader::after {
-        border: 3px solid rgba(255, 255, 255, 0.2);
-        border-top: 3px solid #ffffff;
+/* Responsive styles */
+@media (min-width: 576px) {
+    .nav-tabs .nav-link {
+        padding: 0.8rem 1.2rem;
+        font-size: 1rem;
     }
     
-    .loader.success .check {
-        border-left-color: #ffffff;
-        border-bottom-color: #ffffff;
+    .modal-dialog.modal-lg { max-width: 800px; }
+}
+
+@media (max-width: 576px) {
+    .nav-tabs .nav-link i { margin-right: 0.3rem; }
+    .nav-tabs .nav-link { font-size: 0.8rem; }
+    
+    .modal-dialog.modal-lg {
+        max-width: 100%;
+        margin: 0.5rem;
     }
     
-    .loader.error .error-x::before,
-    .loader.error .error-x::after {
-        background-color: #ffffff;
-    }
+    .modal-body { padding: 1rem 0.75rem; }
     
-    .loader.redirect .check {
-        border-color: #ffffff;
-    }
-
-    .loader::before {
-        background: rgba(255, 255, 255, 0.1);
-    }
-}
-
-.loader-text {
-    display: none; /* Changed from visibility/opacity */
-    text-align: center;
-    margin-top: 10px;
-    color: #002708;
-    font-family: "Montserrat", sans-serif;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.separator {
-    width: 80%;
-    margin: 15px auto;
-    border: none;
-    border-top: 1px solid rgba(0, 0, 0, 0.2);
-}
-
-.guest-btn {
-    background: transparent;
-    border: none;
-    color: #28a745;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 8px 16px;
-    transition: all 0.3s ease;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    opacity: 1;
-    visibility: visible;
-}
-
-.guest-btn:hover {
-    color: #218838;
-}
-
-.divider {
-    width: 80%;
-    margin: 15px auto;
-    position: relative;
-    text-align: center;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.divider::before,
-.divider::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: calc(50% - 30px);
-    height: 1px;
-    background-color: rgba(0, 0, 0, 0.2);
-}
-
-.divider::before {
-    left: 0;
-}
-
-.divider::after {
-    right: 0;
-}
-
-.divider-text {
-    background-color: #fff;
-    padding: 0 15px;
-    color: #6c757d;
-    font-size: 14px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-}
-
-@keyframes dropFadeIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-@keyframes successPop {
-    0% {
-        transform: translate(-50%, -50%) scale(0.8);
-        opacity: 0;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes checkmark {
-    0% {
-        transform: translate(-50%, -70%) rotate(-45deg) scale(0);
-        opacity: 0;
-    }
-    100% {
-        transform: translate(-50%, -70%) rotate(-45deg) scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes arrowSlide {
-    0% {
-        transform: translate(-75%, -50%) rotate(45deg) scale(1);  /* Start more left */
-        opacity: 0;
-    }
-    50% {
-        transform: translate(-50%, -50%) rotate(45deg) scale(1);  /* Center point */
-        opacity: 1;
-    }
-    100% {
-        transform: translate(-25%, -50%) rotate(45deg) scale(1);  /* End more right */
-        opacity: 0;
-    }
-}
-
-@keyframes fadeIn {
-    to {
-        opacity: 1;
+    .modal-footer .btn {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.9rem;
     }
 }
 
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-
-    #background {
-        display: none;
-    }
-
+    #background { display: none; }
+    
     #login {
         flex: 1;
         width: 100%;
         background: linear-gradient(135deg, #002708 0%, #004012 100%);
     }
-    #login img {
-        display: block
-    }
-    .logintitle {
-        color: #fff; 
-    }
-
+    
+    #login img { display: block; }
+    
+    .logintitle,
     .logintitle::before {
-        color: #fff; 
+        color: #fff;
     }
-
+    
     .logintitle::after {
-        color: #fff; 
+        color: #fff;
         content: 'to Iskolar ni Simeon';
     }
+    
+    .logintitle { font-size: 8vw; }
+    
     .verse {
         color: #fff;
         font-size: 1.2vmax;
         opacity: 0.9;
     }
-
+    
+    /* Loader adjustments for dark theme */
     .loader::after {
         border: 3px solid rgba(255, 255, 255, 0.2);
         border-top: 3px solid #ffffff;
     }
-
-    .loader.success::before {
-        background: rgba(255, 255, 255, 0.15);
-    }
+    
+    .loader::before { background: rgba(255, 255, 255, 0.1); }
+    
+    .loader.success::before { background: rgba(255, 255, 255, 0.15); }
     
     .loader.success .check {
         border-width: 4px;
         border-color: #ffffff;
     }
-
-    .loader.error::before {
-        background: rgba(255, 0, 0, 0.15);
-    }
+    
+    .loader.error::before { background: rgba(255, 0, 0, 0.15); }
     
     .loader.error .error-x::before,
-    .loader.error .error-x::after {
-        background: #ffffff;
-    }
-
-    .loader.redirect::before {
-        background: rgba(255, 255, 255, 0.15);  /* Add transparent white background */
-    }
-
+    .loader.error .error-x::after { background: #ffffff; }
+    
+    .loader.redirect::before { background: rgba(255, 255, 255, 0.15); }
+    
     .loader.redirect .check {
         border-color: #ffffff;
-        border-width: 4px;  /* Make the arrow thicker */
+        border-width: 4px;
     }
-
-    .loader-text {
-        color: #ffffff;
-    }
-
-    .separator {
-        border-top-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .guest-btn {
-        color: #4caf50;
-    }
-
-    .guest-btn:hover {
-        color: #81c784;
-    }
-
+    
+    .loader-text { color: #ffffff; }
+    
+    /* Other dark theme adjustments */
     .divider::before,
-    .divider::after {
-        background-color: rgba(255, 255, 255, 0.3);
-    }
-
+    .divider::after { background-color: rgba(255, 255, 255, 0.3); }
+    
     .divider-text {
         background-color: transparent;
         color: rgba(255, 255, 255, 0.7);
     }
-}
-
-@media (max-width: 768px) {
-    .logintitle {
-        font-size: 8vw;
-    }
+    
+    .guest-btn { color: #4caf50; }
+    .guest-btn:hover { color: #81c784; }
 }
 
 @media (min-width: 1200px) {
-    .logintitle {
-        font-size: 3vw;
-    }
-}
-
-/* Add smooth hover effect for buttons */
-.btn {
-    transition: all 0.3s ease;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Modal improvements */
-.modal-content {
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.modal-header {
-    background-color: #002708;
-    color: white;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-}
-
-.btn-close {
-    filter: brightness(0) invert(1);
-}
-
-.modal-footer .btn-primary {
-    background-color: #002708;
-    border-color: #002708;
-}
-
-.modal-footer .btn-primary:hover {
-    background-color: #004012;
-    border-color: #004012;
+    .logintitle { font-size: 3vw; }
 }
