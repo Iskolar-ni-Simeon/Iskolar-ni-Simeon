@@ -33,6 +33,25 @@
     box-shadow: 0 0 0 0.25rem rgba(25,135,84,.25);
 }
 
+/* Add these new styles */
+.search-form .form-control.is-invalid {
+    border-color: #dc3545;
+    border-right: none;
+}
+
+.search-form .form-control.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220,53,69,.25);
+}
+
+.search-form .invalid-feedback {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: auto;
+    margin-top: 0.25rem;
+}
+
 .search-form .btn {
     border-left: none;
     padding-left: 1.5rem;
@@ -90,6 +109,36 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-item {
+    opacity: 0;
+    animation: fadeSlideUp 0.3s ease-out forwards;
+}
+
+/* Add animation delay for each result item */
+.result-item:nth-child(1) { animation-delay: 0.1s; }
+.result-item:nth-child(2) { animation-delay: 0.2s; }
+.result-item:nth-child(3) { animation-delay: 0.3s; }
+.result-item:nth-child(4) { animation-delay: 0.4s; }
+.result-item:nth-child(5) { animation-delay: 0.5s; }
+
+/* Add animation for pagination */
+#paginationContainer {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeSlideUp 0.3s ease-out 0.6s forwards;
 }
 
 .results-container {

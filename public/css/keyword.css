@@ -9,8 +9,6 @@
 .keyword-page {
     min-height: calc(100vh - 60px);
     background: #ffffff;
-    padding: 1rem;
-    padding-bottom: 2rem; /* Add bottom padding for footer */
     background-color: #f8f9fa;
 }
 

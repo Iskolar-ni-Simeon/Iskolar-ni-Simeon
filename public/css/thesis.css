@@ -210,6 +210,214 @@ svg {
     box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }
 
+/* Fix for consistent sizes during loading and after content loads */
+.placeholder {
+    min-height: 1.2rem !important;
+    margin-bottom: 0.5rem;
+}
+
+#thesisTitle.placeholder-wave {
+    min-height: 3rem !important;
+    display: block;
+}
+
+#thesisAbstract.placeholder-wave {
+    min-height: 200px !important;
+    display: block;
+}
+
+#thesisAuthors.placeholder-wave,
+#thesisKeywords.placeholder-wave {
+    min-height: 60px !important;
+    display: block;
+}
+
+#thesisYear.placeholder-wave,
+#thesisType.placeholder-wave {
+    min-height: 24px !important;
+    display: block;
+}
+
+/* Ensure content maintains same size after loading */
+#thesisTitle,
+#thesisAbstract,
+#thesisAuthors,
+#thesisKeywords,
+#thesisYear,
+#thesisType {
+    transition: none !important;
+}
+
+/* Add spacing between placeholder items */
+.placeholder-wave .placeholder {
+    margin-bottom: 0.5rem;
+}
+
+/* Fix for consistent abstract display */
+.abstract {
+    min-height: 200px !important;
+}
+
+/* Fix for consistent sizing between placeholder and content */
+.thesis-title {
+    min-height: 3rem;
+    display: block;
+    width: 100%;
+}
+
+.abstract-container {
+    width: 100%;
+    position: relative;
+}
+
+.abstract-content {
+    min-height: 200px;
+    width: 100%;
+    display: block;
+}
+
+.abstract {
+    min-height: 200px;
+    width: 100%;
+    display: block;
+    line-height: 1.6;
+    color: #4a4a4a;
+}
+
+.authors-container,
+.year-container,
+.type-container,
+.keywords-container {
+    position: relative;
+    min-height: 60px;
+    width: 100%;
+}
+
+.metadata-group {
+    width: 100%;
+}
+
+/* Make placeholders look more like real content */
+.placeholder-glow .placeholder {
+    min-height: 1.2rem;
+    margin-bottom: 0.75rem;
+    border-radius: 3px;
+}
+
+/* Ensure consistent spacing of list items */
+.metadata .submeta {
+    margin-bottom: 0.75rem;
+}
+
+.metadata .submeta:last-child {
+    margin-bottom: 0;
+}
+
+/* Remove placeholder animation for a more stable appearance */
+.placeholder-static .placeholder {
+    animation: none !important;
+    opacity: 0.5;
+}
+
+/* Better spacing for metadata items */
+.metadata-group {
+    margin-bottom: 1.5rem !important;
+}
+
+/* New container styles for consistent sizing */
+.title-container {
+    position: relative;
+    min-height: 3rem;
+    width: 100%;
+}
+
+.title-container h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #198754;
+    margin-bottom: 1rem;
+}
+
+.abstract-container {
+    position: relative;
+    min-height: 200px;
+    width: 100%;
+}
+
+.authors-container,
+.keywords-container {
+    position: relative;
+    min-height: 90px;
+    width: 100%;
+}
+
+.year-container,
+.type-container {
+    position: relative;
+    min-height: 30px;
+    width: 100%;
+}
+
+/* Placeholder styling */
+.placeholder-glow .placeholder {
+    min-height: 1.2rem;
+    margin-bottom: 0.75rem;
+    border-radius: 3px;
+    animation-duration: 1.5s;
+}
+
+/* Make placeholders more readable */
+.placeholder-glow {
+    display: block;
+    width: 100%;
+}
+
+/* Content styling */
+#thesisTitle, 
+#thesisAbstract {
+    width: 100%;
+    transition: none;
+}
+
+#thesisAbstract {
+    min-height: 200px;
+    text-align: justify;
+    line-height: 1.6;
+}
+
+/* Fix Bootstrap's default flex behavior */
+.content-wrapper {
+    width: 100%;
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Ensure consistency in metadata items */
+.metadata-group {
+    width: 100%; 
+    margin-bottom: 1.5rem;
+}
+
+.metadata .submeta {
+    margin-bottom: 0.75rem;
+}
+
+.metadata .submeta:last-child {
+    margin-bottom: 0;
+}
+
+/* Card styling */
+.card {
+    width: 100%;
+    height: 100%;
+}
+
+.card-body {
+    height: 100%;
+}
+
+/* Media queries */
 @media (max-width: 992px) {
     .thesis-hero h1 {
         font-size: 1.5rem;
@@ -238,5 +446,233 @@ svg {
         width: 100%;
         margin: 0;
     }
+}
+
+/* Fix container issues */
+.container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Override problematic flex behaviors */
+.container {
+    display: block !important;
+    flex-direction: initial !important;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.container-fluid.container-lg {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Fix row and column issues */
+.row {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+}
+
+/* Make cards fit within container */
+.card {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.content-wrapper {
+    width: 100%;
+    margin: 0;
+}
+
+/* Ensure abstract text fits */
+#thesisAbstract {
+    width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+/* Fix placeholder sizing */
+.placeholder-glow {
+    max-width: 100%;
+}
+
+/* Fix spacing in responsive views */
+@media (max-width: 992px) {
+    .thesis-hero h1 {
+        font-size: 1.5rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .content-wrapper, .card {
+        margin-bottom: 1rem;
+    }
+    
+    .title-container h1 {
+        font-size: 1.5rem;
+    }
+    
+    .card-utils {
+        flex-direction: column;
+    }
+    
+    .card-utils .btn {
+        margin-bottom: 0.5rem;
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+    
+    .card-body {
+        padding: 1rem 0.75rem;
+    }
+    
+    .thesis-hero {
+        padding: 0.5rem 0;
+    }
+}
+
+/* Clean up old flex container styles */
+.container .thesis,
+.container .card,
+.container .abstract,
+.container .metadata,
+.container .metadata .submeta {
+    flex: initial;
+    display: block;
+    max-width: 100%;
+}
+
+/* Ensure modal fits on mobile */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 0.5rem auto;
+        max-width: 95%;
+    }
+}
+
+/* Animation styles */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* Apply animations to content elements */
+.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.slide-in-right {
+    animation: slideInRight 0.5s ease-out forwards;
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.5s ease-out forwards;
+}
+
+/* Staggered animations for lists */
+.submeta {
+    opacity: 0;
+}
+
+.submeta:nth-child(1) { animation: fadeIn 0.4s ease-out 0.1s forwards; }
+.submeta:nth-child(2) { animation: fadeIn 0.4s ease-out 0.2s forwards; }
+.submeta:nth-child(3) { animation: fadeIn 0.4s ease-out 0.3s forwards; }
+.submeta:nth-child(4) { animation: fadeIn 0.4s ease-out 0.4s forwards; }
+.submeta:nth-child(5) { animation: fadeIn 0.4s ease-out 0.5s forwards; }
+.submeta:nth-child(6) { animation: fadeIn 0.4s ease-out 0.6s forwards; }
+.submeta:nth-child(7) { animation: fadeIn 0.4s ease-out 0.7s forwards; }
+.submeta:nth-child(8) { animation: fadeIn 0.4s ease-out 0.8s forwards; }
+.submeta:nth-child(9) { animation: fadeIn 0.4s ease-out 0.9s forwards; }
+.submeta:nth-child(10) { animation: fadeIn 0.4s ease-out 1.0s forwards; }
+.submeta:nth-child(n+11) {
+    animation: fadeIn 0.4s ease-out 1.0s forwards;
+}
+
+/* Button hover animations */
+.btn-success,
+.btn-outline-success {
+    transition: all 0.2s ease-in-out !important;
+}
+
+.btn-success:hover,
+.btn-outline-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-success:active,
+.btn-outline-success:active {
+    transform: translateY(0);
+}
+
+/* Card hover animation */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Improve placeholder animations */
+.placeholder-glow .placeholder {
+    animation: pulse 2s infinite ease-in-out;
+}
+
+/* Fix animation behavior on mobile */
+@media (prefers-reduced-motion: reduce) {
+    .fade-in, 
+    .slide-in-left,
+    .slide-in-right,
+    .submeta,
+    .card:hover,
+    .btn-success:hover,
+    .btn-outline-success:hover {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
+/* Toast animation */
+.toast.showing {
+    animation: slideInRight 0.3s ease-out forwards;
+}
+
+.toast.hiding {
+    animation: slideInRight 0.3s ease-out reverse forwards;
 }
 

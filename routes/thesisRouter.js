@@ -14,139 +14,28 @@ router.get('/search', async (req, res, next) => {
     const yearFrom = parseInt(req.query.yearFrom);
     const yearTo = parseInt(req.query.yearTo);
     const type = req.query.type;
-    const currentYear = new Date().getFullYear();
-    const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
-
-    try {
-        if (query === "" || query === undefined) {
-            return res.render('./search.ejs', {
-                picture: res.locals.picture,
-                currentRoute: req.originalUrl,
-                searchQuery: query,
-                sort: sort,
-                yearRange,
-                yearFrom: yearFrom || '',
-                yearTo: yearTo || '',
-                type: type || '', 
-                errmessage: "No query identified.",
-                searchResults: []
-            });
-        }
-
-        const apiUrl = new URL(`${process.env.SERVER_API}/search`);
-        apiUrl.searchParams.set('q', query);
-        if (type && type !== 'any') {
-            apiUrl.searchParams.set('type', type);
-        }
-
-        const response = await fetch(apiUrl.toString(), {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': authCookie
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`API request failed with status ${response.status}`);
-        }
-
-        const searchResults = await response.json();
-        let filteredResults = searchResults.data;
-
-        if (yearRange) {
-            try {
-                switch (yearRange) {
-                    case 'last-year':
-                        filteredResults = filteredResults.filter(result => 
-                            parseInt(result.year) >= currentYear - 1
-                        );
-                        break;
-                    case 'last-5-years':
-                        filteredResults = filteredResults.filter(result => 
-                            parseInt(result.year) >= currentYear - 5
-                        );
-                        break;
-                    case 'custom':
-                        if (!isNaN(yearFrom) && !isNaN(yearTo)) {
-                            filteredResults = filteredResults.filter(result => {
-                                const year = parseInt(result.year);
-                                return year >= yearFrom && year <= yearTo;
-                            });
-                        }
-                        break;
-                }
-            } catch (error) {
-                console.error('Error applying year filter:', error);
-            }
-        }
-        res.render("./search.ejs", {
-            picture: res.locals.picture,
-            currentRoute: req.originalUrl,
-            searchQuery: query,
-            sort: sort,
-            yearRange,
-            yearFrom: yearFrom || '',
-            yearTo: yearTo || '',
-            type: type || '', 
-            searchResults: filteredResults,
-            errmessage: (!filteredResults || filteredResults.length === 0) ? "No results found." : undefined,
-            userId: res.locals.userId
-        });
-    } catch (error) {
-        console.error('Search error:', error);
-        return res.render('./search.ejs', {
-            picture: res.locals.picture,
-            currentRoute: req.originalUrl,
-            searchQuery: query,
-            sort: sort,
-            yearRange,
-            yearFrom: yearFrom || '',
-            yearTo: yearTo || '',
-            type: type || '', 
-            errmessage: "Error connecting to search service. Please try again later.",
-            searchResults: []
-        });
-    }
+    
+    res.render("./search.ejs", {
+        picture: res.locals.picture,
+        currentRoute: req.originalUrl,
+        searchQuery: query,
+        sort: sort,
+        yearRange,
+        yearFrom: yearFrom || '',
+        yearTo: yearTo || '',
+        type: type || '', 
+        userId: res.locals.userId
+    });
 });
 
 router.get('/thesis/:id', async (req, res, next) => {
-    const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
-    try {
-        const response = await fetch(`${process.env.SERVER_API}/thesis?uuid=` + req.params.id, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': authCookie
-            },
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            return res.status(response.status).send('Error fetching thesis: ' + response.statusText);
-        }
-
-        const thesis = await response.json();
-
-        if (!thesis.data) {
-            return res.status(404).render("./404.ejs", {
-                picture: res.locals.picture,
-                currentRoute: req.originalUrl,
-            });
-        };
-        
-        res.render("./thesis.ejs", {
-            picture: res.locals.picture,
-            currentRoute: req.originalUrl,
-            thesis: thesis.data,
-            thesisId: req.params.id,
-            server_api: process.env.SERVER_API,
-            userId: res.locals.userId
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
+    res.render("./thesis.ejs", {
+        picture: res.locals.picture,
+        currentRoute: req.originalUrl,
+        thesisId: req.params.id,
+        server_api: process.env.SERVER_API,
+        userId: res.locals.userId
+    });
 });
 
 router.post('/save/:id', async (req, res, next) => {
@@ -250,87 +139,24 @@ router.get('/read/proxy/:id', async (req, res, next) => {
     };
 });
 
-
 router.get('/keyword/:keywordId', async (req, res, next) => {
-    const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
-    try {
-        const response = await fetch(`${process.env.SERVER_API}/keyword?uuid=${req.params.keywordId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization' : authCookie
-            },
-            'credentials': 'include'
-        });
-
-        if (!response.ok) {
-            if (response.status === 401) {
-                return res.redirect('/auth/login');
-            }
-            return res.status(response.status).render("./404.ejs", {
-                picture: res.locals.picture,
-                currentRoute: req.originalUrl,
-            });
-        }
-
-        const data = await response.json();
-        if (!data.ok) {
-            res.render("./404.ejs", {
-                picture: res.locals.picture,
-                currentRoute: req.originalUrl,
-            });
-        }
-        console.log(data)
-        res.render('./keyword.ejs', {
-            picture: res.locals.picture,
-            currentRoute: req.originalUrl,
-            keyword: data.data,
-            searchResults: data.data.theses,
-            userId: res.locals.userId
-        });
-
-    } catch (err) {
-        console.error('Error: ', err);
-        res.status(500).send('Internal Server Error');
-    }
+    const keywordId = req.params.keywordId;
+    res.render('./keyword.ejs', {
+        picture: res.locals.picture,
+        currentRoute: req.originalUrl,
+        userId: res.locals.userId,
+        keywordId: keywordId
+    })
 });
 
 router.get('/author/:authorId', async (req, res, next) => {
-    const authCookie = sessAuth.decrypt(JSON.parse(Buffer.from(req.cookies.authorization, 'base64').toString('utf8')));
-    try {
-        const response = await fetch(`${process.env.SERVER_API}/author?uuid=${req.params.authorId}`,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': authCookie
-                },
-                'credentials': 'include'
-            }
-        ).then(response => {
-            if (!response.ok) {
-                if (response.status === 401) {
-                    return res.redirect('/auth/login');
-                }
-                return res.status(response.status).render("./404.ejs", {
-                    picture: res.locals.picture,
-                    currentRoute: req.originalUrl,
-                });
-            }
-            return response
-        });
-
-        const data = await response.json();
-        res.render('./author.ejs', {
-            picture: res.locals.picture,
-            currentRoute: req.originalUrl,
-            author: data.data,
-            searchResults: data.data.theses,
-            userId: res.locals.userId
-        })
-    } catch (err) {
-        console.error('Error: ', err)
-    }
+    const authorId = req.params.authorId;
+    res.render('./author.ejs', {
+        picture: res.locals.picture,
+        currentRoute: req.originalUrl,
+        userId: res.locals.userId,
+        authorid: authorId
+    })
 });
 
 module.exports = router;

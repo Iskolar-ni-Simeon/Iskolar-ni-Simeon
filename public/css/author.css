@@ -62,8 +62,6 @@ body {
 }
 
 .author-page {
-    margin-top: 0;  /* Changed from 60px */
-    min-height: calc(100vh - 112px);
     padding: 0;
     background-color: #f8f9fa;
 }
@@ -72,6 +70,21 @@ body {
     border-bottom: 1px solid rgba(0,0,0,0.1);
     margin-bottom: 1rem !important; /* Added to control spacing */
     padding: 3rem 0;
+}
+
+.updated {
+    animation: heroFade 0.8s ease-in-out;
+}
+
+@keyframes heroFade {
+    0% {
+        filter: opacity(0);
+        y: 20px;
+    }
+    100% {
+        filter: opacity(1);
+        y: 0;
+    }
 }
 
 .results-wrapper {

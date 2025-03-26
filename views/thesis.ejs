@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool@latest'></script>
+    <!-- <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool@latest'></script> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <title><%= thesis.title %> | Iskolar ni Simeon</title>
+    <title>Thesis Details | Iskolar ni Simeon</title>
     <meta name="theme-color" content="#296c32">
     <link rel="stylesheet" href="/css/thesis.css">
 </head>
@@ -15,106 +16,106 @@
     
     <main class="thesis-page">
         <div class="thesis-hero mb-4 bg-success bg-opacity-10">
-            <div class="container py-4">
+            <div class="container-fluid container-lg py-4">
                 <div class="row justify-content-center">
-                    <div class="col-12">
-                        <h1 class="text-center mb-3 no-select"><%= thesis.title %></h1>
+                    <div class="col-12 col-lg-10">
+                        <div class="title-container">
+                            <div id="titlePlaceholder" class="placeholder-glow">
+                                <h1 class="text-center mb-3">
+                                    <span class="placeholder col-8"></span>
+                                </h1>
+                            </div>
+                            <h1 id="thesisTitle" class="text-center mb-3 d-none"></h1>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-12 col-lg-8">
+        <div class="container-fluid container-lg">
+            <div class="row g-4 justify-content-center">
+                <div class="col-12 col-lg-7">
                     <div class="content-wrapper">
                         <div class="card border-0 shadow-sm">
                             <div class="card-body">
                                 <h5 class="card-title mb-3">Abstract</h5>
-                                <p class="abstract no-select text-justify mb-0"><%= thesis.abstract %></p>
+                                <div class="abstract-container">
+                                    <div id="abstractPlaceholder" class="placeholder-glow">
+                                        <span class="placeholder col-12"></span>
+                                        <span class="placeholder col-12"></span>
+                                        <span class="placeholder col-12"></span>
+                                        <span class="placeholder col-12"></span>
+                                        <span class="placeholder col-8"></span>
+                                    </div>
+                                    <p id="thesisAbstract" class="abstract text-justify mb-0 d-none"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-4">
+                <div class="col-12 col-lg-5 col-xl-4">
                     <div class="card border-0 shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title mb-3">Details</h5>
                             
                             <div class="metadata-group mb-4">
                                 <h6 class="fw-bold mb-2">Author/s</h6>
-                                <ul class="metadata list-unstyled mb-0">
-                                    <% thesis.authors.forEach(author => { %>
-                                        <li class="submeta mb-1">
-                                            <a href="/author/<%= author.id %>" class="text-success text-decoration-none">
-                                                <i class="bi bi-person"></i> <%= author.name %>
-                                            </a>
-                                        </li>
-                                    <% }) %>
-                                </ul>
+                                <div class="authors-container">
+                                    <div id="authorsPlaceholder" class="placeholder-glow">
+                                        <span class="placeholder bg-success col-8"></span>
+                                        <span class="placeholder bg-success col-7"></span>
+                                    </div>
+                                    <ul id="thesisAuthors" class="metadata list-unstyled mb-0 d-none"></ul>
+                                </div>
                             </div>
 
                             <div class="metadata-group mb-4">
                                 <h6 class="fw-bold mb-2">Published</h6>
-                                <ul class="metadata list-unstyled mb-0">
-                                    <li class="submeta">
-                                        <a class="text-success text-decoration-none">
-                                            <i class="bi bi-calendar"></i> <%= thesis.year %>
-                                        </a>
-                                    </li>
-                                </ul>
+                                <div class="year-container">
+                                    <div id="yearPlaceholder" class="placeholder-glow">
+                                        <span class="placeholder bg-success col-6"></span>
+                                    </div>
+                                    <ul class="metadata list-unstyled mb-0 d-none">
+                                        <li id="thesisYear" class="submeta"></li>
+                                    </ul>
+                                </div>
                             </div>
 
                             <div class="metadata-group mb-4">
                                 <h6 class="fw-bold mb-2">Research Type</h6>
-                                <ul class="metadata list-unstyled mb-0">
-                                    <li class="submeta">
-                                        <a class="text-success text-decoration-none">
-                                            <i class="bi bi-journal-text"></i> 
-                                            <% 
-                                            let displayType = 'Not specified';
-                                            if (thesis.type) {
-                                                // Handle different possible type field names
-                                                const type = thesis.type.toLowerCase();
-                                                displayType = type.charAt(0).toUpperCase() + type.slice(1);
-                                            } else if (thesis.research_type) {
-                                                // Alternative field name
-                                                const type = thesis.research_type.toLowerCase();
-                                                displayType = type.charAt(0).toUpperCase() + type.slice(1);
-                                            }
-                                            %>
-                                            <%= displayType %>
-                                        </a>
-                                    </li>
-                                </ul>
+                                <div class="type-container">
+                                    <div id="typePlaceholder" class="placeholder-glow">
+                                        <span class="placeholder bg-success col-5"></span>
+                                    </div>
+                                    <ul class="metadata list-unstyled mb-0 d-none">
+                                        <li id="thesisType" class="submeta"></li>
+                                    </ul>
+                                </div>
                             </div>
 
                             <div class="metadata-group mb-4">
                                 <h6 class="fw-bold mb-2">Keywords</h6>
-                                <ul class="metadata list-unstyled mb-0">
-                                    <% thesis.keywords.forEach(keyword => { %>
-                                        <li class="submeta mb-1">
-                                            <a href="/keyword/<%= keyword.id %>" class="text-success text-decoration-none">
-                                                <i class="bi bi-tag"></i> <%= keyword.keyword %>
-                                            </a>
-                                        </li>
-                                    <% }) %>
-                                </ul>
+                                <div class="keywords-container">
+                                    <div id="keywordsPlaceholder" class="placeholder-glow">
+                                        <span class="placeholder bg-success col-7"></span>
+                                        <span class="placeholder bg-success col-5"></span>
+                                    </div>
+                                    <ul id="thesisKeywords" class="metadata list-unstyled mb-0 d-none"></ul>
+                                </div>
                             </div>
 
                             <div class="card-utils d-flex justify-content-center gap-2">
-                                <button class="btn btn-success w-100" onclick="window.location = '/read/<%= thesisId %>'">
+                                <button class="btn btn-success w-100" id="readButton" disabled>
                                     <i class="bi bi-book me-2"></i> Read
-                                    <span class="spinner-border spinner-border-sm text-light d-none" role="status"></span>
                                 </button>
-                                <button class="btn btn-outline-success save w-100">
+                                <button class="btn btn-outline-success save w-100" id="saveButton" disabled>
                                     <i class="bi bi-bookmark me-2"></i>
-                                    <span class="savedStatus"></span>
+                                    <span class="savedStatus">Save</span>
                                 </button>
                             </div>
                             <div class="card-utils d-flex justify-content-center mt-2">
-                                <button class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#citeModal">
+                                <button class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#citeModal" id="citeButton" disabled>
                                     <i class="bi bi-quote me-2"></i> Cite
                                 </button>
                             </div>
@@ -174,92 +175,239 @@
 
     <% if (userId.split('-')[0] === "guest") { %>
         <%- include('partials/footer.ejs') %>
-            <% } %>
-
-
-    
+    <% } %>
 </body>
 <script>
     document.addEventListener('contextmenu', (e) => e.preventDefault());
-    const thesisId = '<%= thesisId %>';
-    const savedStatus = document.querySelector('.savedStatus');
-    const toastElement = document.getElementById('guestSaveToast');
-    const toast = new bootstrap.Toast(toastElement, {
-        delay: 60000, // Show for 60 seconds
-        autohide: false // Don't auto-hide, require user to close
-    });
-    let savedTheses = localStorage.getItem('savedTheses');
-    savedTheses = savedTheses ? new Set(JSON.parse(savedTheses)) : new Set();
-    console.log('Saved Theses from LocalStorage:', savedTheses);
-    const userId = '<%= locals.userId %>';
-
-    let method = savedTheses.has(thesisId) ? 'remove' : 'add';
-    if (userId.split('-')[0] === 'guest') {
-        savedStatus.textContent = 'Save';
-        savedStatus.disabled = true;
-    } else {
-        savedStatus.textContent = method === 'add' ? 'Save' : 'Saved';
-    }
-
-
-    savedStatus.addEventListener('click', () => {
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const thesisId = '<%= thesisId %>';
+        const savedStatus = document.querySelector('.savedStatus');
+        const saveButton = document.getElementById('saveButton');
+        const citeButton = document.getElementById('citeButton');
+        const toastElement = document.getElementById('guestSaveToast');
+        const readButton = document.getElementById('readButton');
+        const toast = new bootstrap.Toast(toastElement, {
+            delay: 60000,
+            autohide: false
+        });
+        
+        let savedTheses = localStorage.getItem('savedTheses');
+        savedTheses = savedTheses ? new Set(JSON.parse(savedTheses)) : new Set();
         const userId = '<%= locals.userId %>';
-        if (userId.split('-')[0] === "guest") { 
-            toast.show();
-            return;
-        }
-
-        savedStatus.disabled = true;
-        savedStatus.innerHTML = `
-            <span class="spinner-border spinner-border-sm text-success" role="status" aria-hidden="true"></span>
-        `;
-
-        fetch(`/save/${thesisId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                method: method
-            })
-        }).then(response => {
-            if (response.ok) {
-                if (method === 'add') {
-                    savedTheses.add(thesisId);
-                    savedStatus.innerHTML = 'Saved';
-                    method = 'remove';
-                } else {
-                    savedTheses.delete(thesisId);
-                    savedStatus.innerHTML = 'Save';
-                    method = 'add';
-                }
-                localStorage.setItem('savedTheses', JSON.stringify([...savedTheses]));
-            } else {
-                console.error('Failed to save/remove thesis:', response.statusText);
-                savedStatus.innerHTML = method === 'add' ? 'Save' : 'Saved'; 
+        
+        // Fetch thesis data
+        const apiURL = new URL('/api/thesis', window.location.origin);
+        apiURL.searchParams.append('id', thesisId);
+        
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('timeout')), 20000)
+        );
+        
+        Promise.race([
+            fetch(apiURL),
+            timeoutPromise
+        ])
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status} ${response.statusText}`);
             }
-        }).catch(error => {
-            console.error('Error during fetch:', error);
-            savedStatus.innerHTML = method === 'add' ? 'Save' : 'Saved';
-        }).finally(() => {
-            savedStatus.disabled = false;
+            return response.json();
+        })
+        .then(data => {
+            if (!data || !data.data) {
+                throw new Error('No thesis object returned');
+            }
+            const thesis = data.data;
+            saveButton.disabled = false;
+            citeButton.disabled = false;
+            readButton.disabled = false;
+            // Update page title
+            document.title = `${thesis.title} | Iskolar ni Simeon`;
+            
+            // Update thesis title with animation
+            const titleElem = document.getElementById('thesisTitle');
+            titleElem.classList.add('fade-in');
+            titleElem.textContent = thesis.title;
+            titleElem.classList.remove('d-none');
+            document.getElementById('titlePlaceholder').classList.add('d-none');
+            
+            // Update abstract with animation
+            const abstractElem = document.getElementById('thesisAbstract');
+            abstractElem.classList.add('fade-in');
+            abstractElem.textContent = thesis.abstract;
+            abstractElem.classList.remove('d-none');
+            document.getElementById('abstractPlaceholder').classList.add('d-none');
+            
+            // Update authors list with animation
+            const authorsElem = document.getElementById('thesisAuthors');
+            const authorsHTML = thesis.authors.map(author => `
+                <li class="submeta mb-2">
+                    <a href="/author/${author.id}" class="text-success text-decoration-none">
+                        <i class="bi bi-person"></i> ${author.name}
+                    </a>
+                </li>
+            `).join('');
+            authorsElem.innerHTML = authorsHTML;
+            authorsElem.classList.remove('d-none');
+            document.getElementById('authorsPlaceholder').classList.add('d-none');
+            
+            // Update year with animation
+            const yearElem = document.getElementById('thesisYear');
+            yearElem.classList.add('slide-in-right');
+            yearElem.innerHTML = `
+                <a class="text-success text-decoration-none">
+                    <i class="bi bi-calendar"></i> ${thesis.year}
+                </a>
+            `;
+            yearElem.parentElement.classList.remove('d-none');
+            document.getElementById('yearPlaceholder').classList.add('d-none');
+            
+            // Update type with animation
+            let displayType = 'Not specified';
+            if (thesis.type) {
+                const type = thesis.type.toLowerCase();
+                displayType = type.charAt(0).toUpperCase() + type.slice(1);
+            } else if (thesis.research_type) {
+                const type = thesis.research_type.toLowerCase();
+                displayType = type.charAt(0).toUpperCase() + type.slice(1);
+            }
+            
+            const typeElem = document.getElementById('thesisType');
+            typeElem.classList.add('slide-in-right');
+            typeElem.innerHTML = `
+                <a class="text-success text-decoration-none">
+                    <i class="bi bi-journal-text"></i> ${displayType}
+                </a>
+            `;
+            typeElem.parentElement.classList.remove('d-none');
+            document.getElementById('typePlaceholder').classList.add('d-none');
+            
+            // Update keywords with animation
+            const keywordsElem = document.getElementById('thesisKeywords');
+            const keywordsHTML = thesis.keywords.map(keyword => `
+                <li class="submeta mb-2">
+                    <a href="/keyword/${keyword.id}" class="text-success text-decoration-none">
+                        <i class="bi bi-tag"></i> ${keyword.keyword}
+                    </a>
+                </li>
+            `).join('');
+            keywordsElem.innerHTML = keywordsHTML;
+            keywordsElem.classList.remove('d-none');
+            document.getElementById('keywordsPlaceholder').classList.add('d-none');
+            
+            // Add animation to the button container after content loads
+            setTimeout(() => {
+                document.querySelectorAll('.card-utils').forEach(el => {
+                    el.classList.add('fade-in');
+                });
+            }, 300);
+            
+            // Update Save button
+            let method = savedTheses.has(thesisId) ? 'remove' : 'add';
+            if (userId.split('-')[0] === 'guest') {
+                savedStatus.textContent = 'Save';
+                savedStatus.parentElement.disabled = true;
+                savedStatus.parentElement.title = 'Please log in to save theses';
+            } else {
+                savedStatus.textContent = method === 'add' ? 'Save' : 'Saved';
+                if (method === 'remove') {
+                    savedStatus.parentElement.classList.add('active');
+                }
+            }
+            
+            // Update Read button
+            readButton.addEventListener('click', () => {
+                window.location.href = `/read/${thesisId}`;
+            });
+            
+            // Citation data
+            window.thesis = {
+                title: thesis.title,
+                authors: thesis.authors,
+                year: thesis.year,
+                institution: 'General de Jesus College'
+            };
+            
+            // Initialize citation
+            document.getElementById('citationText').innerHTML = generateCitation('apa');
+        })
+        .catch(error => {
+            console.error('Error fetching thesis data:', error);
+            
+            // Show error for title
+            document.getElementById('titlePlaceholder').classList.add('d-none');
+            const titleElem = document.getElementById('thesisTitle');
+            titleElem.classList.remove('d-none');
+            titleElem.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Error loading thesis
+                </div>
+            `;
+            
+            // Show error for abstract
+            document.getElementById('abstractPlaceholder').classList.add('d-none');
+            const abstractElem = document.getElementById('thesisAbstract');
+            abstractElem.classList.remove('d-none');
+            abstractElem.innerHTML = `
+                <p class="text-danger">Failed to load thesis data: ${error.message}</p>
+            `;
+        });
+        
+        // Save button functionality
+        document.querySelector('.save').addEventListener('click', async () => {
+            if (userId.split('-')[0] === "guest") { 
+                toast.show();
+                return;
+            }
+            
+            const method = savedTheses.has(thesisId) ? 'remove' : 'add';
+            savedStatus.parentElement.disabled = true;
+            savedStatus.innerHTML = `
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            `;
+            
+            try {
+                const response = await fetch(`/save/${thesisId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ method })
+                });
+                
+                if (response.ok) {
+                    if (method === 'add') {
+                        savedTheses.add(thesisId);
+                        savedStatus.textContent = 'Saved';
+                        savedStatus.parentElement.classList.add('active');
+                    } else {
+                        savedTheses.delete(thesisId);
+                        savedStatus.textContent = 'Save';
+                        savedStatus.parentElement.classList.remove('active');
+                    }
+                    localStorage.setItem('savedTheses', JSON.stringify([...savedTheses]));
+                } else {
+                    throw new Error(response.statusText);
+                }
+            } catch (error) {
+                console.error('Error during save/unsave:', error);
+                const isSaved = savedTheses.has(thesisId);
+                savedStatus.textContent = isSaved ? 'Saved' : 'Save';
+            } finally {
+                savedStatus.parentElement.disabled = false;
+            }
         });
     });
-
-    // Citation functionality
-    const citationFormat = document.getElementById('citationFormat');
-    const citationText = document.getElementById('citationText');
-    const thesis = {
-        title: '<%= thesis.title %>',
-        authors: <%- JSON.stringify(thesis.authors) %>,
-        year: '<%= thesis.year %>',
-        institution: 'General de Jesus College'
-    };
-
+    
+    // Citation functions
     function generateCitation(format) {
-        const authorNames = thesis.authors.map(author => author.name);
+        if (!window.thesis) return '';
+        
+        const authorNames = window.thesis.authors.map(author => author.name);
         let citation = '';
-
+        
         switch (format) {
             case 'apa':
                 const apaAuthors = authorNames.map(name => {
@@ -270,21 +418,21 @@
                 });
                 const lastAuthor = apaAuthors.pop();
                 const authorString = apaAuthors.length ? apaAuthors.join(', ') + ', & ' + lastAuthor : lastAuthor;
-                citation = `${authorString} (${thesis.year}). <i>${thesis.title}</i> [Undergraduate thesis]. ${thesis.institution}.`;
+                citation = `${authorString} (${window.thesis.year}). <i>${window.thesis.title}</i> [Undergraduate thesis]. ${window.thesis.institution}.`;
                 break;
-
+                
             case 'mla':
                 const firstAuthorParts = authorNames[0].split(' ');
                 const firstAuthorLastName = firstAuthorParts.pop();
                 const firstAuthorFirstName = firstAuthorParts.join(' ');
                 const mlaAuthor = `${firstAuthorLastName}, ${firstAuthorFirstName}`;
-                citation = `${mlaAuthor}${authorNames.length > 1 ? ', et al' : ''}. <i>${thesis.title}</i>. ${thesis.year}. ${thesis.institution}, Undergraduate thesis.`;
+                citation = `${mlaAuthor}${authorNames.length > 1 ? ', et al' : ''}. <i>${window.thesis.title}</i>. ${window.thesis.year}. ${window.thesis.institution}, Undergraduate thesis.`;
                 break;
-
+                
             case 'chicago':
-                citation = `${authorNames.join(', ')}. ${thesis.year}. <i>${thesis.title}</i>. ${thesis.institution}. Undergraduate thesis.`;
+                citation = `${authorNames.join(', ')}. ${window.thesis.year}. <i>${window.thesis.title}</i>. ${window.thesis.institution}. Undergraduate thesis.`;
                 break;
-
+                
             case 'harvard':
                 const harvardAuthors = authorNames.map(name => {
                     const parts = name.split(' ');
@@ -293,22 +441,20 @@
                     return `${lastName}, ${initials}`;
                 });
                 const authorList = harvardAuthors.join(', ');
-                citation = `${authorList}, ${thesis.year}. <i>${thesis.title}</i>. Undergraduate thesis. ${thesis.institution}.`;
+                citation = `${authorList}, ${window.thesis.year}. <i>${window.thesis.title}</i>. Undergraduate thesis. ${window.thesis.institution}.`;
                 break;
         }
         return citation;
     }
-
-    citationFormat.addEventListener('change', () => {
-        citationText.innerHTML = generateCitation(citationFormat.value);
+    
+    // Citation format change handler
+    document.getElementById('citationFormat')?.addEventListener('change', function() {
+        document.getElementById('citationText').innerHTML = generateCitation(this.value);
     });
-
-    // Initialize with APA citation
-    citationText.innerHTML = generateCitation('apa');
-
+    
     function copyCitation() {
         const range = document.createRange();
-        range.selectNode(citationText);
+        range.selectNode(document.getElementById('citationText'));
         window.getSelection().removeAllRanges();
         window.getSelection().addRange(range);
         document.execCommand('copy');
