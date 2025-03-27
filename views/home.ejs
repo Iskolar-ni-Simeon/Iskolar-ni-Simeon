@@ -69,7 +69,7 @@
 
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
-        searchInput.value = placeholders[Math.floor(Math.random() * placeholders.length)];
+        searchInput.placeholder = `Try searching: ${placeholders[Math.floor(Math.random() * placeholders.length)]}`;
 
         function performSearch() {
             const query = searchInput.value.trim();
