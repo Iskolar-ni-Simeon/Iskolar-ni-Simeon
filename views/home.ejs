@@ -22,6 +22,7 @@
                 <div class="input-group input-group-lg mb-3">
                     <input type="text" 
                            id="searchInput" 
+                           placeholder="Search..."
                            class="form-control" 
                            aria-label="Search">
                     <button class="btn btn-success px-4" type="button" id="searchButton">
@@ -29,6 +30,13 @@
                         <span class="search-text ms-2">Search</span>
                     </button>
                 </div>
+                <small class="text-success">
+                    Suggestions:
+                    <a class="text-success" href="/search?q=health">health</a>,
+                    <a href="/search?q=coping mechanism" class="text-success">coping mechanism</a>,
+                    <a href="/search?q=challenge" class="text-success">challenge</a>,
+                    <a href="/search?q=nueva ecija" class="text-success">nueva ecija</a>
+                </small>
             </div>
             <div class="alert alert-warning">
                 <i class="bi bi-exclamation-triangle me-2"></i>
@@ -65,12 +73,9 @@
         </div>
     </main>
     <script>
-        const placeholders = ["autism", "challenge", "nueva ecija", "coping mechanism", "health"]
 
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
-        searchInput.placeholder = placeholders[Math.floor(Math.random() * placeholders.length)];
-
         function performSearch() {
             const query = searchInput.value.trim();
             if (query === '') {
