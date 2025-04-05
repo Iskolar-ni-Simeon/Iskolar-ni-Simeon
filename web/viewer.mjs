@@ -13686,11 +13686,11 @@ const PDFViewerApplication = {
     });
   },
   async download() {
-    let data;
+    // let data;
     try {
-      data = await this.pdfDocument.getData();
+      // data = await this.pdfDocument.getData();
     } catch {}
-    this.downloadManager.download(data, this._downloadUrl, this._docFilename);
+    alert("Downloading the document is strictly prohibited, and it is a violation of the Terms and Service.");
   },
   async save() {
     if (this._saveInProgress) {
@@ -14207,7 +14207,7 @@ const PDFViewerApplication = {
   },
   triggerPrinting() {
     if (this.supportsPrinting) {
-      window.print();
+      alert("Printing the document is strictly prohibited, and is a violation of the Terms and Service.")
     }
   },
   bindEvents() {
