@@ -4,14 +4,11 @@ const { SessionAuthentication } = require('../public/scripts/auth');
 require('dotenv').config();
 const sessAuth = new SessionAuthentication(process.env.SESSIONSECRET);
 
-// More robust auth cookie extraction with fallbacks
 function getAuthCookie(req) {
     try {
-        // Log all cookies for debugging
         console.log(`[BFF API] Available cookies:`, Object.keys(req.cookies || {}));
         
         if (!req.cookies || !req.cookies.authorization) {
-            // Try session cookie as fallback
             if (req.cookies && req.cookies.session) {
                 console.log(`[BFF API] Using session cookie as fallback`);
                 try {
@@ -19,14 +16,13 @@ function getAuthCookie(req) {
                     console.log(`[BFF API] Session data:`, sessionData);
                     
                     if (sessionData && sessAuth.decrypt(sessionData).userId) {
-                        return "Bearer " + sessAuth.decrypt(sessionData).userId; // Use userId as simple token
+                        return "Bearer " + sessAuth.decrypt(sessionData).userId; 
                     }
                 } catch (e) {
                     console.error(`[BFF API] Error decrypting session:`, e);
                 }
             }
             
-            // For search endpoint only, use a guest token if no auth is available
             if (req.path === '/api/search') {
                 console.log(`[BFF API] Using guest token for search`);
                 return "Bearer guest-token";
@@ -46,7 +42,6 @@ function getAuthCookie(req) {
         } catch (e) {
             console.error(`[BFF API] Error processing auth cookie:`, e);
             
-            // For search endpoint only, use a guest token if auth processing fails
             if (req.path === '/api/search') {
                 console.log(`[BFF API] Falling back to guest token for search after auth error`);
                 return "Bearer guest-token";
@@ -223,7 +218,6 @@ router.get('/api/health', (req, res) => {
         }
     });
 });
-
 router.get('/api/saved', async (req, res) => {
     console.log('[BFF API]: Fetching saved theses');
     

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -10,94 +11,86 @@
     <meta name="theme-color" content="#296c32">
     <link rel="stylesheet" href="/css/home.css">
 </head>
+
 <body class="d-flex flex-column min-vh-100">
     <%- include('partials/header.ejs') %>
-    <main class="d-flex align-items-center justify-content-center flex-grow-1">
-        <div class="hero-content text-center">
-            <img class="logo mb-4" src="images/insblack.svg" alt="Logo" draggable="false">
-            <h1 class="h2 fw-bold text-success mb-3">Iskolar ni Simeon</h1>
-            <p class="lead text-muted mb-4">Access a comprehensive collection of research papers, theses, and academic papers from General de Jesus College.</p>
-            
-            <div class="search-box mb-4">
-                <div class="input-group input-group-lg mb-3">
-                    <input type="text" 
-                           id="searchInput" 
-                           placeholder="Search..."
-                           class="form-control" 
-                           aria-label="Search">
-                    <button class="btn btn-success px-4" type="button" id="searchButton">
-                        <i class="bi bi-search"></i>
-                        <span class="search-text ms-2">Search</span>
-                    </button>
-                </div>
-                <small class="text-success">
-                    Suggestions:
-                    <a class="text-success" href="/search?q=health">health</a>,
-                    <a href="/search?q=coping mechanism" class="text-success">coping mechanism</a>,
-                    <a href="/search?q=challenge" class="text-success">challenge</a>,
-                    <a href="/search?q=nueva ecija" class="text-success">nueva ecija</a>
-                </small>
-            </div>
-            <div class="alert alert-warning">
-                <i class="bi bi-exclamation-triangle me-2"></i>
-                The platform is currently in beta, so you may encounter bugs, issues, or zero results, as the database is still being populated with research papers from participating authors. Thank you for your understanding. 
-                <br>
-            </div>
-            <div class="alert alert-info">
-                <i class="bi bi-plus-circle me-2"></i>
-                Want your paper to be included? Refer to the by going to the <a href="/">landing page</a> and clicking the "Add your paper" button.
-            </div>
-            <div class="features row g-4 text-start mt-2">
-                <div class="col-md-4">
-                    <div class="feature-item">
-                        <i class="bi bi-journal-text text-success fs-4"></i>
-                        <h3 class="h6 fw-bold mt-3">Research Papers</h3>
-                        <p class="small text-muted">Access academic papers across multiple disciplines</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-item">
-                        <i class="bi bi-clock-history text-success fs-4"></i>
-                        <h3 class="h6 fw-bold mt-3">Latest Additions</h3>
-                        <p class="small text-muted">Recently published works are added regularly</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-item">
-                        <i class="bi bi-bookmark-star text-success fs-4"></i>
-                        <h3 class="h6 fw-bold mt-3">Save for Later</h3>
-                        <p class="small text-muted">Save research papers for later use</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <script>
+        <main class="d-flex align-items-center justify-content-center flex-grow-1">
+            <div class="hero-content text-center">
+                <img class="logo mb-4" src="images/insblack.svg" alt="Logo" draggable="false">
+                <h1 class="h2 fw-bold text-success mb-3">Iskolar ni Simeon</h1>
+                <p class="lead text-muted mb-4">Access a comprehensive collection of research papers, theses, and
+                    academic papers from General de Jesus College.</p>
 
-        const searchInput = document.getElementById('searchInput');
-        const searchButton = document.getElementById('searchButton');
-        function performSearch() {
-            const query = searchInput.value.trim();
-            if (query === '') {
-                searchInput.classList.add('is-invalid');
-                return;
-            }
-            window.location.href = `/search?q=${encodeURIComponent(query)}`;
-        }
+                <div class="search-box mb-4">
+                    <div class="input-group input-group-lg mb-3">
+                        <input type="text" id="searchInput" class="form-control" aria-label="Search">
+                        <button class="btn btn-success px-4" type="button" id="searchButton">
+                            <i class="bi bi-search"></i>
+                            <span class="search-text ms-2">Search</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Sunsetting Soon:</strong> <i>Iskolar ni Simeon</i> will go offline in <strong>January
+                        2026</strong>. Access and data will be removed permanently. Thank you being a part of this capstone project.
+                </div>
 
-        searchButton.addEventListener('click', performSearch);
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                performSearch();
+                <div class="features row g-4 text-start mt-2">
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <i class="bi bi-journal-text text-success fs-4"></i>
+                            <h3 class="h6 fw-bold mt-3">Research Papers</h3>
+                            <p class="small text-muted">Access academic papers across multiple disciplines</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <i class="bi bi-clock-history text-success fs-4"></i>
+                            <h3 class="h6 fw-bold mt-3">Latest Additions</h3>
+                            <p class="small text-muted">Recently published works are added regularly</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <i class="bi bi-bookmark-star text-success fs-4"></i>
+                            <h3 class="h6 fw-bold mt-3">Save for Later</h3>
+                            <p class="small text-muted">Save research papers for later use</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script>
+            const placeholders = ["autism", "challenge", "nueva ecija", "coping mechanism", "health"]
+
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            searchInput.value = placeholders[Math.floor(Math.random() * placeholders.length)];
+
+            function performSearch() {
+                const query = searchInput.value.trim();
+                if (query === '') {
+                    searchInput.classList.add('is-invalid');
+                    return;
+                }
+                window.location.href = `/search?q=${encodeURIComponent(query)}`;
             }
-        });
-        searchInput.addEventListener('input', () => {
-            searchInput.classList.remove('is-invalid');
-        });
-    </script>
-<% if (userId.split('-')[0] === "guest") { %>
-    <%- include('partials/footer.ejs') %>
-        <% } %>
+
+            searchButton.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            searchInput.addEventListener('input', () => {
+                searchInput.classList.remove('is-invalid');
+            });
+        </script>
+        <% if (userId.split('-')[0]==="guest" ) { %>
+            <%- include('partials/footer.ejs') %>
+                <% } %>
 
 </body>
+
 </html>
